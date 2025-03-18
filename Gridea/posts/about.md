@@ -19,6 +19,8 @@ isTop: true
 
 由于各种博客各种问题，现在开始启用 gridea。之前用过 [cnblogs](https://www.cnblogs.com/yhddd)，现在搬迁过来。(24.10.18)
 
+noip 前摆烂搭了另一个 [博客](https://yhddd123.github.io/qwerty)，一个有意思的尝试。(24.11.29)
+
 凡是之前的题解，都当做 23.12.31 写的，慢慢移过来。
 
 现在博客以做题记录为主，比较简略。有一些题目来源的链接是本校 oj。

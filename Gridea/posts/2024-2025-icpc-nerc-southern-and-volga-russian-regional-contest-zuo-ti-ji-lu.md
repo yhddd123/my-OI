@@ -90,7 +90,7 @@ void work(){
 
 ### [F. Alternative Platforms](https://codeforces.com/contest/2038/problem/F)
 
-按 $(a_i,b_i)$ 降序，枚举最大值取到 $a_i$，要求 $k$ 个中至少有一个数 $b_j\le a_i$。记 $num_i=\sum_{j<=i}[b_j> a_i]$。枚举 $k$，$ans_k=a_i\times(\binom{i-1}{k-1}-\binom{num_i}{k-1})$。$a_i\times\binom{i-1}{k-1}$ 差卷积，记 $val_j=\sum a_i\times [num_i==j]$，$val_j\times\binom{j}{k-1}$ 差卷积。交换 $a_i,b_i$，把大于等于改为严格大于再做一遍。
+按 $(a_i,b_i)$ 降序，枚举最大值取到 $a_i$，枚举 $k$，要求在 $[1,i-1]$ 中选 $k-1$ 个且至少有一个 $b_j\le a_i$。容斥为减去所有都大于 $a_i$ 的情况，记 $num_i=\sum_{j\le i}[b_j> a_i]$，$ans_k=a_i\times(\binom{i-1}{k-1}-\binom{num_i}{k-1})$。$a_i\times\binom{i-1}{k-1}$ 差卷积。记 $val_j=\sum a_i\times [num_i=j]$，$val_j\times\binom{j}{k-1}$ 差卷积。交换 $a_i,b_i$，把大于等于改为严格大于再做一遍。
 
 ```cpp
 int n;

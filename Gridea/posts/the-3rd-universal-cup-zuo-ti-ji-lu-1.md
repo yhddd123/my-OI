@@ -399,7 +399,7 @@ void work(){
 
 ### [G. Exponent Calculator](https://qoj.ac/contest/1741/problem/9136)
 
-$e^x=\sum_{n=0}^{\infty}\frac{x^n}{n!}$。每个 $n$ 要两次，$\mid x\mid$ 增大精度下降。计算 $e^{\frac{x}{2^B}}$ 后平方 $B$ 次。取 $n=7,B=10$。
+$e^x=\sum_{n=0}^{\infty}\frac{x^n}{n!}$。每个 $n$ 要两次，$|x|$ 增大精度下降。计算 $e^{\frac{x}{2^B}}$ 后平方 $B$ 次。取 $n=7,B=10$。
 
 ### [I. Marks Sum](https://qoj.ac/contest/1741/problem/9138)
 
@@ -604,8 +604,6 @@ void work(){
 	for(int i=1;i<=n;i++)printf("%lld ",ans[i]);
 }
 ```
-
-
 
 ## [The 3rd Universal Cup. Stage 9: Xi'an](https://qoj.ac/contest/1784)
 

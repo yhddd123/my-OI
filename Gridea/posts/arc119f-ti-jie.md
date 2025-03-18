@@ -79,12 +79,7 @@ char c[maxn];
 int tree[15][2],val[15][2];
 int dis[7];
 int dp[maxn][maxn][15];
-
-int T;
 signed main(){
-	//	freopen(".in","r",stdin);
-	//	freopen(".out","w",stdout);
-	
 	n=read();m=read();
 	scanf("%s",c+1);
 	tree[0][0]=2;val[0][0]=0;tree[0][1]=8;val[0][1]=0;

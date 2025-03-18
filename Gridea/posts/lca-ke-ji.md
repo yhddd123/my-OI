@@ -9,7 +9,7 @@ isTop: false
 ---
 ###  完全二叉树求 lca
 
-[https://blog.csdn.net/kksleric/article/details/7836649](https://blog.csdn.net/kksleric/article/details/7836649)
+学习自 [https://blog.csdn.net/kksleric/article/details/7836649](https://blog.csdn.net/kksleric/article/details/7836649)
 
 先考虑完全二叉树的 lca 求法。中序遍历分配编号。
 
