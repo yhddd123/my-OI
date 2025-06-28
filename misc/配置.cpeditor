@@ -1,0 +1,198 @@
+[General]
+tab_width=4
+cursor_width=1
+geometry=@Rect(0 0 0 0)
+editor_font=@Variant(\0\0\0@\0\0\0\x10\0\x43\0o\0n\0s\0o\0l\0\x61\0s@0\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+use_custom_application_font=false
+custom_application_font=@Variant(\0\0\0@\0\0\0\f\0S\0i\0m\0S\0u\0n@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+default_language=C++
+format_on_manual_save=false
+format_on_auto_save=false
+editor_theme=Catppuccin Latte
+highlight_error_line=false
+detached_run_terminal_program=xterm
+detached_run_terminal_arguments=-e
+auto_complete_parentheses=true
+auto_remove_parentheses=true
+tab_jump_out_parentheses=false
+auto_indent=true
+auto_save=false
+auto_save_interval=1000
+auto_save_interval_type=After the last modification
+wrap_text=false
+beta=false
+replace_tabs=false
+save_tests=true
+maximized_window=true
+check_update=true
+opacity=100
+view_mode=split
+splitter_size=@ByteArray(\0\0\0\xff\0\0\0\x1\0\0\0\x2\0\0\x4\xc5\0\0\x2\x8c\x1\xff\xff\xff\xff\x1\0\0\0\x1\0)
+right_splitter_size=@ByteArray()
+force_close=false
+show_compile_and_run_only=false
+display_eoln_in_diff=false
+save_faster=false
+default_time_limit=5000
+output_length_limit=500000000
+output_display_length_limit=50000
+message_length_limit=20000
+html_diff_viewer_length_limit=50000
+open_file_length_limit=20000
+display_test_case_length_limit=50000
+testcases_matching_rules=@Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0(\0.\0*\0)\0\\\0.\0i\0n\0\0\0\f\0\\\0\x31\0.\0\x61\0n\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0(\0.\0*\0)\0\\\0.\0i\0n\0\0\0\f\0\\\0\x31\0.\0o\0u\0t)
+input_file_save_path=./${basename}_${1-index}.in
+answer_file_save_path=./${basename}_${1-index}.ans
+default_file_paths_for_problem_urls=@Invalid()
+test_cases_font=@Variant(\0\0\0@\0\0\0\x10\0\x43\0o\0n\0s\0o\0l\0\x61\0s@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+extra_bottom_margin=false
+message_logger_font=@Variant(\0\0\0@\0\0\0\x10\0\x43\0o\0n\0s\0o\0l\0\x61\0s@\"\0\0\0\0\0\0\xff\xff\xff\xff\x5\x1\0\x32\x10)
+save_file_on_compilation=true
+save_file_on_execution=false
+restore_old_problem_url=true
+open_old_file_for_old_problem_url=true
+locale=system
+ui_style=default
+run_on_empty_testcase=false
+check_on_testcases_with_empty_output=false
+test_case_maximum_height=300
+auto_load_external_changes_if_no_unsaved_modification=true
+ask_for_loading_external_changes=false
+recent_files=D:/Codes/qsy.cpp, D:/Codes/P9544.cpp, D:/Codes/P4426.cpp, D:/Codes/P7486.cpp, D:/Codes/U35.cpp, D:/Codes/\x6a21\x7248/SA.cpp, D:/Codes/U34.cpp, D:/Codes/\x6a21\x7248/\x3010\x6a21\x677f\x3011\x591a\x9879\x5f0f\x4e58\x6cd5\xff08\x46\x46T\xff09.cpp, D:/Codes/P11173.cpp, D:/Codes/\x6a21\x62df\x8d5b/250225/dream/test.cpp, D:/Codes/\x6a21\x62df\x8d5b/250210/nim/nim.cpp, D:/Codes/\x6a21\x62df\x8d5b/250225/dream/ac.ans, D:/Codes/\x6a21\x62df\x8d5b/250225/dream/bao.cpp, D:/Codes/\x6a21\x62df\x8d5b/250225/dream/bf.cpp, D:/Codes/\x6a21\x62df\x8d5b/250225/dream/dream.cpp, D:/Codes/\x6a21\x62df\x8d5b/250225/fruit/fruit.cpp, D:/Codes/\x6a21\x62df\x8d5b/250225/ravine/ravine.cpp, D:/Codes/A.cpp, D:/Codes/P6667.cpp, D:/Codes/P5811.cpp
+number_of_problems_in_contest=5
+first_time_user=false
+show_only_monospaced_font=true
+total_usage_time=326721
+promotion_dialog_shown=true
+auto_uncheck_accepted_testcases=false
+full_screen_dialog_shown=true
+display_stopwatch=true
+toggle_stopwatch_on_tab_switch=true
+hide_stopwatch_result=false
+error_message_color=red
+warn_message_color=maroon
+file_problem_binding=C:/Users/User/Downloads/problem-237-attachment/shortcut.cpp, https://uoj.ac/problem/237, D:/Codes/8789.cpp, http://www.gdfzoj.com:23380/contest/941/problem/8789, D:/Codes/8790.cpp, http://www.gdfzoj.com:23380/contest/941/problem/8790, D:/Codes/8791.cpp, http://www.gdfzoj.com:23380/contest/941/problem/8791, D:/Codes/8796.cpp, http://www.gdfzoj.com:23380/contest/943/problem/8796, D:/Codes/AT_jsc2019_final_h.cpp, https://www.luogu.com.cn/problem/AT_jsc2019_final_h, D:/Codes/CF1101D.cpp, https://www.luogu.com.cn/problem/CF1101D, D:/Codes/CF1201E1.cpp, https://www.luogu.com.cn/problem/CF1201E1, D:/Codes/CF1245F.cpp, https://www.luogu.com.cn/problem/CF1245F, D:/Codes/CF1260F.cpp, https://www.luogu.com.cn/problem/CF1260F, D:/Codes/CF1372F.cpp, https://www.luogu.com.cn/problem/CF1372F, D:/Codes/CF1427F.cpp, https://www.luogu.com.cn/problem/CF1427F, D:/Codes/CF1550E.cpp, https://www.luogu.com.cn/problem/CF1550E, D:/Codes/CF1599G.cpp, https://www.luogu.com.cn/problem/CF1599G, D:/Codes/CF1658E.cpp, https://www.luogu.com.cn/problem/CF1658E, D:/Codes/CF1740G.cpp, https://www.luogu.com.cn/problem/CF1740G, D:/Codes/CF1799G.cpp, https://www.luogu.com.cn/problem/CF1799G, D:/Codes/CF1800G.cpp, https://www.luogu.com.cn/problem/CF1800G, D:/Codes/CF1823F.cpp, https://www.luogu.com.cn/problem/CF1823F, D:/Codes/CF1864H.cpp, https://www.luogu.com.cn/problem/CF1864H, D:/Codes/CF1867F.cpp, https://www.luogu.com.cn/problem/CF1867F, D:/Codes/CF1889E.cpp, https://www.luogu.com.cn/problem/CF1889E, D:/Codes/CF1916E.cpp, https://www.luogu.com.cn/problem/CF1916E, D:/Codes/CF1919E.cpp, https://www.luogu.com.cn/problem/CF1919E, D:/Codes/CF1924B.cpp, https://www.luogu.com.cn/problem/CF1924B, D:/Codes/CF1924C.cpp, https://www.luogu.com.cn/problem/CF1924C, D:/Codes/CF1924D.cpp, https://www.luogu.com.cn/problem/CF1924D, D:/Codes/CF258D.cpp, https://www.luogu.com.cn/problem/CF258D, D:/Codes/CF41E.cpp, https://www.luogu.com.cn/problem/CF41E, D:/Codes/CF510C.cpp, https://www.luogu.com.cn/problem/CF510C, D:/Codes/CF510D.cpp, https://www.luogu.com.cn/problem/CF510D, D:/Codes/CF510E.cpp, https://www.luogu.com.cn/problem/CF510E, D:/Codes/CF549F.cpp, https://www.luogu.com.cn/problem/CF549F, D:/Codes/CF645F.cpp, https://www.luogu.com.cn/problem/CF645F, D:/Codes/CF856D.cpp, https://www.luogu.com.cn/problem/CF856D, D:/Codes/CF868E.cpp, https://www.luogu.com.cn/problem/CF868E, D:/Codes/CF888E.cpp, https://www.luogu.com.cn/problem/CF888E, D:/Codes/CF888F.cpp, https://www.luogu.com.cn/problem/CF888F, D:/Codes/J.cpp, "https://www.luogu.com.cn/problem/T574963?contestId=230575", D:/Codes/L.cpp, "https://www.luogu.com.cn/problem/T574957?contestId=230575", D:/Codes/M.cpp, "https://www.luogu.com.cn/problem/T574962?contestId=230575", D:/Codes/P1006.cpp, https://www.luogu.com.cn/problem/P1006, D:/Codes/P10177.cpp, "https://www.luogu.com.cn/problem/P10177?contestId=157909", D:/Codes/P10178.cpp, https://www.luogu.com.cn/problem/P10178, D:/Codes/P10179.cpp, https://www.luogu.com.cn/problem/P10179, D:/Codes/P10180.cpp, https://www.luogu.com.cn/problem/P10180, D:/Codes/P11173.cpp, https://www.luogu.com.cn/problem/P11173, D:/Codes/P11804.cpp, https://www.luogu.com.cn/problem/P11804, D:/Codes/P11807.cpp, https://www.luogu.com.cn/problem/P11807, D:/Codes/P11811.cpp, https://www.luogu.com.cn/problem/P11811, D:/Codes/P11815.cpp, https://www.luogu.com.cn/problem/P11815, D:/Codes/P2579.cpp, https://www.luogu.com.cn/problem/P2579, D:/Codes/P3387.cpp, https://www.luogu.com.cn/problem/P3387, D:/Codes/P3502.cpp, https://www.luogu.com.cn/problem/P3502, D:/Codes/P4426.cpp, https://www.luogu.com.cn/problem/P4426, D:/Codes/P5043.cpp, https://www.luogu.com.cn/problem/P5043, D:/Codes/P5825.cpp, https://www.luogu.com.cn/problem/P5825, D:/Codes/P5853.cpp, https://www.luogu.com.cn/problem/P5853, D:/Codes/P6167.cpp, https://www.luogu.com.cn/problem/P6167, D:/Codes/P6190.cpp, https://www.luogu.com.cn/problem/P6190, D:/Codes/P6326.cpp, https://www.luogu.com.cn/problem/P6326, D:/Codes/P6667.cpp, https://www.luogu.com.cn/problem/P6667, D:/Codes/P7215.cpp, https://www.luogu.com.cn/problem/P7215, D:/Codes/P7247.cpp, https://www.luogu.com.cn/problem/P7247, D:/Codes/P7482.cpp, https://www.luogu.com.cn/problem/P7482, D:/Codes/P7486.cpp, https://www.luogu.com.cn/problem/P7486, D:/Codes/P9507.cpp, https://www.luogu.com.cn/problem/P9507, D:/Codes/P9544.cpp, https://www.luogu.com.cn/problem/P9544, D:/Codes/P9545.cpp, https://www.luogu.com.cn/problem/P9545, D:/Codes/P9546.cpp, https://www.luogu.com.cn/problem/P9546, D:/Codes/U34.cpp, https://uoj.ac/problem/34, D:/Codes/U35.cpp, https://uoj.ac/problem/35, D:/Codes/abc138f.cpp, https://www.luogu.com.cn/problem/AT_abc138_f, D:/Codes/abc141f.cpp, https://www.luogu.com.cn/problem/AT_abc141_f, D:/Codes/abc161f.cpp, https://www.luogu.com.cn/problem/AT_abc161_f, D:/Codes/abc321g.cpp, https://www.luogu.com.cn/problem/AT_abc321_g, D:/Codes/abc341a.cpp, https://atcoder.jp/contests/abc341/tasks/abc341_a, D:/Codes/abc341b.cpp, https://atcoder.jp/contests/abc341/tasks/abc341_b, D:/Codes/abc341c.cpp, https://atcoder.jp/contests/abc341/tasks/abc341_c, D:/Codes/abc341d.cpp, https://atcoder.jp/contests/abc341/tasks/abc341_d, D:/Codes/abc341e.cpp, https://atcoder.jp/contests/abc341/tasks/abc341_e, D:/Codes/abc341f.cpp, https://atcoder.jp/contests/abc341/tasks/abc341_f, D:/Codes/agc005f.cpp, https://www.luogu.com.cn/problem/AT_agc005_f, D:/Codes/agc007c.cpp, https://www.luogu.com.cn/problem/AT_agc007_c, D:/Codes/agc026e.cpp, https://www.luogu.com.cn/problem/AT_agc026_e, D:/Codes/agc030d.cpp, https://www.luogu.com.cn/problem/AT_agc030_d, D:/Codes/agc045c.cpp, https://www.luogu.com.cn/problem/AT_agc045_c, D:/Codes/arc118e.cpp, https://www.luogu.com.cn/problem/AT_arc118_e, D:/Codes/arc172_a.cpp, https://atcoder.jp/contests/arc172/tasks/arc172_a, D:/Codes/arc172_b.cpp, https://atcoder.jp/contests/arc172/tasks/arc172_b, D:/Codes/arc172c.cpp, https://atcoder.jp/contests/arc172/tasks/arc172_c, D:/Codes/arc172e.cpp, https://atcoder.jp/contests/arc172/tasks/arc172_e, D:/Codes/at_joisc2017_f.cpp, https://www.luogu.com.cn/problem/AT_joisc2017_f, D:/Codes/at_joisc2017_j.cpp, https://www.luogu.com.cn/problem/AT_joisc2017_j, D:/Codes/at_joisc2018_l.cpp, https://www.luogu.com.cn/problem/AT_joisc2018_l, D:/Codes/loj3646.cpp, https://loj.ac/p/3646, S:/Codes/CF1575E.cpp, https://www.luogu.com.cn/problem/CF1575E, S:/Codes/CF45J.cpp, https://www.luogu.com.cn/problem/CF45J, S:/Codes/CF739B.cpp, https://www.luogu.com.cn/problem/CF739B, S:/Codes/P10532.cpp, https://www.luogu.com.cn/problem/P10532
+
+[clang_format]
+program=clang-format
+arguments=
+style=BasedOnStyle: Google
+
+[yapf]
+program=python
+arguments=-m yapf
+style="[style]\nbased_on_style = pep8"
+
+[cpp]
+template_path=D:/Codes/qsy.cpp
+template_cursor_position_regex=main\\(\\)
+template_cursor_position_offset_type=end
+template_cursor_position_offset_characters=4
+compile_command="c++ -O2  -Wl,--stack=998244353"
+output_path=${tmpdir}/${basename}
+run_arguments=
+parentheses=@Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0(\0\0\0\x2\0\0\0)\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0{\0\0\0\x2\0\0\0}\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0[\0\0\0\x2\0\0\0]\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1)
+compiler_output_codec=UTF-8
+
+[java]
+template_path=
+compile_command=javac
+run_arguments=
+run_command=java
+class_name=Main
+output_path=${tmpdir}
+template_cursor_position_regex=
+template_cursor_position_offset_type=end
+template_cursor_position_offset_characters=0
+parentheses=@Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0(\0\0\0\x2\0\0\0)\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0{\0\0\0\x2\0\0\0}\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0[\0\0\0\x2\0\0\0]\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1)
+compiler_output_codec=UTF-8
+
+[python]
+template_path=
+template_cursor_position_regex=
+template_cursor_position_offset_type=end
+template_cursor_position_offset_characters=0
+run_arguments=
+run_command=python
+parentheses=@Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0(\0\0\0\x2\0\0\0)\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0{\0\0\0\x2\0\0\0}\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0[\0\0\0\x2\0\0\0]\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1)
+
+[competitive_companion]
+enable=true
+connection_port=10045
+open_new_tab=true
+set_time_limit_for_tab=true
+head_comments=Problem: ${json.name}\nContest: ${json.group}\nURL: ${json.url}\nMemory Limit: ${json.memoryLimit} MB\nTime Limit: ${json.timeLimit} ms\nWritten by yhm.\nStart codeing:${time}
+head_comments_time_format=yyyy-MM-dd HH:mm:ss
+head_comments_powered_by_cp_editor=true
+
+[hotkey]
+format=
+kill=
+compile_run=
+run=
+compile=
+change_view_mode=
+snippets=
+
+[hot_exit]
+enable=true
+auto_save=false
+auto_save_interval=20000
+
+[cf]
+path=cf
+show_toast_messages=true
+
+[lsp]
+path_cpp=clangd
+path_java=
+path_python=python
+use_linting_cpp=false
+use_linting_java=false
+use_linting_python=false
+use_autocomplete_cpp=false
+use_autocomplete_java=false
+use_autocomplete_python=false
+delay_cpp=2000
+delay_java=2000
+delay_python=2000
+args_cpp=
+args_java=
+args_python=-m pyls
+
+[proxy]
+enabled=true
+type=System
+host_name=127.0.0.1
+port=1080
+user=
+password=
+
+[default_path]
+names_and_paths=@Variant(\0\0\0\v\0\0\0\x2\0\0\0\xe\0\x63\0h\0\x65\0\x63\0k\0\x65\0r\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\b\0\x66\0i\0l\0\x65\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0s\0\x65\0t\0t\0i\0n\0g\0s\0\0\0\x10\0S\0:\0/\0t\0o\0o\0l\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0t\0\x65\0s\0t\0\x63\0\x61\0s\0\x65\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s)
+action\open_file\uses=${file}
+action\open_file\changes="file, testcase, checker"
+action\save_file\uses=${file}
+action\save_file\changes="file, testcase, checker"
+action\open_contest\uses=${contest}
+action\open_contest\changes="contest, file, testcase, checker"
+action\load_single_test_case\uses=${testcase}
+action\load_single_test_case\changes=testcase
+action\add_pairs_of_test_cases\uses=${testcase}
+action\add_pairs_of_test_cases\changes=testcase
+action\save_test_case_to_a_file\uses=${testcase}
+action\save_test_case_to_a_file\changes=testcase
+action\custom_checker\uses=${checker}
+action\custom_checker\changes=checker
+action\export_and_import_settings\uses=${settings}
+action\export_and_import_settings\changes=settings
+action\export_and_load_session\uses=${session}
+action\export_and_load_session\changes=session
+action\extract_and_load_snippets\uses=${snippets}
+action\extract_and_load_snippets\changes=snippets
+
+[wakatime]
+path=wakatime
+api_key=
+enable=false
+proxy=false
