@@ -22,27 +22,7 @@ mt19937 rnd(time(0));
 int get(int l,int r){return l+rnd()%(r-l+1);}
 int a[maxn];
 void work(){
-	int n=100000,k=8000;
-	cout<<n<<" "<<k<<"\n";
-	set<pii> edges;
-	// 先生成一棵生成树保证联通
-	vector<int> nodes;
-	for(int i=1;i<=n;i++) nodes.pb(i);
-	shuffle(nodes.begin(), nodes.end(), rnd);
-	for(int i=1;i<n;i++){
-		int u = nodes[i-1], v = nodes[i];
-		if(u>v) swap(u,v);
-		edges.insert(mkp(u,v));
-	}
-	// 再随机生成剩余的边
-	while((int)edges.size()<4*n){
-		int u=get(1,n), v=get(1,n);
-		if(u==v) continue;
-		if(u>v) swap(u,v);
-		if(edges.count(mkp(u,v))) continue;
-		edges.insert(mkp(u,v));
-	}
-	for(auto e:edges) cout<<e.fi<<" "<<e.se<<"\n";
+	n=500;
 }
 
 bool med;
