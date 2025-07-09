@@ -42,7 +42,7 @@ void dfs(int u,int fa){
 		dfs(v,u);siz[u]+=siz[v];
 	}
 }
-#define mid (l+r>>1)
+#define mid ((l+r)>>1)
 #define ls nd<<1
 #define rs nd<<1|1
 pii tree[maxn<<2];
