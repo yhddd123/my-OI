@@ -20,20 +20,26 @@ bool mbe;
 
 mt19937 rnd(time(0));
 int get(int l,int r){return l+rnd()%(r-l+1);}
-int a[maxn];
 void work(){
-	n=500;
+	int n=1000,m=2000;
+	cout<<n<<" "<<m<<"\n";
+	for(int i=2;i<=n;i++){
+		cout<<rnd()%(i-1)+1<<" "<<i<<" "<<rnd()%inf<<"\n";
+	}
+	for(int i=n;i<=m;i++){
+		cout<<rnd()%n+1<<" "<<rnd()%n+1<<" "<<rnd()%inf<<"\n";
+	}
 }
 
 bool med;
 int T;
 signed main(){
 	// freopen(".in","r",stdin);
-	freopen("A.in","w",stdout);
+	// freopen("A.in","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=10;
-	cout<<T<<"\n";
+	T=1;
+	// cout<<T<<"\n";
 	while(T--)work();
 }

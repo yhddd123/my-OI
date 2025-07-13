@@ -18,6 +18,7 @@ const int inf=1e9;
 int n,a[maxn][maxn];
 void work(){
     n=read();
+    if(n==1){puts("1");return ;}
     for(int i=1;i<=n;i++){
         for(int j=i;j<=n;j++)a[i][j]=read();
     }
