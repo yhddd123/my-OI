@@ -11,7 +11,11 @@ const int maxn=510;
 
 int A[maxn],B[maxn];
 int n;
+map<vector<int>,vector<pii>> mp;
 vector<pii> ask(int u,int v,int w){
+    vector<int> a={u,v,w};
+    sort(a.begin(),a.end());
+    if(mp.find(a)!=mp.end())return mp[a];
     cout<<"? "<<u<<" "<<v<<" "<<w<<endl;
     vector<pii> res;
     int x;cin>>x;
@@ -20,7 +24,7 @@ vector<pii> ask(int u,int v,int w){
         res.pb({u,v});
         res.pb({v,u});
     }
-    return res;
+    return mp[a]=res;
     // int val[3];
     // val[0]=min(abs(A[u]-A[v]),n-abs(A[u]-A[v]));
     // val[1]=min(abs(A[u]-A[w]),n-abs(A[u]-A[w]));

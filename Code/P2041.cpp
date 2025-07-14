@@ -1,0 +1,54 @@
+// Problem: P2041 分裂游戏
+// Contest: Luogu
+// URL: https://www.luogu.com.cn/problem/P2041
+// Memory Limit: 125 MB
+// Time Limit: 1000 ms
+// Written by yhm.
+// Start codeing:2024-09-02 14:49:55
+// 
+// Powered by CP Editor (https://cpeditor.org)
+
+#include<bits/stdc++.h>
+#define int long long
+#define mod 998244353ll
+#define pii pair<int,int>
+#define fi first
+#define se second
+#define mems(x,y) memset(x,y,sizeof(x))
+using namespace std;
+const int maxn=200010;
+const int inf=1e18;
+inline int read(){
+	int x=0,f=1;
+	char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')f=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=(x<<3)+(x<<1)+(ch-48);ch=getchar();}
+	return x*f;
+}
+bool Mbe;
+
+int n;
+void work(){
+	n=read();
+	if(n==1)cout<<"1\n1 1\n";
+	if(n==2)cout<<"4\n1 1\n2 1\n2 2\n1 2\n";
+	if(n>=3)cout<<"-1\n";
+}
+
+// \
+444
+
+bool Med;
+int T;
+signed main(){
+//	freopen(".in","r",stdin);
+//	freopen(".out","w",stdout);
+	
+//	ios::sync_with_stdio(0);
+//	cin.tie(0);cout.tie(0);
+	
+//	cerr<<(&Mbe-&Med)/1048576.0<<" MB\n";
+	
+	T=1;
+	while(T--)work();
+}
