@@ -95,7 +95,7 @@ void work(){
 bool med;
 int T;
 signed main(){
-	// freopen(".in","r",stdin);
+	// freopen("A.in","r",stdin);
 	// freopen(".out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";

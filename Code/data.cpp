@@ -21,13 +21,16 @@ bool mbe;
 mt19937 rnd(time(0));
 int get(int l,int r){return l+rnd()%(r-l+1);}
 void work(){
-	int n=1000,m=2000;
-	cout<<n<<" "<<m<<"\n";
-	for(int i=2;i<=n;i++){
-		cout<<rnd()%(i-1)+1<<" "<<i<<" "<<rnd()%inf<<"\n";
-	}
-	for(int i=n;i<=m;i++){
-		cout<<rnd()%n+1<<" "<<rnd()%n+1<<" "<<rnd()%inf<<"\n";
+	for(int t=1;t<=200;t++){
+		int n=10,m=10;
+		cout<<n<<" "<<m<<"\n";
+		for(int i=1,lst=0;i<=n+m;i++){
+			int u=rnd()%n+1;
+			while(u==lst)u=rnd()%n+1;
+			lst=u;
+			int v=rnd()%100+1;
+			cout<<u<<" "<<v<<"\n";
+		}
 	}
 }
 
@@ -35,7 +38,7 @@ bool med;
 int T;
 signed main(){
 	// freopen(".in","r",stdin);
-	// freopen("A.in","w",stdout);
+	freopen("A.in","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	

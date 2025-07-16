@@ -1,21 +1,19 @@
 #include<bits/stdc++.h>
 #define int long long
-#define db double
-#define mod 998244353
+#define mod 998244353ll
 #define pii pair<int,int>
-#define mems(x,y) memset(x,y,sizeof x)
+#define fi first
+#define se second
+#define pb push_back
 using namespace std;
-const int maxn=270010;
-const int inf=1e18;
-const db eps=1e-8;
 inline int read(){
-	int x=0,f=1;
-	char ch=getchar();
-	while(ch<'0'||ch>'9'){if(ch=='-')f=-1;ch=getchar();}
-	while(ch>='0'&&ch<='9'){x=(x<<3)+(x<<1)+(ch-48);ch=getchar();}
-	return x*f;
+    int x=0,fl=1;char ch=getchar();
+    while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+    while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+    return x*fl;
 }
-bool Mbe;
+const int maxn=200010;
+const int inf=1e9;
 
 int n;
 inline int ksm(int a,int b=mod-2){
@@ -95,25 +93,64 @@ namespace poly{
 		cdqni(1,n);
         return g;
     }
+    void cdqln(int l,int r){
+        if(l==r){g[l]=::ni[l]*(f[l]*l%mod-g[l]+mod)%mod;return ;}
+        int mid=l+r>>1;
+        cdqln(l,mid);
+        vector<int> ff(mid-l+1),gg(r-l+1);
+        for(int i=l;i<=mid;i++)ff[i-l]=g[i]*i%mod;
+        for(int i=0;i<=r-l;i++)gg[i]=f[i];
+        ff=mul(ff,gg);
+        for(int i=mid+1;i<=r;i++)inc(g[i],ff[i-l]);
+        cdqln(mid+1,r);
+    }
+    vector<int> ln(vector<int> a){
+        int n=a.size()-1;
+        f.resize(n+1);g.resize(n+1);
+        for(int i=0;i<=n;i++)f[i]=a[i],g[i]=0;
+        f[0]=1,g[0]=0;cdqln(1,n);
+        return g;
+    }
+    void cdqexp(int l,int r){
+        if(l==r){g[l]=::ni[l]*g[l]%mod;return ;}
+        int mid=l+r>>1;
+        cdqexp(l,mid);
+        vector<int> ff(mid-l+1),gg(r-l+1);
+        for(int i=l;i<=mid;i++)ff[i-l]=g[i];
+        for(int i=0;i<=r-l;i++)gg[i]=f[i];
+        ff=mul(ff,gg);
+        for(int i=mid+1;i<=r;i++)inc(g[i],ff[i-l]);
+        cdqexp(mid+1,r);
+    }
+    vector<int> exp(vector<int> a){
+        int n=a.size()-1;
+        f.resize(n+1);g.resize(n+1);
+        for(int i=0;i<=n;i++)f[i]=a[i]*i%mod,g[i]=0;
+        f[0]=0,g[0]=1;cdqexp(0,n);
+        return g;
+    }
 }
+vector<int> f;
 void work(){
-	n=read()-1;
-	fac[0]=1;for(int i=1;i<=n;i++)fac[i]=fac[i-1]*i%mod;
-	inv[n]=ksm(fac[n]);for(int i=n-1;~i;i--)inv[i]=inv[i+1]*(i+1)%mod;
-	vector<int> f(n+1);
-	for(int i=0;i<=n;i++)f[i]=read();
-	f=poly::ni(f);
-	for(int i=0;i<=n;i++)printf("%lld ",f[i]);
+    n=read();f.resize(n+1);
+    fac[0]=1;for(int i=1;i<=n;i++)fac[i]=fac[i-1]*i%mod;
+    inv[n]=ksm(fac[n]);for(int i=n-1;~i;i--)inv[i]=inv[i+1]*(i+1)%mod;
+    ni[0]=1;for(int i=1;i<=n;i++)ni[i]=fac[i-1]*inv[i]%mod;
+    for(int i=0;i<=n;i++)f[i]=(((i+1)&1)?mod-1:1)*inv[i]%mod*ksm((mod+1)/2,i*(i-1)/2)%mod;
+    f=poly::del({1},f);f[0]=1;
+    f=poly::ni(f);
+    for(int i=1;i<=n;i++)f[i]=f[i]*fac[i]%mod*ksm(2,i*(i-1)/2)%mod;
+    for(int i=1;i<=n;i++)f[i]=f[i]*inv[i]%mod;
+    f=poly::ln(f);
+    for(int i=1;i<=n;i++)f[i]=f[i]*fac[i]%mod;
+    for(int i=1;i<=n;i++)printf("%lld\n",f[i]);
 }
 
-bool Med;
 int T;
 signed main(){
-	// freopen("A.in","r",stdin);
-//	freopen(".out","w",stdout);
-	
-//	cerr<<(&Mbe-&Med)/1048576.0<<" MB\n";
-	
-	T=1;
-	while(T--)work();
+    // freopen("A.in","r",stdin);
+    // freopen(".out","w",stdout);
+    
+    T=1;
+    while(T--)work();
 }
