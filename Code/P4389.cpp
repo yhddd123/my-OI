@@ -1,4 +1,33 @@
-inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
+#include<bits/stdc++.h>
+#define int long long
+#define mod 998244353ll
+#define pii pair<int,int>
+#define fi first
+#define se second
+#define pb push_back
+using namespace std;
+inline int read(){
+    int x=0,fl=1;char ch=getchar();
+    while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+    while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+    return x*fl;
+}
+const int maxn=100010;
+const int inf=1e9;
+
+int n,m;
+int t[maxn];
+inline int ksm(int a,int b=mod-2){
+    int ans=1;
+    while(b){
+        if(b&1)ans=ans*a%mod;
+        a=a*a%mod;
+        b>>=1;
+    }
+    return ans;
+}
+int ni[maxn];
+void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
 namespace poly{
     int gen=3,invg=ksm(3);
     int to[maxn<<2];
@@ -32,56 +61,7 @@ namespace poly{
         ntt(a,-1);a.resize(n+m+1);
         return a;
     }
-    vector<int> add(vector<int> a,vector<int> b){
-        int n=a.size()-1,m=b.size()-1;
-        a.resize(max(n,m)+1);
-        for(int i=0;i<=m;i++)inc(a[i],b[i]);
-        return a;
-    }
-    vector<int> del(vector<int> a,vector<int> b){
-        int n=a.size()-1,m=b.size()-1;
-        a.resize(max(n,m)+1);
-        for(int i=0;i<=m;i++)inc(a[i],mod-b[i]);
-        return a;
-    }
     vector<int> f,g;
-    void cdqni(int l,int r){
-        if(l==r){g[l]=(mod-g[l])*g[0]%mod;return ;}
-        int mid=l+r>>1;
-        cdqni(l,mid);
-        vector<int> ff(mid-l+1),gg(r-l+1);
-        for(int i=l;i<=mid;i++)ff[i-l]=g[i];
-        for(int i=0;i<=r-l;i++)gg[i]=f[i];
-        ff=mul(ff,gg);
-        for(int i=mid+1;i<=r;i++)inc(g[i],ff[i-l]);
-        cdqni(mid+1,r);
-    }
-    vector<int> ni(vector<int> a){
-        int n=a.size()-1;
-        f.resize(n+1),g.resize(n+1);
-        for(int i=0;i<=n;i++)f[i]=a[i],g[i]=0;
-        g[0]=ksm(f[0]);for(int i=1;i<=n;i++)(g[i]+=g[0]*f[i])%=mod;
-		cdqni(1,n);
-        return g;
-    }
-    void cdqln(int l,int r){
-        if(l==r){g[l]=::ni[l]*(f[l]*l%mod-g[l]+mod)%mod;return ;}
-        int mid=l+r>>1;
-        cdqln(l,mid);
-        vector<int> ff(mid-l+1),gg(r-l+1);
-        for(int i=l;i<=mid;i++)ff[i-l]=g[i]*i%mod;
-        for(int i=0;i<=r-l;i++)gg[i]=f[i];
-        ff=mul(ff,gg);
-        for(int i=mid+1;i<=r;i++)inc(g[i],ff[i-l]);
-        cdqln(mid+1,r);
-    }
-    vector<int> ln(vector<int> a){
-        int n=a.size()-1;
-        f.resize(n+1);g.resize(n+1);
-        for(int i=0;i<=n;i++)f[i]=a[i],g[i]=0;
-        f[0]=1,g[0]=0;cdqln(1,n);
-        return g;
-    }
     void cdqexp(int l,int r){
         if(l==r){g[l]=::ni[l]*g[l]%mod;return ;}
         int mid=l+r>>1;
@@ -100,4 +80,24 @@ namespace poly{
         f[0]=0,g[0]=1;cdqexp(0,n);
         return g;
     }
+}
+void work(){
+    n=read();m=read();
+    vector<int> f(m+1);
+    ni[0]=ni[1]=1;for(int i=2;i<=m;i++)ni[i]=(mod-mod/i)*ni[mod%i]%mod;
+    for(int i=1;i<=n;i++)t[read()]++;
+    for(int i=1;i<=n;i++)if(t[i]){
+        for(int j=i;j<=m;j+=i)(f[j]+=t[i]*ni[j/i])%=mod;
+    }
+    f=poly::exp(f);
+    for(int i=1;i<=m;i++)printf("%lld\n",f[i]);
+}
+
+int T;
+signed main(){
+    // freopen("A.in","r",stdin);
+    // freopen(".out","w",stdout);
+    
+    T=1;
+    while(T--)work();
 }
