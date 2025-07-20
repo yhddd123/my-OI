@@ -26,7 +26,7 @@ void upd(int u,int v){
     }
 }
 pii que(){
-    pair<int,pii> mx={0,{-4*n,0}};
+    pair<int,pii> mx={0,{-2*n,-2*n}};
     for(int i=1;i<=2*n;i++){
         for(int j=1;j<=2*n;j++)mx=max(mx,{a[i][j],{-i,-j}});
     }
