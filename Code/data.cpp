@@ -21,17 +21,10 @@ bool mbe;
 mt19937 rnd(time(0));
 int get(int l,int r){return l+rnd()%(r-l+1);}
 void work(){
-	for(int t=1;t<=200;t++){
-		int n=10,m=10;
-		cout<<n<<" "<<m<<"\n";
-		for(int i=1,lst=0;i<=n+m;i++){
-			int u=rnd()%n+1;
-			while(u==lst)u=rnd()%n+1;
-			lst=u;
-			int v=rnd()%100+1;
-			cout<<u<<" "<<v<<"\n";
-		}
-	}
+	int n=50000,m=2*n-3;
+	cout<<n<<" "<<m<<"\n";
+	for(int i=2;i<=n;i++)cout<<"1 "<<i<<"\n",m--;
+	for(int i=3;i<=n;i++)cout<<"2 "<<i<<"\n",m--;
 }
 
 bool med;
