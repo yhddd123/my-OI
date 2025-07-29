@@ -14,17 +14,22 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=100010;
+const int maxn=300010;
 const int inf=1e9;
 bool mbe;
 
 mt19937 rnd(time(0));
 int get(int l,int r){return l+rnd()%(r-l+1);}
+int a[maxn];
 void work(){
-	int n=50000,m=2*n-3;
+	int n=200000,m=3000,k=500;
 	cout<<n<<" "<<m<<"\n";
-	for(int i=2;i<=n;i++)cout<<"1 "<<i<<"\n",m--;
-	for(int i=3;i<=n;i++)cout<<"2 "<<i<<"\n",m--;
+	for(int i=1;i<=n;i+=k){
+		for(int j=i;j<i+k;j++)a[j]=j-i;
+		shuffle(a+i,a+i+k,rnd);
+		// cout<<i<<" "<<i+m-1<<endl;
+	}
+	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
 }
 
 bool med;

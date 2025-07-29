@@ -12,30 +12,32 @@ inline int read(){
     while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
     return x*fl;
 }
-const int maxn=12;
+const int maxn=300010;
 const int inf=1e9;
 bool mbe;
 
 int n,m,a[maxn];
-multiset<int> s;int hd=0;
-int dp[maxn][maxn];
+multiset<int> s;
 void work(){
     n=read();m=read();
     for(int i=1;i<=m;i++)a[i]=read();
     reverse(a+1,a+m+1);
-    memset(dp,-0x3f,sizeof(dp));
-    dp[0][0]=0;
+    int val=0;s.clear();
     for(int i=1;i<=m;i++){
         if(i&1){
-            for(int j=0;2*j+1<=n;j++)dp[i][j]=max(dp[i-1][j]+2*a[i],dp[i-1][j+1]);
+            s.insert(2*a[i]);
+        	if(s.size())val+=*s.rbegin(),s.erase(--s.end());
         }
         else{
-            dp[i][0]=dp[i-1][0];
-            for(int j=1;2*j<=n;j++)dp[i][j]=max(dp[i-1][j-1]+2*a[i],dp[i-1][j]);
+            s.insert(2*a[i]);
         }
-        for(int j=0;2*j+(i&1)<=n;j++)cout<<dp[i][j]<<" ";cout<<"\n";
+        while(2*s.size()+(i&1)>n)s.erase(s.begin());
     }
-    int ans=-inf;for(int i=0;2*i+(m&1)<=n;i++)ans=max(ans,dp[m][i]);
+    int ans=val;
+    while(s.size()){
+        val+=*s.rbegin();s.erase(--s.end());
+        ans=max(ans,val);
+    }
     for(int i=1;i<=m;i++)ans-=a[i];
     printf("%lld\n",ans);
 }
@@ -43,8 +45,8 @@ void work(){
 bool med;
 int T;
 signed main(){
-    freopen("A.in","r",stdin);
-    freopen("A.out","w",stdout);
+    // freopen("A.in","r",stdin);
+    // freopen("A.out","w",stdout);
     
     // cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
     
