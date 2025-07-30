@@ -14,22 +14,26 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=300010;
+const int maxn=10010;
 const int inf=1e9;
 bool mbe;
 
 mt19937 rnd(time(0));
 int get(int l,int r){return l+rnd()%(r-l+1);}
-int a[maxn];
+
 void work(){
-	int n=200000,m=3000,k=500;
-	cout<<n<<" "<<m<<"\n";
-	for(int i=1;i<=n;i+=k){
-		for(int j=i;j<i+k;j++)a[j]=j-i;
-		shuffle(a+i,a+i+k,rnd);
-		// cout<<i<<" "<<i+m-1<<endl;
+	int n=5000;
+	cout<<n<<"\n";
+	
+	// 生成2*n个不同的数
+	vector<int> nums;
+	for(int i=1;i<=2*n;i++)nums.pb(i);
+	shuffle(nums.begin(),nums.end(),rnd);
+	
+	// 取前2*n个数作为l和r
+	for(int i=0;i<n;i++){
+		cout<<min(nums[i*2],nums[i*2+1])<<" "<<max(nums[i*2],nums[i*2+1])<<"\n";
 	}
-	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
 }
 
 bool med;

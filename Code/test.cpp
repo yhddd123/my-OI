@@ -12,31 +12,23 @@ inline int read(){
     while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
     return x*fl;
 }
-const int maxn=12;
+const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,m,a[maxn];
-multiset<int> s;int hd=0;
-int dp[maxn][maxn];
+int n,a[maxn],ans;
+int dp[10][10];
 void work(){
-    n=read();m=read();
-    for(int i=1;i<=m;i++)a[i]=read();
-    reverse(a+1,a+m+1);
-    memset(dp,-0x3f,sizeof(dp));
-    dp[0][0]=0;
-    for(int i=1;i<=m;i++){
-        if(i&1){
-            for(int j=0;2*j+1<=n;j++)dp[i][j]=max(dp[i-1][j]+2*a[i],dp[i-1][j+1]);
-        }
-        else{
-            dp[i][0]=dp[i-1][0];
-            for(int j=1;2*j<=n;j++)dp[i][j]=max(dp[i-1][j-1]+2*a[i],dp[i-1][j]);
-        }
-        for(int j=0;2*j+(i&1)<=n;j++)cout<<dp[i][j]<<" ";cout<<"\n";
+    n=read();
+    for(int i=1;i<=n;i++)a[i]=read();
+    memset(dp,-0x3f,sizeof(dp));dp[0][0]=0;
+    for(int i=1;i<=n;i++){
+        dp[i][0]=0;
+        for(int j=1;j<=i;j++)dp[i][j]=max(dp[i-1][j],dp[i-1][j-1]+j*a[i]);
+        for(int j=1;j<=i;j++)cout<<dp[i][j]<<" ";cout<<"\n";
+        // for(int j=1;j<=i;j++)cout<<(dp[i][j]==dp[i-1][j]?1:0);cout<<"\n";
     }
-    int ans=-inf;for(int i=0;2*i+(m&1)<=n;i++)ans=max(ans,dp[m][i]);
-    for(int i=1;i<=m;i++)ans-=a[i];
+    for(int i=1;i<=n;i++)ans=max(ans,dp[n][i]);
     printf("%lld\n",ans);
 }
 
@@ -48,6 +40,6 @@ signed main(){
     
     // cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
     
-    T=read();
+    T=1;
     while(T--)work();
 }
