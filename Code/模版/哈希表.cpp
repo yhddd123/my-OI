@@ -5,7 +5,7 @@ struct hsh_table{
 		ull key;
 		int val;
 	}e[maxn];
-	int hsh(ull u){return u%maxn;}
+	inline int hsh(ull u){return u%maxn;}
 	bool find(ull key){
 		int u=hsh(key);
 		for(int i=head[u];i;i=e[i].nxt){
@@ -13,7 +13,7 @@ struct hsh_table{
 		}
 		return 0;
 	}
-	int &operator[](ull key){
+	inline int &operator[](ull key){
 		int u=hsh(key);
 		for(int i=head[u];i;i=e[i].nxt){
 			if(e[i].key==key)return e[i].val;

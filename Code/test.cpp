@@ -1,83 +1,112 @@
 #include<bits/stdc++.h>
-#define LL long long
-#define pc __builtin_popcount
-#define ctz __builtin_ctz
-#define ar array<int,p>
-#define fr(x) freopen(#x".in","r",stdin);freopen(#x".out","w",stdout);
+#define ll long long
+#define mod 998244353ll
+#define pii pair<int,int>
+#define fi first
+#define se second
+#define pb push_back
 using namespace std;
-const int N=1<<17,M=19,p=17,mod=998244353,g=337827833,ig=634461433;
-int n,m,u,I[M];ar a[M][M],f[N],A[N][M],ans;
-inline int md(int x){return x>=p?x-p:x;}
-inline void ad(int &x,int y){x+=y;(x>=mod)&&(x-=mod);}
-inline int ksm(int x,int p){int s=1;for(;p;(p&1)&&(s=1ll*s*x%mod),x=1ll*x*x%mod,p>>=1);return s;}
-inline void DFT(ar &a,bool o=1)
-{
-	static ar b;const int A=o?g:ig;
-	for(int i=0,w=1;i<p;i++,w=1ll*w*A%mod)
-	{
-		LL sum=0;
-		for(int j=0,s=1;j<p;j++,s=1ll*s*w%mod) sum+=1ll*s*a[j];
-		b[i]=sum%mod;
-	}
-	for(int i=0;i<p;i++) a[i]=o?1ll*b[i]:(1ll*b[i]*I[p]%mod);
-}
-inline void Ln(ar *a)
-{
-	static ar b[M];
-	for(int i=0;i<=n;i++)
-	{
-		b[i]=a[i];
-		for(int j=0;j<p;j++) a[i][j]=0;
-	}
-	for(int i=1;i<=n;i++)
-	{
-		for(int j=0;j<i;j++) for(int x=0;x<p;x++) a[i][x]=(a[i][x]+1ll*a[j][x]*b[i-j][x]%mod*j)%mod;
-		for(int x=0;x<p;x++) a[i][x]=(b[i][x]+1ll*(mod-I[i])*a[i][x])%mod;
-	}
-	// for(int i=0;i<=n;i++) for(int j=0;j<p;j++) if(a[i][j]!=b[i][j]) assert(0);
-}
-inline void FWT()
-{
-	for(int i=1;i<u;i<<=1) for(int j=0;j<u;j+=(i<<1)) for(int k=j;k<j+i;k++)
-		for(int t=0;t<=n;t++) for(int x=0;x<p;x++) ad(A[k+i][t][x],A[k][t][x]);
-}
-inline void IFWT()
-{
-	for(int i=1;i<u;i<<=1) for(int j=0;j<u;j+=(i<<1)) for(int k=j;k<j+i;k++)
-		for(int t=0;t<=n;t++) for(int x=0;x<p;x++) ad(A[k+i][t][x],mod-A[k][t][x]);
-}
-int main()
-{
-	ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);cin>>n>>m;
-	u=1<<n;
-	for(int i=1,u,v,w;i<=m;i++)
-	{
-		cin>>u>>v>>w;if(u>v) swap(u,v);
-		a[u-1][v-1][w]++;
-	}
-	for(int i=0;i<n;i++) for(int j=i+1;j<n;j++) a[i][j][0]++,DFT(a[i][j]),a[j][i]=a[i][j];
-	// for(int k=0;k<p;k++) cout<<a[0][1][k]<<" ";cout<<"\n";
-	// for(int k=0;k<p;k++) cout<<a[0][3][k]<<" ";
+inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
+const int maxn=1000010;
+bool mbe;
 
-	I[1]=1;for(int i=2;i<=p;i++) I[i]=mod-1ll*I[mod%i]*(mod/i)%mod;
-	f[0][0]=1;DFT(f[0]);
-	for(int i=1;i<u;i++)
-	{
-		int x=ctz(i),S=i^(1<<x);f[i]=f[S];
-		while(S)
-		{
-			int y=ctz(S);S^=1<<y;
-			for(int j=0;j<p;j++) f[i][j]=1ll*f[i][j]*a[x][y][j]%mod;
-		}
-		// for(int j=0;j<p;j++) cout<<f[i][j]<<" ";cout<<"\n";
-	}
+int n;
+char s[maxn];
 
-	for(int i=0;i<u;i++) A[i][pc(i)]=f[i];
-	FWT();
-	for(int i=0;i<u;i++) Ln(A[i]);
-	IFWT();
-	for(int i=0;i<p;i++) ad(ans[i],A[u-1][n][i]);
-	DFT(ans,0);
-	for(int i=0;i<p;i++) cout<<ans[i]<<"\n";
-	return 0;
+// 线性SA - DC3/Skew算法
+struct LinearSA {
+    int sa[maxn], rk[maxn];
+    int wa[maxn], wb[maxn], wv[maxn], ws[maxn];
+    int r[maxn * 3]; // 扩大数组大小避免越界
+    int height[maxn];
+    int tb; // 用于DC3算法的辅助变量
+    
+    // 比较函数
+    bool cmp(int *r, int a, int b, int l) {
+        return r[a] == r[b] && r[a + l] == r[b + l];
+    }
+    
+    // 辅助函数
+    int F(int x) { return x / 3 + (x % 3 == 1 ? 0 : tb); }
+    int G(int x) { return x < tb ? x * 3 + 1 : (x - tb) * 3 + 2; }
+    int c0(int *r, int a, int b) { return r[a] == r[b] && r[a + 1] == r[b + 1] && r[a + 2] == r[b + 2]; }
+    int c12(int k, int *r, int a, int b) {
+        if (k == 2) return r[a] < r[b] || r[a] == r[b] && c12(1, r, a + 1, b + 1);
+        else return r[a] < r[b] || r[a] == r[b] && wv[a + 1] < wv[b + 1];
+    }
+    
+    // 基数排序
+    void sort(int *r, int *a, int *b, int n, int m) {
+        int i;
+        for (i = 0; i < n; i++) wv[i] = r[a[i]];
+        for (i = 0; i < m; i++) ws[i] = 0;
+        for (i = 0; i < n; i++) ws[wv[i]]++;
+        for (i = 1; i < m; i++) ws[i] += ws[i - 1];
+        for (i = n - 1; i >= 0; i--) b[--ws[wv[i]]] = a[i];
+    }
+    
+    // DC3算法核心 - 修复版本
+    void dc3(int *r, int *sa, int n, int m) {
+        int i, j, ta = 0, tb = (n + 1) / 3, tbc = 0, p;
+        int *rn = r + n, *san = sa + n;
+        
+        r[n] = r[n + 1] = 0;
+        for (i = 0; i < n; i++) if (i % 3 != 0) wa[tbc++] = i;
+        sort(r + 2, wa, wb, tbc, m);
+        sort(r + 1, wb, wa, tbc, m);
+        sort(r, wa, wb, tbc, m);
+        
+        for (p = 1, rn[F(wb[0])] = 0, i = 1; i < tbc; i++)
+            rn[F(wb[i])] = c0(r, wb[i - 1], wb[i]) ? p - 1 : p++;
+        
+        if (p < tbc) dc3(rn, san, tbc, p);
+        else for (i = 0; i < tbc; i++) san[rn[i]] = i;
+        
+        for (i = 0; i < tbc; i++) if (san[i] < tb) wb[ta++] = san[i] * 3;
+        if (n % 3 == 1) wb[ta++] = n - 1;
+        sort(r, wb, wa, ta, m);
+        
+        for (i = 0; i < tbc; i++) wv[wb[i] = G(san[i])] = i;
+        for (i = 0, j = 0, p = 0; i < ta && j < tbc; p++)
+            sa[p] = c12(wb[j] % 3, r, wa[i], wb[j]) ? wa[i++] : wb[j++];
+        for (; i < ta; p++) sa[p] = wa[i++];
+        for (; j < tbc; p++) sa[p] = wb[j++];
+    }
+    
+    // 计算height数组
+    void calheight(int *r, int *sa, int n) {
+        int i, j, k = 0;
+        for (i = 1; i <= n; i++) rk[sa[i]] = i;
+        for (i = 0; i < n; height[rk[i++]] = k)
+            for (k ? k-- : 0, j = sa[rk[i] - 1]; r[i + k] == r[j + k]; k++);
+    }
+    
+    void init(char *str) {
+        // 将字符串转换为整数数组
+        for (int i = 0; i < n; i++) r[i] = str[i + 1] - 'a' + 1;
+        r[n] = r[n + 1] = 0;
+        tb = (n + 1) / 3;
+        dc3(r, sa, n + 1, 27);
+        calheight(r, sa, n);
+    }
+} t1, t2;
+
+void work(){
+    scanf("%s",s+1);n=strlen(s+1);
+    t1.init(s);
+    reverse(s+1,s+n+1);
+    t2.init(s);
+    reverse(s+1,s+n+1);
+}
+
+bool med;
+int T;
+signed main(){
+    // freopen("A.in","r",stdin);
+    // freopen("A.out","w",stdout);
+    
+    // cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+    
+    T=1;
+    while(T--)work();
 }
