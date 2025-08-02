@@ -1,112 +1,96 @@
 #include<bits/stdc++.h>
-#define ll long long
-#define mod 998244353ll
-#define pii pair<int,int>
+using namespace std;
+typedef long long ll;
+typedef pair<int,int> PII;
+typedef vector<int> VI;
+typedef vector<VI> VII;
+const int maxn=66,INF=1e9;
+#define all(v) v.begin(),v.end()
+#define sz(v) int(v.size())
 #define fi first
 #define se second
-#define pb push_back
-using namespace std;
-inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
-const int maxn=1000010;
-bool mbe;
-
-int n;
-char s[maxn];
-
-// 线性SA - DC3/Skew算法
-struct LinearSA {
-    int sa[maxn], rk[maxn];
-    int wa[maxn], wb[maxn], wv[maxn], ws[maxn];
-    int r[maxn * 3]; // 扩大数组大小避免越界
-    int height[maxn];
-    int tb; // 用于DC3算法的辅助变量
-    
-    // 比较函数
-    bool cmp(int *r, int a, int b, int l) {
-        return r[a] == r[b] && r[a + l] == r[b + l];
-    }
-    
-    // 辅助函数
-    int F(int x) { return x / 3 + (x % 3 == 1 ? 0 : tb); }
-    int G(int x) { return x < tb ? x * 3 + 1 : (x - tb) * 3 + 2; }
-    int c0(int *r, int a, int b) { return r[a] == r[b] && r[a + 1] == r[b + 1] && r[a + 2] == r[b + 2]; }
-    int c12(int k, int *r, int a, int b) {
-        if (k == 2) return r[a] < r[b] || r[a] == r[b] && c12(1, r, a + 1, b + 1);
-        else return r[a] < r[b] || r[a] == r[b] && wv[a + 1] < wv[b + 1];
-    }
-    
-    // 基数排序
-    void sort(int *r, int *a, int *b, int n, int m) {
-        int i;
-        for (i = 0; i < n; i++) wv[i] = r[a[i]];
-        for (i = 0; i < m; i++) ws[i] = 0;
-        for (i = 0; i < n; i++) ws[wv[i]]++;
-        for (i = 1; i < m; i++) ws[i] += ws[i - 1];
-        for (i = n - 1; i >= 0; i--) b[--ws[wv[i]]] = a[i];
-    }
-    
-    // DC3算法核心 - 修复版本
-    void dc3(int *r, int *sa, int n, int m) {
-        int i, j, ta = 0, tb = (n + 1) / 3, tbc = 0, p;
-        int *rn = r + n, *san = sa + n;
-        
-        r[n] = r[n + 1] = 0;
-        for (i = 0; i < n; i++) if (i % 3 != 0) wa[tbc++] = i;
-        sort(r + 2, wa, wb, tbc, m);
-        sort(r + 1, wb, wa, tbc, m);
-        sort(r, wa, wb, tbc, m);
-        
-        for (p = 1, rn[F(wb[0])] = 0, i = 1; i < tbc; i++)
-            rn[F(wb[i])] = c0(r, wb[i - 1], wb[i]) ? p - 1 : p++;
-        
-        if (p < tbc) dc3(rn, san, tbc, p);
-        else for (i = 0; i < tbc; i++) san[rn[i]] = i;
-        
-        for (i = 0; i < tbc; i++) if (san[i] < tb) wb[ta++] = san[i] * 3;
-        if (n % 3 == 1) wb[ta++] = n - 1;
-        sort(r, wb, wa, ta, m);
-        
-        for (i = 0; i < tbc; i++) wv[wb[i] = G(san[i])] = i;
-        for (i = 0, j = 0, p = 0; i < ta && j < tbc; p++)
-            sa[p] = c12(wb[j] % 3, r, wa[i], wb[j]) ? wa[i++] : wb[j++];
-        for (; i < ta; p++) sa[p] = wa[i++];
-        for (; j < tbc; p++) sa[p] = wb[j++];
-    }
-    
-    // 计算height数组
-    void calheight(int *r, int *sa, int n) {
-        int i, j, k = 0;
-        for (i = 1; i <= n; i++) rk[sa[i]] = i;
-        for (i = 0; i < n; height[rk[i++]] = k)
-            for (k ? k-- : 0, j = sa[rk[i] - 1]; r[i + k] == r[j + k]; k++);
-    }
-    
-    void init(char *str) {
-        // 将字符串转换为整数数组
-        for (int i = 0; i < n; i++) r[i] = str[i + 1] - 'a' + 1;
-        r[n] = r[n + 1] = 0;
-        tb = (n + 1) / 3;
-        dc3(r, sa, n + 1, 27);
-        calheight(r, sa, n);
-    }
-} t1, t2;
-
-void work(){
-    scanf("%s",s+1);n=strlen(s+1);
-    t1.init(s);
-    reverse(s+1,s+n+1);
-    t2.init(s);
-    reverse(s+1,s+n+1);
+#define PB push_back
+#define MP make_pair
+#define lson o<<1,l,mid
+#define rson o<<1|1,mid+1,r
+#define FOR(i,a,b) for(int i=(a);i<=(b);i++)
+#define ROF(i,a,b) for(int i=(a);i>=(b);i--)
+#define MEM(x,v) memset(x,v,sizeof(x))
+inline int read(){
+	int x=0;
+	bool f=0;char ch=getchar();
+	while(ch<'0' || ch>'9') f|=ch=='-',ch=getchar();
+	while(ch>='0' && ch<='9') x=x*10+ch-'0',ch=getchar();
+	return f?-x:x;
 }
-
-bool med;
-int T;
-signed main(){
-    // freopen("A.in","r",stdin);
-    // freopen("A.out","w",stdout);
-    
-    // cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
-    
-    T=1;
-    while(T--)work();
+int n,mod,f[66][66][66][66],g[66][66][66][66],ans[66][66];
+int tf[66][66][66][66],tg[66][66][66][66];
+inline void add(int &x,int y){
+	if((x+=y)>=mod) x-=mod;
+}
+void solve(){
+	n=read();
+	mod=read();
+	f[1][0][0][0]=1;
+	g[0][1][1][0]=1;
+	FOR(i,1,n){
+		MEM(tf,0);MEM(tg,0);
+		FOR(j,max(0,2*i-n),i) FOR(k,0,i) FOR(a,0,i) FOR(b,0,i){
+			if(f[j][k][a][b]){
+//				printf("f[%d][%d][%d][%d][%d]=%d\n",i,j,k,a,b,f[cur][j][k][a][b]);
+				if(i==n) ans[a][b]=(ans[a][b]+f[j][k][a][b])%mod;
+				else{
+					if(i-j<=n-i-1) add(tf[j][k][a][b],f[j][k][a][b]);
+					if(j+1<=i) add(tf[j+1][k][a][b],f[j][k][a][b]);
+				}
+			}
+			if(g[j][k][a][b] && j<=i && i-j<=n-i){
+//				printf("g[%d][%d][%d][%d][%d]=%d\n",i,j,k,a,b,g[cur][j][k][a][b]);
+				if(i==n) ans[a][b]=(ans[a][b]+g[j][k][a][b])%mod;
+				else{
+					if(i-j<=n-i-1) add(tg[j][k][a][b],g[j][k][a][b]);
+					if(j+1<=i){
+						if(k==1) add(tf[j+1][i-j][a][b],g[j][k][a][b]);
+						else add(tg[j+1][k-1][a][b],g[j][k][a][b]);
+					}
+				}
+			}
+		}
+		if(i==n) continue;
+		MEM(f,0);MEM(g,0);
+		FOR(j,max(0,2*i-n+1),i) FOR(k,0,i+1) FOR(a,0,i) FOR(b,0,i){
+			if(tf[j][k][a][b]){
+//				printf("tf[%d][%d][%d][%d][%d]=%d\n",i,j,k,a,b,tf[j][k][a][b]);
+				FOR(l,0,k-1){
+					add(f[j+1][l][a][b+1],tf[j][k][a][b]);
+				}
+				FOR(l,k,i-j){
+					add(f[j+1][l][a][b],tf[j][k][a][b]);
+				}
+				FOR(l,1,i-j+1){
+					add(g[j][l][a+1][b],tf[j][k][a][b]);
+				}
+			}
+			if(tg[j][k][a][b] && j<=i && i-j<=n-i-1){
+//				printf("tg[%d][%d][%d][%d][%d]=%d\n",i,j,k,a,b,tg[j][k][a][b]);
+				FOR(l,0,i-j){
+					add(f[j+1][l][a][b+1],tg[j][k][a][b]);
+				}
+				FOR(l,1,k){
+					add(g[j][l][a+1][b+1],tg[j][k][a][b]);
+				}
+				FOR(l,k+1,i-j+1){
+					add(g[j][l][a+1][b],tg[j][k][a][b]);
+				}
+			}
+		}
+	}
+	FOR(i,0,n-1){
+		FOR(j,0,n-1) printf("%d ",ans[i][j]);
+		puts("");
+	}
+}
+int main(){
+	int T=1;
+	while(T--) solve();
 }
