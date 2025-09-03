@@ -20,10 +20,10 @@ bool mbe;
 
 void work(){
 	for(int i=1;i<=10000;i++){
-		system("data.exe>data.in");
-		system("P7447.exe<data.in>my.out");
-		system("test.exe<data.in>std.out");
-		if(system("fc my.out std.out")){
+		system("data.exe>A.in");
+		system("A.exe<A.in>A.out");
+		system("test.exe<A.in>A.ans");
+		if(system("fc A.out A.ans")){
 			cout<<"Wa\n";
 			exit(0);
 		}
