@@ -1,9 +1,10 @@
 #include<bits/stdc++.h>
+#include "highest.h"
 using namespace std;
 const int maxn=500010;
 int n,q;
 int a[maxn],b[maxn];
-int dp[maxn],pre[maxn];
+int f[19][maxn],g[19][maxn];
 int mx1[19][maxn],mx2[19][maxn];
 int max1(int u,int v){return a[u]>a[v]?u:v;}
 int max2(int u,int v){return b[u]>b[v]?u:v;}
@@ -25,28 +26,34 @@ vector<int> solve(vector<int> &v, vector<int> &w, vector<pair<int, int>> &que) {
 	for(int j=1;j<19;j++){
 		for(int i=1;i+(1<<j)-1<=n;i++)mx2[j][i]=max2(mx2[j-1][i],mx2[j-1][i+(1<<j-1)]);
 	}
+	for(int i=1;i<=n;i++)f[0][i]=a[i],g[0][i]=i,f[1][i]=b[i],g[1][i]=a[i];
+	for(int j=1;j<19;j++){
+		for(int i=1;i<=n;i++){
+			f[j][i]=max({f[j][i],f[j-1][que1(i,f[j-1][i])],f[j-1][que2(i,f[j-1][i])]});
+			int p=b[que2(i,g[j-1][i])];
+			f[j][i]=max({f[j][i],g[j-1][p],g[j-1][que1(i,p)],g[j-1][que2(i,p)]});
+			g[j][i]=max({g[j][i],g[j-1][f[j-1][i]],g[j-1][que1(i,f[j-1][i])],g[j-1][que2(i,f[j-1][i])]});
+			g[j][i]=max({g[j][i],f[j-1][que1(i,g[j-1][i])],f[j-1][que2(i,g[j-1][i])]});
+		}
+	}
 	vector<int> ans;
 	for(int i=0;i<q;i++){
 		auto[l,r]=que[i];l++,r++;
-		for(int j=l;j<=r;j++){dp[j]=n;pre[j]=-1;}
-		dp[l]=0;
-		for(int j=l;j<r;j++){
-			auto relax = [&](int to,int cost){
-				to=min(r,to);
-				if(dp[to]>dp[j]+cost){
-					dp[to]=dp[j]+cost;
-					pre[to]=j;
-				}
-			};
-			relax(j+1,1);
-			relax(a[j],1);
-			relax(que1(j,a[j]),1);
-			relax(que2(j,a[j]),1);
-			relax(b[j],2);
-			relax(que1(j,b[j]),2);
-			relax(que2(j,b[j]),2);
+		int res=n,p=l,p1=0;for(int j=18,sum=0;~j;j--){
+			int np=max(f[j][que1(l,p)],f[j][que2(l,p)]);
+			int np1=max({g[j][p],g[j][que1(l,p)],g[j][que2(l,p)]});
+			if(p1){
+				int pp=b[que2(l,p1)];
+				np=max({np,g[j][pp],g[j][que1(l,pp)],g[j][que2(l,pp)]});
+				np1=max({np1,f[j][que1(l,p1)],f[j][que2(l,p1)]});
+			}
+			// cout<<j<<" "<<p<<" "<<p1<<" "<<np<<" "<<np1<<" "<<sum<<"\n";
+			// cout<<que1(l,p)<<" "<<que2(l,p)<<"\n";
+			if(np1>=r)res=min(res,sum+(1<<j)-1);
+			if(np<r)sum+=1<<j,p=np,p1=np1;
+			else res=min(res,sum+(1<<j));
 		}
-		ans.push_back(dp[r]);
+		ans.push_back(res);
 	}
 	return ans;
 }
