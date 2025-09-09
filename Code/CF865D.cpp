@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+#include <cstdio>
+#include <functional>
+#include <queue>
+#include <vector>
+#define int long long
+#define mod 998244353ll
+#define pii pair<int,int>
+#define fi first
+#define se second
+#define pb push_back
+using namespace std;
+inline int read(){
+    int x=0,fl=1;char ch=getchar();
+    while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+    while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+    return x*fl;
+}
+const int maxn=200010;
+const int inf=1e9;
+bool mbe;
+
+int n,a[maxn],ans;
+priority_queue<int,vector<int>,greater<int>> q;
+void work(){
+    n=read();
+    for(int i=1;i<=n;i++){
+        int x=read();
+        if(!q.empty()&&x>q.top())ans+=x-q.top(),q.pop(),q.push(x);
+        q.push(x);
+    }
+    printf("%lld\n",ans);
+}
+
+bool med;
+int T;
+signed main(){
+    // freopen(".in","r",stdin);
+    // freopen(".out","w",stdout);
+    
+    // cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+    
+    T=1;
+    while(T--)work();
+}
