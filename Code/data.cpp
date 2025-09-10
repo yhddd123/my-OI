@@ -9,7 +9,7 @@ int main() {
   cin.tie(nullptr);
 
   int n, m;
-  n=8,m=n-1;
+  n=10,m=n-1;
 
   // 仙人掌的边数范围：n-1 <= m <= n-1 + floor((n-1)/2)
   int maxCycles = (n - 1) / 2;
