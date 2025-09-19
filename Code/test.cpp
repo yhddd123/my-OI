@@ -1,36 +1,70 @@
 #include<bits/stdc++.h>
+#define int long long
+#define mod 998244353ll
+#define pii pair<int,int>
+#define fi first
+#define se second
+#define pb push_back
 #define db long double
+#define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
-const int maxn=110;
-const int maxm=5000;
+inline int read(){
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x*fl;
+}
+const int maxn=510;
+const int inf=1e18;
+bool mbe;
 
-int n,m,k,cur;
-db f[2][maxn][maxm*2+1][3];
-signed main(){
-	cin>>n>>m>>k;
-	f[0][0][maxm][0]=1;
-	for(int i=1;i<=n;i++){
-		for(int j=0;j<=i;j++){
-			for(int k=0;k<=2*maxm;k++){
-				for(int l=0;l<=2;l++)f[i&1][j][k][l]=0;
-			}
+int n,d,r,lim,a[maxn],ans;
+int f[maxn][maxn][maxn];
+inline void chkmx(int &u,int v){(u<v)&&(u=v);}
+vector<int> pos[maxn];
+bool fl;
+void work(){
+	n=read();d=read(),r=read();ans=0;
+	lim=n;for(int i=1;i<=n;i++)if(i*r%d==0){lim=i;break;}
+	for(int i=1;i<=n;i++)a[i]=a[i-1]+read();
+	for(int i=n;i;i--){
+		for(int j=i;j<=n;j++){
+			for(int k=0;k<=j-i+1&&k<=d;k++)f[i][j][k]=-inf;
 		}
-		for(int j=0;j<i;j++){
-			for(int k=0;k<=2*maxm;k++){
-				for(int l=0;l<=2;l++)if(f[cur][j][k][l]){
-					// cout<<i-1<<" "<<j<<" "<<k<<" "<<l<<" "<<f[cur][j][k][l]<<"\n";
-					if(k-2*i>=0)f[i&1][j+1][k-2*i][l]+=f[cur][j][k][l]*(j+1-l)/(n-i+1);
-					if(j)f[i&1][j][k+i-i][l]+=f[cur][j][k][l]*(2*j-l)/(n-i+1);
-					if(j>1&&k+2*i<=2*maxm)f[i&1][j-1][k+2*i][l]+=f[cur][j][k][l]*(j-1)/(n-i+1);
-					if(l<2){
-						if(k-i>=0)f[i&1][j+1][k-i][l+1]+=f[cur][j][k][l]*(2-l)/(n-i+1);
-						if(j&&k+i<=2*maxm)f[i&1][j][k+i][l+1]+=f[cur][j][k][l]*(2-l)/(n-i+1);
+		for(int k=1;k<=n-i+1&&k<=lim;k++)pos[k].clear();
+		f[i][i][0]=0;
+		if((a[i]-a[i-1]-r)%d==0)f[i][i][1]=(a[i]-a[i-1])/d,pos[1].pb(i);
+		for(int j=i+1;j<=n;j++){
+			for(int k=0;k<=j-i&&k<=d;k++)f[i][j][k]=max(f[i][j][k],f[i+1][j][k]);
+			for(int k=1;k<=j-i&&k<=lim;k++){
+				for(int p:pos[k]){
+					int val=(a[p]-a[i-1]-k*r)/d;
+					for(int k1=0;k1<=j-p&&k+k1<=d;k1++)if(f[p+1][j][k1]>=0){
+						f[i][j][k+k1]=max(f[i][j][k+k1],val+f[p+1][j][k1]);
+						// cout<<i<<" "<<p<<" "<<j<<" "<<k<<" "<<k1<<" "<<f[i][j][k+k1]<<" "<<(a[p]-a[i-1]-k*r)/d<<" "<<f[p+1][j][k1]<<"\n";
 					}
 				}
 			}
+			for(int k=1;k<=j-i+1&&k<=lim;k++)if(f[i][j][k-1]>=0&&(a[j]-a[i-1]-k*r)%d==0){
+				f[i][j][k]=(a[j]-a[i-1]-k*r)/d;
+				pos[k].pb(j);
+				break;
+			}
 		}
-		cur^=1;
 	}
-	db ans=0;for(int i=maxm+m;i<=2*maxm;i++)ans+=f[n&1][1][i][2];
-	printf("%.*Lf", k, ans);
+	for(int k=1;k<=n;k++)ans=max(ans,f[1][n][k]);
+	printf("%lld\n",ans);
+}
+
+bool med;
+int T;
+signed main(){
+	// freopen(".in","r",stdin);
+	// freopen(".out","w",stdout);
+	
+	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+	
+	T=read();
+	if(T<=2)fl=1;
+	while(T--)work();
 }

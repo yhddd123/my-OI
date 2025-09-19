@@ -96,7 +96,7 @@ bool Mbe;
 int n,m;
 vector<int> a,b;
 void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
-namespace ploy{
+namespace poly{
 	inline int ksm(int a,int b=mod-2){
 		int ans=1;
 		while(b){
@@ -107,7 +107,7 @@ namespace ploy{
 		return ans;
 	}
 	int gg=3,invg=ksm(gg);
-	int to[maxn];
+	int to[maxn<<3];
 	vector<int> ntt(vector<int> a,int flag){
 		int n=a.size();
 		for(int i=0;i<n;i++)if(i<to[i])swap(a[i],a[to[i]]);
@@ -149,7 +149,7 @@ namespace ploy{
 		return f;
 	}
 }
-using ploy::mul;
+using poly::mul;
 void work(){
 	n=read();m=read();
 	a.resize(n+1),b.resize(m+1);

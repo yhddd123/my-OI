@@ -1,7 +1,7 @@
 inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
 namespace poly{
     int gen=3,invg=ksm(3);
-    int to[maxn<<2];
+    int to[maxn<<3];
     void ntt(vector<int> &a,int fl){
         int n=a.size();
         for(int i=0;i<n;i++)if(i<to[i])swap(a[i],a[to[i]]);
