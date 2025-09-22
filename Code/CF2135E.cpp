@@ -76,7 +76,7 @@ void work(){
 	// for(int i=0;i<=n;i++)cout<<f[i]/2<<" ";cout<<"\n";
     for(int i=0;i<=n;i++)(ans+=f[i]*val[i])%=mod;
     ans%=mod,ans+=mod,ans%=mod;
-    printf("%lld\n",ans);
+    // printf("%lld\n",ans);
 }
 
 bool med;

@@ -8,17 +8,19 @@
 #define db long double
 using namespace std;
 const int maxn=200010;
-const int inf=5e5;
+const int inf=1e9;
 
 mt19937 rnd(time(0));
 int get(int l,int r){return l+rnd()%(r-l+1);}
 
 int n,m,q,a[maxn];
 void work(){
-	n=50,m=1225;
+	n=100,m=5;
 	cout<<n<<" "<<m<<"\n";
-	for(int i=1;i<=n;i++){
-		for(int j=i+1;j<=n;j++)cout<<i<<" "<<j<<" "<<rnd()%inf*2+1<<"\n";
+	for(int i=1;i<=m;i++){
+		int l=rnd()%n+1,r=rnd()%n+1;
+		if(l>r)swap(l,r);
+		cout<<rnd()%n<<" "<<l<<" "<<r<<"\n";
 	}
 }
 
@@ -27,7 +29,7 @@ signed main(){
 	// freopen(".in","r",stdin);
 	// freopen("A.in","w",stdout);
 	
-	T=1;
+	T=10;
 	cout<<T<<"\n";
 	while(T--)work();
 }

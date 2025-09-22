@@ -21,8 +21,8 @@ bool mbe;
 void work(){
 	for(int i=1;i<=10000;i++){
 		system("data.exe>A.in");
-		system("A.exe<A.in>A.out");
-		system("test.exe<A.in>A.ans");
+		system("my.exe<A.in>A.out");
+		system("bf.exe<A.in>A.ans");
 		if(system("fc A.out A.ans")){
 			cout<<"Wa\n";
 			exit(0);
