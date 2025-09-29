@@ -1,59 +1,61 @@
 #include<bits/stdc++.h>
-#define int long long
-#define mod 998244353ll
-#define pii pair<int,int>
-#define fi first
-#define se second
-#define pb push_back
-#define db long double
-#define mems(a,x) memset((a),(x),sizeof(a))
+#define ll long long
 using namespace std;
-inline int read(){
-	int x=0,fl=1;char ch=getchar();
+inline ll read(){
+	ll x=0,fl=1;char ch=getchar();
 	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
 const int maxn=200010;
-const int inf=1e18;
+const ll inf=1e18;
 bool mbe;
 
-int s,q;
-map<tuple<int,int,int>,int> mp;
-bool sovle(int a1,int b1,int a2,int b2){
-	// cout<<a1<<" "<<b1<<" "<<a2<<" "<<b2<<"\n";
+ll s,q;
+struct node{
+	ll b1,a2,b2;
+};
+inline bool operator==(const node &u,const node &v){return u.b1==v.b1&&u.a2==v.a2&&u.b2==v.b2;}
+struct hsh{
+	inline int operator()(const node &u)const{
+		return (u.b1 * 666667ll + u.a2 * 10007ll + u.b2) % 1000000007ll;
+	}
+};
+unordered_map<node,int,hsh> mp;
+inline bool sovle(ll a1,ll b1,ll a2,ll b2){
 	if(a1+b1*s<=0)return 0;
 	if(a2>=s){
 		if(a1<=0)return 0;
 		return !sovle(a2-a1,b2,a1,b1);
 	}
 	if(a1>=s&&a2<=s)return 1;
+	ll s_a1 = s - a1;
+	ll s_a2 = s - a2;
 	if(a1<=0){
 		if(a2<=0){
-			int k=max(1ll,min({b1,b2,(-a1)/s,(-a2)/s}));
+			ll k=max(1ll,min({b1,b2,(-a1)/s,(-a2)/s}));
 			return sovle(a1+k*s,b1-k,a2+k*s,b2-k);
 		}
 		return !sovle(a2,b2,a1+s,b1-1);
 	}
 	if(a2<=0){
 		if(b1)return !sovle(a2,b2,a1+s,b1-1);
-		int k=(-a2)/(s-a1)+1;
+		ll k=(-a2)/s_a1+1;
 		if(k>b2)return 1;
-		return sovle(a1,b1,a2+k*(s-a1),b2-k);
+		return sovle(a1,b1,a2+k*s_a1,b2-k);
 	}
-	if(a1+b1*(s-a2)>=s)return 1;
+	if(a1+b1*s_a2>=s)return 1;
 	if(!b1)return !sovle(a2-a1,b2,a1,b1);
-	if(a2-a1+b2*(s-a1)>=s){
-		int k=max(1ll,min(b1,(a2-a1+b2*s-b2*a1-s)/((b2+1)*(s-a1))));
-		if(sovle(a1+k*(s-a2),b1-k,a2,b2))return 1;
-		else return 0;
+	if(a2-a1+b2*s_a1>=s){
+		ll k=max(1ll,min(b1,(a2-a1+b2*s-b2*a1-s)/((b2+1)*s_a1)));
+		return sovle(a1+k*s_a2,b1-k,a2,b2);
 	}
-	if((__int128)b1*b1>=inf||(__int128)b1*b1*(b2+1)*(s-a2)>=8*s)return 1;
+	if(b1>=8*s||b1*b1>=8*s||b1*b1*(b2+1)>=8*s||b1*b1*(b2+1)*s_a2>=8*s)return 1;
 	if(mp.find({b1,a2,b2})!=mp.end())return mp[{b1,a2,b2}]<=a1;
-	int l=0,r=s,res=inf;
+	int l=0,r=s-1,res=1e9;
 	while(l<=r){
 		int mid=l+r>>1;
-		if(!sovle(a2-mid,b2,mid,b2)||!sovle(a2,b2,mid+s,b1-1))res=mid,r=mid-1;
+		if(!sovle(a2-mid,b2,mid,b1)||!sovle(a2,b2,mid+s,b1-1))res=mid,r=mid-1;
 		else l=mid+1;
 	}
 	mp[{b1,a2,b2}]=res;
@@ -61,9 +63,8 @@ bool sovle(int a1,int b1,int a2,int b2){
 }
 void work(){
 	s=read();q=read();
-	int qq=0;
 	while(q--){
-		int c1=read(),f1=read(),c2=read(),f2=read();
+		ll c1=read(),f1=read(),c2=read(),f2=read();
 		puts(sovle(c1-f2*s,f2,c2-f1*s,f1)?"YES":"NO");
 	}
 }

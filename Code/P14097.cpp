@@ -14,25 +14,35 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
+const int maxn=400010;
 const int inf=1e9;
 bool mbe;
 
-int n;
-mt19937 rnd(time(0));
+int n,a[maxn],b[maxn],ans;
+priority_queue<int> q;
 void work(){
-	n=100;
-	cout<<"42 "<<n<<"\n";
-	for(int i=1;i<=n;i++){
-		cout<<rnd()%100+1<<" "<<rnd()%100+1<<" "<<rnd()%100+1<<" "<<rnd()%100+1<<"\n";
+	n=read();
+	for(int i=1;i<=n;i++)a[i]=read();
+	for(int i=1;i<=n;i++)b[i]=read();
+	for(int i=1,t=0;i<=n;i++){
+		if(t<=a[i]){
+			t+=b[i],q.push(b[i]),++ans;
+		}
+		else{
+			if(q.size()&&t-q.top()<=a[i]&&b[i]<=q.top()){
+				t-=q.top(),q.pop();
+				t+=b[i];q.push(b[i]);
+			}
+		}
 	}
+	printf("%lld\n",ans);
 }
 
 bool med;
 int T;
 signed main(){
 	// freopen(".in","r",stdin);
-	// freopen("1.in","w",stdout);
+	// freopen(".out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	

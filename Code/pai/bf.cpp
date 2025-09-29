@@ -5,76 +5,66 @@
 #define fi first
 #define se second
 #define pb push_back
+#define db long double
+#define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
 inline int read(){
-    int x=0,fl=1;char ch=getchar();
-    while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
-    while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
-    return x*fl;
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x*fl;
 }
-const int maxn=1000010;
-const int maxm=2010;
+const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-inline int ksm(int a,int b=mod-2){
-    int ans=1;
-    while(b){
-        if(b&1)ans=ans*a%mod;
-        a=a*a%mod;
-        b>>=1;
-    }
-    return ans;
+int s,q;
+map<tuple<int,int,int,int>,bool> mp;
+bool sovle(int a1,int b1,int a2,int b2){
+	// cout<<a1<<" "<<b1<<" "<<a2<<" "<<b2<<"\n";
+	if(a1+b1*s<=0)return 0;
+	if(a2>=s){
+		if(a1<=0)return 0;
+		return !sovle(a2-a1,b2,a1,b1);
+	}
+	if(a1>=s&&a2<=s)return 1;
+	if(a1<=0){
+		if(a2<=0){
+			int k=max(1ll,min({b1,b2,(-a1)/s,(-a2)/s}));
+			return sovle(a1+k*s,b1-k,a2+k*s,b2-k);
+		}
+		return !sovle(a2,b2,a1+s,b1-1);
+	}
+	if(a2<=0){
+		if(b1)return !sovle(a2,b2,a1+s,b1-1);
+		int k=(-a2)/(s-a1)+1;
+		if(k>b2)return 1;
+		return sovle(a1,b1,a2+k*(s-a1),b2-k);
+	}
+	if(a1+b1*(s-a2)>=s)return 1;
+	if(mp.find({a1,b1,a2,b2})!=mp.end())return mp[{a1,b1,a2,b2}];
+	if(b1){
+		int k=max(1ll,min(b1,(a2-a1+b2*s-b2*a1-s)/((b2+1)*(s-a1))));
+		if(sovle(a1+k*(s-a2),b1-k,a2,b2))return mp[{a1,b1,a2,b2}]=1;
+	}
+	return mp[{a1,b1,a2,b2}]=!sovle(a2-a1,b2,a1,b1);
 }
-int fac[maxn],inv[maxn];
-int C(int m,int n){
-    if(n<0|m<0||m<n)return 0;
-    return fac[m]*inv[n]%mod*inv[m-n]%mod;}
-void init(int n){
-    fac[0]=1;for(int i=1;i<=n;i++)fac[i]=fac[i-1]*i%mod;
-    inv[n]=ksm(fac[n]);for(int i=n-1;~i;i--)inv[i]=inv[i+1]*(i+1)%mod;
-}
-int n,m;
-int pl[maxm],pr[maxm];
-int dp[maxm][maxm],sum[maxm];
 void work(){
-    n=read();m=read();
-    for(int i=0;i<=n;i++)pl[i]=0,pr[i]=n;
-    for(int i=1;i<=m;i++){
-        int k=read(),l=read(),r=read();
-        pr[l]=min(pr[l],k),pl[r+1]=max(pl[r+1],k+1);
-    }
-    if(!m){printf("%lld\n",fac[n]);return ;}
-    for(int i=n-1;i;i--)pr[i]=min(pr[i],pr[i+1]);
-    for(int i=1;i<=n;i++){
-    	pl[i]=max(pl[i],pl[i-1]);
-    	if(pl[i]>pr[i]){puts("0");return ;}
-    }
-    // for(int i=1;i<=n;i++)cout<<pl[i]<<" "<<pr[i]<<"\n";
-    for(int i=1;i<=n;i++){
-        for(int j=0;j<=n;j++)dp[i][j]=0;
-    }
-    dp[0][0]=1;
-    for(int i=1;i<=n;i++){
-        for(int j=pl[i];j<=pr[i]&&j<i;j++){
-        	dp[i][j]=dp[i-1][j]*min(i,j+1)%mod;
-            for(int k=pl[i-1];k<=pr[i-1]&&k<j;k++)(dp[i][j]+=dp[i-1][k])%=mod;
-            // cout<<i<<" "<<j<<" "<<dp[i][j]<<"\n";
-        }
-    }
-    int ans=0;for(int i=0;i<n;i++)(ans+=dp[n][i])%=mod;
-    printf("%lld\n",ans);
+	s=read();q=read();
+	while(q--){
+		int c1=read(),f1=read(),c2=read(),f2=read();
+		puts(sovle(c1-f2*s,f2,c2-f1*s,f1)?"YES":"NO");
+	}
 }
 
 bool med;
 int T;
 signed main(){
-    // freopen(".in","r",stdin);
-    // freopen(".out","w",stdout);
-    
-    // cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
-    
-    init(maxn-10);
-    T=read();
-    while(T--)work();
+	// freopen(".in","r",stdin);
+	// freopen(".out","w",stdout);
+	
+	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+	
+	T=1;
+	while(T--)work();
 }
