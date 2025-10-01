@@ -27,7 +27,7 @@ struct nd{
 bool operator<(nd u,nd v){return u.v<v.v;}
 nd operator+(nd u,nd v){return {u.v+v.v,u.p1,v.p2};}
 struct node{
-    int mn,tag;
+    int mn,tag,p;
     nd a,b,ra,lb,mx,ab,ba;
 }tree[maxn<<2];
 node operator+(node u,node v){
@@ -40,14 +40,17 @@ node operator+(node u,node v){
     if(u.mn<v.mn){
         res.ab=max({u.ab,v.ab,v.mx,u.ra+v.b});
         res.ra=max(u.ra,v.a),res.lb=u.lb;
+        res.p=u.p;
     }
     else if(u.mn>v.mn){
         res.ab=max({u.ab,u.mx,v.ab,u.a+v.lb});
         res.ra=v.ra,res.lb=max(u.b,v.lb);
+        res.p=v.p;
     }
     else{
         res.ab=max({u.ab,v.ab,u.ra+v.lb});
         res.lb=u.lb,res.ra=v.ra;
+        res.p=v.p;
     }
     return res;
 }
@@ -60,6 +63,7 @@ void init(int o,int p){
     tree[o].ra=tree[o].a=va,tree[o].lb=tree[o].b=vb,tree[o].mx=tree[o].ab=tree[o].ba={-inf,0,0};
 }
 void build(int nd,int l,int r){
+	tree[nd].p=l;
     if(l==r)return init(nd,l);
     build(ls,l,mid),build(rs,mid+1,r);
     tree[nd]=tree[ls]+tree[rs];
@@ -91,7 +95,7 @@ node query(int nd,int l,int r,int ql,int qr){
 void work(){
     n=read();
     for(int i=1;i<=n;i++)a[i]={read(),read(),read()};
-    sort(a+1,a+n+1);a[n+1]={n+1,0,0};
+    sort(a+1,a+n+1);
     priority_queue<pii> q;
     for(int i=1;i<=n;i++)q.push({(get<2>(a[i])),i});
     build(1,1,n+1);
@@ -102,9 +106,9 @@ void work(){
         res=max(res,query(1,1,n+1,j,n+1).a);
         if(j>1){
         	node val=query(1,1,n+1,1,j-1);
-        	// cout<<val.mn<<" "<<(val.mn?val.a.v:val.ra.v)<<"\n";
-        	if(val.mn)res=max(res,val.a);
-        	else res=max(res,val.ra);
+        	int p=val.mn==0?val.p:0;
+        	if(p<=n+1)res=max(res,query(1,1,n+1,p,n+1).a);
+        	// cout<<p<<" "<<j<<"\n";
         }
         while(!q.empty()&&op[q.top().se])q.pop();
         if(!q.empty())res=max(res,{q.top().fi,n+1,0});

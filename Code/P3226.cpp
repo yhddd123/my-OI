@@ -64,6 +64,7 @@ signed main(){
     for(int i=1;i<=n;i++){
         if(!vis[i]){
             init(i);
+            cout<<n/i<<" "<<sovle()<<"\n";
             ans*=sovle(),ans%=mod;
         }
     }
