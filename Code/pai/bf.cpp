@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define int long long
+// #define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -14,47 +14,40 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
+const int maxn=4010;
 const int inf=1e9;
 bool mbe;
 
-int s,q;
-map<tuple<int,int,int,int>,bool> mp;
-bool sovle(int a1,int b1,int a2,int b2){
-	// cout<<a1<<" "<<b1<<" "<<a2<<" "<<b2<<"\n";
-	if(a1+b1*s<=0)return 0;
-	if(a2>=s){
-		if(a1<=0)return 0;
-		return !sovle(a2-a1,b2,a1,b1);
-	}
-	if(a1>=s&&a2<=s)return 1;
-	if(a1<=0){
-		if(a2<=0){
-			int k=max(1ll,min({b1,b2,(-a1)/s,(-a2)/s}));
-			return sovle(a1+k*s,b1-k,a2+k*s,b2-k);
-		}
-		return !sovle(a2,b2,a1+s,b1-1);
-	}
-	if(a2<=0){
-		if(b1)return !sovle(a2,b2,a1+s,b1-1);
-		int k=(-a2)/(s-a1)+1;
-		if(k>b2)return 1;
-		return sovle(a1,b1,a2+k*(s-a1),b2-k);
-	}
-	if(a1+b1*(s-a2)>=s)return 1;
-	if(mp.find({a1,b1,a2,b2})!=mp.end())return mp[{a1,b1,a2,b2}];
-	if(b1){
-		int k=max(1ll,min(b1,(a2-a1+b2*s-b2*a1-s)/((b2+1)*(s-a1))));
-		if(sovle(a1+k*(s-a2),b1-k,a2,b2))return mp[{a1,b1,a2,b2}]=1;
-	}
-	return mp[{a1,b1,a2,b2}]=!sovle(a2-a1,b2,a1,b1);
-}
+int n,m;
+int a[maxn],b[maxn];
+db dp[maxn][maxn];
+int sa[maxn],sb[maxn];
+mt19937 rnd(time(0));
+const int B=200;
 void work(){
-	s=read();q=read();
-	while(q--){
-		int c1=read(),f1=read(),c2=read(),f2=read();
-		puts(sovle(c1-f2*s,f2,c2-f1*s,f1)?"YES":"NO");
+	n=read();m=read();
+	for(int i=1;i<=2*n;i+=2)a[i]=read();
+	for(int i=2;i<=2*n;i+=2)a[i]=read();
+	for(int i=1;i<=2*m;i+=2)b[i]=read();
+	for(int i=2;i<=2*m;i+=2)b[i]=read();
+	n=2*n-1,m=2*m-1;
+	for(int i=1;i<=n;i++)sa[i]=sa[i-1]+a[i];
+	for(int i=1;i<=m;i++)sb[i]=sb[i-1]+b[i];
+	for(int i=0;i<=n;i++)for(int j=0;j<=m;j++)dp[i][j]=inf;
+	dp[0][0]=0;
+	for(int i=0;i<=n;i++){
+		for(int j=0;j<=m;j++){
+			dp[i+1][j]=min(dp[i+1][j],dp[i][j]+a[i+1]);
+			dp[i][j+1]=min(dp[i][j+1],dp[i][j]+b[j+1]);
+			if((i&1)&&!(j&1)){
+				for(int k=j+1;k<=m&&k<=j+B;k+=2)dp[i+1][k]=min(dp[i+1][k],dp[i][j]+sqrtl(1.0*a[i+1]*a[i+1]+1.0*(sb[k]-sb[j])*(sb[k]-sb[j])));
+			}
+			if((j&1)&&!(i&1)){
+				for(int k=i+1;k<=n&&k<=i+B;k+=2)dp[k][j+1]=min(dp[k][j+1],dp[i][j]+sqrtl(1.0*b[j+1]*b[j+1]+1.0*(sa[k]-sa[i])*(sa[k]-sa[i])));
+			}
+		}
 	}
+	printf("%.10Lf\n",dp[n][m]);
 }
 
 bool med;
@@ -65,6 +58,6 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=1;
+	T=read();
 	while(T--)work();
 }
