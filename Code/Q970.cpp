@@ -154,7 +154,7 @@ void work(){
 	sort(upd+1,upd+uu+1,[&](Opt u,Opt v){return u.p<v.p;});
 	for(int i=1;i<=q;i++){
 		int l=read(),r=read(),k=read();ask[i]={l,r};
-		if(k==1)ans[i]=quemn(l,r);
+		if(k==1)ans[i]=2*quemn(l,r);
 		else que[++qq]={l,k,-1,i,0,n+1},que[++qq]={r,k,1,i,0,n+1};
 	}
 	sort(que+1,que+qq+1,[&](Ask u,Ask v){return u.p<v.p;});

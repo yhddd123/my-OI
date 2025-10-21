@@ -1,3 +1,13 @@
+// Problem: P14231 复读机 / repeat
+// Contest: Luogu
+// URL: https://www.luogu.com.cn/problem/P14231
+// Memory Limit: 1024 MB
+// Time Limit: 2000 ms
+// Written by yhm.
+// Start codeing:2025-10-21 16:31:43
+// 
+// Powered by CP Editor (https://cpeditor.org)
+
 #include<bits/stdc++.h>
 // #define int long long
 #define mod 998244353ll
@@ -14,13 +24,13 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=100010;
+const int maxn=300010;
 const int inf=1e9;
 bool mbe;
 
 int n,q,a[maxn];
 int id[maxn];
-int mn[18][maxn];
+int mn[19][maxn];
 pii ask[maxn];
 int quemn(int l,int r){
 	int k=__lg(r-l+1);
@@ -34,14 +44,13 @@ struct Ask{
 }que[maxn<<1],tmpq[maxn<<1];int qq;
 int ans[maxn],val[maxn<<1],v[maxn<<1];
 int fr[maxn<<1],bk[maxn<<1];
-int pos[maxn];
 void sovle(int l,int r,int ul,int ur,int ql,int qr){
 	if(ql>qr)return ;
 	if(l==r){
 		for(int i=ql;i<=qr;i++)if(que[i].w==1)ans[que[i].id]=l;
 		return ;
 	}
-	int mid=((long long)l+r)/2,u1=ul-1,u2=0,q1=ql-1,q2=0;
+	int mid=l+r>>1,u1=ul-1,u2=0,q1=ql-1,q2=0;
 	// cout<<l<<" "<<r<<" "<<mid<<" "<<ul<<" "<<ur<<" "<<ql<<" "<<qr<<"\n";
 	for(int i=ql,j=ul,s=0,j1=ul,s1=0;i<=qr;i++){
 		while(j<=ur&&upd[j].p<=que[i].p){
@@ -80,20 +89,15 @@ void sovle(int l,int r,int ul,int ur,int ql,int qr){
 		bk[i]=min(bk[i],lst);
 	}
 	for(int i=ql;i<=qr;i++){
-		if(que[i].w==-1)pos[que[i].id]=i;
-		else{
+		if(que[i].w==-1){
 			// cout<<fr[i]<<" "<<bk[i]<<"\n";
-			auto[l,r]=ask[que[i].id];int ii=pos[que[i].id];
-			if(a[l]>mid/2&&a[r]>mid/2){
-				if(l<=fr[i])v[que[i].id]+=(min(quemn(l,bk[ii]-1),quemn(fr[i]+1,r))+max(a[bk[ii]],a[fr[i]])<=mid);
+			if(a[que[i].p]>mid/2&&bk[i]<=ask[que[i].id].se){
+				v[que[i].id]+=(quemn(que[i].p,bk[i]-1)+a[bk[i]]<=mid);
 			}
-			else if(a[l]>mid/2){
-				v[que[i].id]+=(quemn(l,bk[ii]-1)+max(a[bk[ii]],a[r])<=mid);
-			}
-			else if(a[r]>mid/2){
-				v[que[i].id]+=(quemn(fr[i]+1,r)+max(a[l],a[fr[i]])<=mid);
-			}
-			if(l<=fr[i]&&a[que[i].p]>mid/2){
+		}else{
+			// cout<<fr[i]<<" "<<bk[i]<<"\n";
+			if(ask[que[i].id].fi<=fr[i]&&a[que[i].p]>mid/2){
+				v[que[i].id]+=(quemn(fr[i]+1,que[i].p)+a[fr[i]]<=mid);
 				v[que[i].id]-=(quemn(fr[i]+1,bk[i]-1)+max(a[fr[i]],a[bk[i]])<=mid);
 			}
 			if(a[que[i].p]<=mid/2&&que[i].p+1<=bk[i]-1){
@@ -127,7 +131,7 @@ void work(){
 	n=read();q=read();
 	for(int i=1;i<=n;i++)a[i]=read();
 	for(int i=1;i<=n;i++)mn[0][i]=a[i];
-	for(int j=1;j<18;j++){
+	for(int j=1;j<=18;j++){
 		for(int i=1;i+(1<<j)-1<=n;i++)mn[j][i]=min(mn[j-1][i],mn[j-1][i+(1<<j-1)]);
 	}
 	for(int i=1;i<=n;i++)id[i]=i;
@@ -158,7 +162,7 @@ void work(){
 		else que[++qq]={l,k,-1,i,0,n+1},que[++qq]={r,k,1,i,0,n+1};
 	}
 	sort(que+1,que+qq+1,[&](Ask u,Ask v){return u.p<v.p;});
-	sovle(0,2*inf,1,uu,1,qq);
+	sovle(1,2*n,1,uu,1,qq);
 	for(int i=1;i<=q;i++)printf("%d\n",ans[i]);
 }
 
