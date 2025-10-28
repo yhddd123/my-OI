@@ -24,9 +24,8 @@ int d[maxn],id[maxn],idx;
 const int B=64;
 #define ull unsigned long long
 int op[B],p[B],val[B];
-ull f[maxn],g[maxn],suf[B];
 int st[B],tp,rnk[B];
-
+ull f[maxn],g[maxn],suf[B];
 void work(){
 	n=read();m=read();q=read();
 	for(int i=1;i<=m;i++){
@@ -64,7 +63,8 @@ void work(){
 		for(int i=0;i<=r-l;i++)g[p[i]]|=1ll<<rnk[i];
 		for(int ii=1;ii<=n;ii++){
 			int u=id[ii];
-			for(int v:e[u])f[v]|=f[u],g[v]|=g[u];
+			ull fu=f[u],gu=g[u];
+			for(int v:e[u])f[v]|=fu,g[v]|=gu;
 		}
 		for(int i=0;i<=r-l;i++)if(op[i]==3){
 			int u=val[i],v=a[u];
@@ -72,19 +72,19 @@ void work(){
 				if(op[j]==1)v=val[j];
 				else v=min(v,val[j]);
 			}
-			printf("%lld\n",v);
+			printf("%d\n",v);
 		}
 		// cout<<"run\n";
 		for(int i=1;i<=n;i++){
-			if(f[i]&s1){
-				int p=63-__builtin_clzll(f[i]&s1);
-				// cout<<i<<" "<<p<<" "<<g[i]<<" "<<suf[p]<<"\n";
-				g[i]&=suf[p];
-				if(g[i])a[i]=min(val[p],val[st[__builtin_ctzll(g[i])]]);
+			ull fu=f[i]&s1,gu=g[i];
+			if(fu){
+				int p=63-__builtin_clzll(fu);
+				gu&=suf[p];
+				if(gu)a[i]=min(val[p],val[st[__builtin_ctzll(gu)]]);
 				else a[i]=val[p];
 			}
-			else if(g[i]){
-				a[i]=min(a[i],val[st[__builtin_ctzll(g[i])]]);
+			else if(gu){
+				a[i]=min(a[i],val[st[__builtin_ctzll(gu)]]);
 			}
 		}
 	}
