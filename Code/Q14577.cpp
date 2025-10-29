@@ -35,7 +35,7 @@ namespace sgt{
 		mx[nd]=max(mx[ls],mx[rs]);
 	}
 	int findl(int nd,int l,int r,int k){
-		if(mx[nd]<k)return n+1;
+		if(mx[nd]<k)return 2*n+1;
 		if(l==r)return l;
 		if(tag[nd])down(nd);
 		if(mx[ls]>=k)return findl(ls,l,mid,k);
