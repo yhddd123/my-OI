@@ -18,15 +18,12 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,a[maxn];
-mt19937 rnd(time(0));
+int n,m,k;
 void work(){
-	n=500;
-	cout<<n<<" "<<rnd()%n+1<<" "<<rnd()%(2*inf)-inf<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%100000<<" ";cout<<"\n";
-	for(int i=1;i<=n;i++)a[i]=(int)rnd()%200000-100000;
-	sort(a+1,a+n+1,greater<int>());
-	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
+	n=read();m=read();k=read();
+	if(max(n,m)<2*k)puts("Yuto");
+	else if((n*m)&1)puts("Yuto");
+	else puts("Platina");
 }
 
 bool med;
@@ -37,6 +34,6 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=1;
+	T=read();
 	while(T--)work();
 }

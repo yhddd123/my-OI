@@ -48,7 +48,7 @@ void work(){
 	f[0][0]=0;
 	for(int j=1;j<=n;j++){
 		f[j][j]=0;
-		sovle(j,j+1,n+1,0,n);
+		sovle(j,j+1,n+1,0,n-1);
 		for(int i=j+1;i<=n+1;i++)f[j][i]=max(f[j][i],f[j-1][i-1]);
 		// for(int i=j+1;i<=n+1;i++){
 			// f[j][i]=f[j-1][i-1];
@@ -57,7 +57,7 @@ void work(){
 		// }
 		// cout<<"\n";
 	}
-	int ans=0;for(int i=1;i<=k;i++)ans=max(ans,f[n+1-i][n+1]);
+	int ans=0;for(int i=1;i<=k&&i<=n;i++)ans=max(ans,f[n+1-i][n+1]);
 	printf("%lld\n",ans);
 }
 
