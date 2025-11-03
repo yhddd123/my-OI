@@ -18,14 +18,16 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,a[maxn];
-mt19937 rnd(time(0));
+int n,k,m,ans;
 void work(){
-	n=rnd()%50+1;
-	for(int i=1;i<=n;i++)a[i]=i;
-	shuffle(a+1,a+n+1,rnd);
-	cout<<n<<"\n";
-	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
+	n=read();k=read();m=read();ans=1;
+	int d=n/k-1;
+	int del=min(n-d-1,m);
+	ans+=del,m-=del;
+	del=min(d,m);
+	d-=del,m-=del,ans+=del;
+	ans+=d/2;
+	printf("%lld\n",ans);
 }
 
 bool med;
@@ -36,7 +38,6 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=100;
-	cout<<T<<"\n";
+	T=read();
 	while(T--)work();
 }

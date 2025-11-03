@@ -14,58 +14,73 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=2010;
-const int inf=1e18;
+const int maxn=300010;
+const int inf=1e9;
 bool mbe;
 
-int n,k,p;
-int a[maxn],c[maxn];
-int val[maxn][maxn];
-int f[maxn][maxn];
-void sovle(int i,int l,int r,int pl,int pr){
-	if(l>=r)return ;
-	int mid=l+r>>1,mx=-inf,p=pl;
-	for(int k=pl;k<=pr&&k<=mid;k++){
-		if(mx<f[i-k-1][mid-k]+val[i-k][k]){
-			mx=f[i-k-1][mid-k]+val[i-k][k];
-			p=k;
-		}
+int n,a[maxn],ans;
+int pre[maxn],suf[maxn];
+bool vis[maxn];
+#define lb(x) (x&(-x))
+int tree[maxn];
+void upd(int x,int w){
+	while(x<=n)tree[x]+=w,x+=lb(x);
+}
+int que(int x){
+	int res=0;
+	while(x)res+=tree[x],x-=lb(x);
+	return res;
+}
+void clr(){
+	for(int i=1;i<=n;i++)tree[i]=0;
+}
+vector<int> e[maxn];
+void sovle(){
+	// for(int i=1;i<=n;i++)vis[i]=0;vis[0]=1;
+	// for(int i=1,mx=a[1];i<=n;i++,mx=max(mx,a[i])){
+	// 	pre[i]=pre[i-1]+(mx==i&&i==a[i]);
+	// 	if(mx==i)vis[i]=1;
+	// }
+	// for(int i=1;i<=n;i++)e[i].clear();clr();
+	// suf[n+1]=0;for(int i=n,mn=a[n];i;i--,mn=min(mn,a[i])){
+	// 	suf[i]=suf[i+1]+(mn==i&&i==a[i]);
+	// 	// cout<<i<<" "<<mn<<"\n";
+	// 	if(i==a[i]&&que(a[i])==1)e[mn].pb(i);
+	// 	upd(a[i],1);
+	// }
+	// for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
+	for(int i=1;i<=n;i++)if(a[i]<i){
+		// int res=pre[a[i]-1]+suf[i+1]+vis[a[i]-1]+(a[a[i]]==i&&vis[a[a[i]]]);
+		// for(int j:e[a[i]])if(a[i]<j&&a[a[i]]>a[j])++res;
+		int sum=0;
+		int p=a[i];
+		swap(a[p],a[i]);
+		for(int j=1,mx=a[1];j<=n;j++,mx=max(mx,a[j]))if(mx==j&&j==a[j])++sum;
+		swap(a[p],a[i]);
+		// cout<<i<<" "<<a[i]<<" "<<res<<" "<<sum<<"\n";
+		ans=max(ans,sum);
 	}
-	f[i][mid]=max(f[i][mid],mx);
-	cout<<i<<" "<<l<<" "<<r<<" "<<p<<" "<<mx<<"\n";
-	sovle(i,l,mid-1,pl,p);
-	sovle(i,mid+1,r,p,pr);
 }
 void work(){
-	n=read();k=read();p=read();
+	n=read();ans=0;
 	for(int i=1;i<=n;i++)a[i]=read();
-	for(int i=1;i<=n;i++)c[i]=read();
-	for(int i=1;i<=n;i++){
-		val[i][0]=p;for(int j=1;j<=n-i+1;j++)val[i][j]=val[i][j-1]+a[i+j-1]*c[j];
-	}
-	memset(f,-0x3f,sizeof(f));
-	f[0][0]=0;
-	for(int i=1;i<=n+1;i++){
-		for(int j=0;j<i;j++)f[i][j]=f[i-1][j];
-		// sovle(i,0,i-1,1,i-1);
-		for(int j=0;j<i;j++){
-			for(int k=1;k<=j;k++)f[i][j]=max(f[i][j],f[i-k-1][j-k]+val[i-k][k]);
-			// for(int k=1;k<=j;k++)if(f[i][j]==f[i-k-1][j-k]+val[i-k][k])cout<<i<<" "<<j<<" "<<k<<"\n";
-		}
-		// for(int j=0;j<i;j++)cout<<f[i][j]<<" ";cout<<"\n";
-	}
-	int ans=0;for(int i=1;i<=k;i++)ans=max(ans,f[n+1][i]);
+	bool fl=1;for(int i=1;i<=n;i++)fl&=(a[i]==i);
+	if(fl){printf("%lld\n",n-2);return ;}
+	sovle();
+	for(int i=1;i<=n;i++)a[i]=n+1-a[i];
+	reverse(a+1,a+n+1);
+	sovle();
 	printf("%lld\n",ans);
 }
 
 bool med;
 int T;
 signed main(){
-	// freopen(".in","r",stdin);
-	// freopen(".out","w",stdout);
+	// freopen("strike.in","r",stdin);
+	// freopen("strike.out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=1;
+	T=read();
 	while(T--)work();
 }

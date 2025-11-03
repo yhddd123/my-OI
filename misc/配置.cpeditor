@@ -22,7 +22,7 @@ auto_save_interval_type=After the last modification
 wrap_text=false
 beta=false
 replace_tabs=false
-save_tests=true
+save_tests=false
 maximized_window=true
 check_update=true
 opacity=100
@@ -84,11 +84,11 @@ arguments=-m yapf
 style="[style]\nbased_on_style = pep8"
 
 [cpp]
-template_path=D:/Codes/qsy.cpp
+template_path=D:/yhm/my-OI/Code/qsy.cpp
 template_cursor_position_regex=main\\(\\)
 template_cursor_position_offset_type=end
 template_cursor_position_offset_characters=4
-compile_command="c++ -O2  -Wl,--stack=998244353"
+compile_command="c++ -O2 -Wl,--stack=998244353"
 output_path=${tmpdir}/${basename}
 run_arguments=
 parentheses=@Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0(\0\0\0\x2\0\0\0)\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0{\0\0\0\x2\0\0\0}\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0[\0\0\0\x2\0\0\0]\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\"\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1), @Variant(\0\0\0\t\0\0\0\x5\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0'\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1\0\0\0\x2\0\0\0\x1)
@@ -169,7 +169,7 @@ user=
 password=
 
 [default_path]
-names_and_paths=@Variant(\0\0\0\v\0\0\0\x2\0\0\0\xe\0\x63\0h\0\x65\0\x63\0k\0\x65\0r\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\b\0\x66\0i\0l\0\x65\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0s\0\x65\0t\0t\0i\0n\0g\0s\0\0\0\x10\0S\0:\0/\0t\0o\0o\0l\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0t\0\x65\0s\0t\0\x63\0\x61\0s\0\x65\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s)
+names_and_paths=@Variant(\0\0\0\v\0\0\0\x2\0\0\0\xe\0\x63\0h\0\x65\0\x63\0k\0\x65\0r\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\b\0\x66\0i\0l\0\x65\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0s\0\x65\0t\0t\0i\0n\0g\0s\0\0\0\"\0\x44\0:\0/\0y\0h\0m\0/\0m\0y\0-\0O\0I\0/\0m\0i\0s\0\x63), @Variant(\0\0\0\v\0\0\0\x2\0\0\0\x10\0t\0\x65\0s\0t\0\x63\0\x61\0s\0\x65\0\0\0\x10\0\x44\0:\0/\0\x43\0o\0\x64\0\x65\0s)
 action\open_file\uses=${file}
 action\open_file\changes="file, testcase, checker"
 action\save_file\uses=${file}
@@ -192,7 +192,7 @@ action\extract_and_load_snippets\uses=${snippets}
 action\extract_and_load_snippets\changes=snippets
 
 [wakatime]
-path=wakatime
+path=D:/wakatime-cli-windows-amd64/wakatime-cli-windows-amd64.exe
 api_key=
-enable=false
+enable=true
 proxy=false

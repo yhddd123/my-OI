@@ -4,7 +4,7 @@ void fmt(int *a,int n,int w=1){
 	}
 }
 int ff[maxn+1][1<<maxn],gg[maxn+1][1<<maxn],hh[1<<maxn],ni[maxn+1];
-void xormul(int *a,int *b,int *c,int n){//a*b=c
+void xormul(int *a,int *b,int *c,int n){
 	for(int i=0;i<=n;i++){
 		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
 	}
@@ -22,7 +22,7 @@ void xormul(int *a,int *b,int *c,int n){//a*b=c
 	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
 	for(int s=0;s<(1<<n);s++)c[s]=ff[__builtin_popcount(s)][s];
 }
-void xordiv(int *a,int *b,int *c,int n){//a/b=c
+void xordiv(int *a,int *b,int *c,int n){
 	for(int i=0;i<=n;i++){
 		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
 	}
@@ -42,7 +42,7 @@ void xordiv(int *a,int *b,int *c,int n){//a/b=c
 	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
 	for(int s=0;s<(1<<n);s++)c[s]=ff[__builtin_popcount(s)][s];
 }
-void xorni(int *a,int *b,int n){//b=1/a
+void xorni(int *a,int *b,int n){
 	for(int i=0;i<=n;i++){
 		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
 	}
@@ -60,7 +60,7 @@ void xorni(int *a,int *b,int n){//b=1/a
 	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
 	for(int s=0;s<(1<<n);s++)b[s]=ff[__builtin_popcount(s)][s];
 }
-void xorln(int *a,int *b,int n){//exp(a)=b
+void xorln(int *a,int *b,int n){
 	for(int i=0;i<=n;i++){
 		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
 	}
@@ -76,7 +76,7 @@ void xorln(int *a,int *b,int n){//exp(a)=b
 	for(int i=1;i<=n;i++)fmt(ff[i],n,mod-1);
 	b[0]=0;for(int s=0;s<(1<<n);s++)b[s]=ff[__builtin_popcount(s)][s];
 }
-void xorexp(int *a,int *b,int n){//ln(a)=b
+void xorexp(int *a,int *b,int n){
 	for(int i=0;i<=n;i++){
 		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
 	}
