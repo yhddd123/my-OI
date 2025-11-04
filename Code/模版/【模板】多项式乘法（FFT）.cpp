@@ -34,7 +34,8 @@
 // 		while(k<n+m+1)k<<=1;
 // 		for(int i=0;i<k;i++)to[i]=(to[i>>1]>>1)|((i&1)?(k>>1):0);
 // 		vector<cp> f(k),g(k);
-// 		for(int i=0;i<=n;i++)f[i]=cp(a[i],0),g[i]=cp(b[i],0);
+// 		for(int i=0;i<=n;i++)f[i]=cp(a[i],0);
+// 		for(int i=0;i<=m;i++)g[i]=cp(b[i],0);
 // 		fft(f,1),fft(g,1);
 // 		for(int i=0;i<k;i++)f[i]=f[i]*g[i];
 // 		fft(f,-1);
