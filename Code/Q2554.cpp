@@ -18,15 +18,21 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,a[maxn],b[maxn];
-mt19937 rnd(time(0));
+int n,a[1<<20];
 void work(){
-	int n=15,q=100;
-	cout<<n<<" "<<q<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%inf+1<<" "<<rnd()%inf+1<<"\n";
-	while(q--){
-		cout<<rnd()%n+1<<" "<<rnd()%inf+1<<" "<<rnd()%inf+1<<"\n";
+	n=read();
+	for(int i=0;i<(1<<n);i++)a[i]=read();
+	for(int s=0;s<(1<<n);s++){
+		for(int i=0;i<n;i++)if(!(s&(1<<i))){
+			for(int j=i+1;j<n;j++)if(!(s&(1<<j))){
+				if(a[s|(1<<i)]+a[s|(1<<j)]<a[s]+a[s|(1<<i)|(1<<j)]){
+					printf("%d %d\n",s|(1<<i),s|(1<<j));
+					return ;
+				}
+			}
+		}
 	}
+	puts("-1");
 }
 
 bool med;

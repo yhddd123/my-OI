@@ -1,7 +1,7 @@
 struct mat{
 	int e[maxk][maxk];
 	mat(){memset(e,0,sizeof(e));}
-}bas;
+}bas,pw[60];
 mat operator*(mat &u,mat &v){
 	mat res;
 	for(int i=0;i<l;i++){
@@ -24,4 +24,15 @@ mat qpow(mat a,int b){
 		b>>=1;
 	}
 	return ans;
+}
+struct vec{
+	int e[maxk];
+	vec(){memset(e,0,sizeof(e));}
+};
+vec operator*(mat &u,vec &v){
+	vec res;
+	for(int i=0;i<l;i++){
+		for(int j=0;j<l;j++)(res.e[i]+=u.e[i][j]*v.e[j])%=mod;
+	}
+	return res;
 }
