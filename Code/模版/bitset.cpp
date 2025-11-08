@@ -39,4 +39,4 @@ struct bs{
 		int res=0;for(int i=0;i<len;i++)res+=__builtin_popcountll(a[i]);
 		return res;
 	}
-}
+}f;
