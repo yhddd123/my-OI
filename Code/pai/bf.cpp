@@ -1,72 +1,62 @@
-#include <bits/stdc++.h>
-#define pb emplace_back
-#define fst first
-#define scd second
-#define mkp make_pair
-#define mems(a, x) memset((a), (x), sizeof(a))
-
+#include<bits/stdc++.h>
+#define int long long
+#define mod 998244353ll
+#define pii pair<int,int>
+#define fi first
+#define se second
+#define pb push_back
+#define db long double
+#define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
-using ll = long long;
-using ull = unsigned long long;
-using db = double;
-using ldb = long double;
-using pii = pair<int, int>;
-using pll = pair<ll, ll>;
+inline int read(){
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x*fl;
+}
+const int maxn=200010;
+const int inf=1e9;
+bool mbe;
 
-const int maxn = 400100;
-
-int n, m, a[maxn], b[maxn];
-bool f[(1 << 15) + 50];
-
-inline int work() {
-    for (int i = 0; i < (1 << n); ++i) {
-        f[i] = 0;
-    }
-    f[(1 << n) - 1] = 1;
-    int mn = n;
-    for (int S = (1 << n) - 1; S; --S) {
-        if (f[S]) {
-            mn = min(mn, __builtin_popcount(S));
-        } else {
-            continue;
-        }
-        for (int i = 0; i < n; ++i) {
-            if (S & (1 << i)) {
-                for (int j = 0; j < n; ++j) {
-                    if (i == j || !(S & (1 << j))) {
-                        continue;
-                    }
-                    if (a[i] >= b[j]) {
-                        f[S ^ (1 << j)] = 1;
-                    }
-                }
-            }
-        }
-    }
-    return mn;
+int n,a[maxn],b[maxn],c[maxn],flag;
+void dfs(int d){
+	if(d==n+1){
+		for(int i=1;i<=n;i++)c[i]=a[a[i]];
+		if(!flag){
+			flag=1;
+			for(int i=1;i<=n;i++)b[i]=c[i];
+		}
+		else{
+			bool fl=0;for(int i=1;i<=n;i++)if(b[i]!=c[i]){
+				if(b[i]>c[i])fl=1;break;
+			}
+			if(fl){
+				for(int i=1;i<=n;i++)b[i]=c[i];
+			}
+		}
+		return ;
+	}
+	if(a[d]==-1){
+		for(int i=1;i<=n;i++)a[d]=i,dfs(d+1);
+		a[d]=-1;
+	}
+	else dfs(d+1);
+}
+void work(){
+	n=read();flag=0;
+	for(int i=1;i<=n;i++)a[i]=read();
+	dfs(1);
+	for(int i=1;i<=n;i++)cout<<b[i]<<" ";cout<<"\n";
 }
 
-void solve() {
-    scanf("%d%d", &n, &m);
-    for (int i = 0; i < n; ++i) {
-        scanf("%d%d", &a[i], &b[i]);
-    }
-    printf("%d\n", work());
-    while (m--) {
-        int x, y, z;
-        scanf("%d%d%d", &x, &y, &z);
-        --x;
-        a[x] = y;
-        b[x] = z;
-        printf("%d\n", work());
-    }
-}
-
-int main() {
-    int T = 1;
-    // scanf("%d", &T);
-    while (T--) {
-        solve();
-    }
-    return 0;
+bool med;
+int T;
+signed main(){
+	// freopen(".in","r",stdin);
+	// freopen(".out","w",stdout);
+	
+	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+	
+	T=read();
+	while(T--)work();
 }
