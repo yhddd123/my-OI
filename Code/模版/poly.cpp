@@ -46,6 +46,8 @@ namespace poly{
         a.resize(k);b.resize(k);
         for(int i=0;i<k;i++)to[i]=to[i>>1]>>1|((i&1)?(k>>1):0);
         ntt(a,1);ntt(b,1);
+        for(int &v:a)v=(v%mod+mod)%mod;
+        for(int &v:b)v=(v%mod+mod)%mod;
         for(int i=0;i<k;i++)a[i]=a[i]*b[i]%mod;
         ntt(a,-1);a.resize(n+m+1);
         return a;
