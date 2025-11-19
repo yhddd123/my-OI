@@ -40,7 +40,6 @@ inline int ksm(int a,int b=mod-2){
 }
 int g=1,t[maxn];
 
-// int pre[maxn],suf[maxn];
 // int fac[maxn],inv[maxn];
 // inline int ksm(int a,int b=mod-2){
 	// int ans=1;
@@ -51,17 +50,19 @@ int g=1,t[maxn];
 	// }
 	// return ans;
 // }
+// int f[maxn];
+// int pre[maxn],suf[maxn];
 // int calc(int k,int v){
-	// if(v<=k+10)return f[k][v];
-	// int res=0;
-	// pre[0]=1;for(int i=1;i<=k+10;i++)pre[i]=pre[i-1]*(v-i+mod)%mod;
-	// suf[k+11]=1;for(int i=k+10;~i;i--)suf[i]=suf[i+1]*(v-i+mod)%mod;
-	// for(int i=1;i<=k+10;i++){
-		// int val=pre[i-1]*suf[i+1]%mod*f[k][i]%mod*inv[i-1]%mod*inv[k+10-i]%mod;
-		// if((k+10-i)&1)(res+=mod-val)%mod;
-		// else (res+=val)%=mod;
-	// }
-	// return res;
+// 	if(v<=k)return f[v];
+// 	int res=0;
+// 	pre[0]=1;for(int i=1;i<=k;i++)pre[i]=pre[i-1]*((v-i+mod)%mod)%mod;
+// 	suf[k+1]=1;for(int i=k;~i;i--)suf[i]=suf[i+1]*((v-i+mod)%mod)%mod;
+// 	for(int i=1;i<=k;i++){
+// 		int val=pre[i-1]*suf[i+1]%mod*f[i]%mod*inv[i-1]%mod*inv[k-i]%mod;
+// 		if((k-i)&1)(res+=mod-val)%mod;
+// 		else (res+=val)%=mod;
+// 	}
+// 	return res;
 // }
 
 void work(){
