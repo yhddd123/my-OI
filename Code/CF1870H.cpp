@@ -29,6 +29,8 @@ const int inf=1e12;
 bool mbe;
 
 int n,m,q;
+int fa[maxn],val[maxn],rt,idx;
+namespace dmst{
 struct bcj{
 	int f[maxn];
 	int fd(int x){
@@ -40,8 +42,6 @@ struct bcj{
 		for(int i=1;i<=n;i++)f[i]=i;
 	}
 }f1,f2;
-int fa[maxn],val[maxn],rt,idx;
-namespace dmst{
 priority_queue<pii,vector<pii>,greater<pii>> q[maxn];int tag[maxn];
 void merge(int u,int v){
 	if(q[u].size()<q[v].size())swap(q[u],q[v]),swap(tag[u],tag[v]);
