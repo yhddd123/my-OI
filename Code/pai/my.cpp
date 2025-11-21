@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 #define int long long
-#define mod 1000000007ll
+#define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
 #define se second
@@ -14,142 +14,147 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=150010;
-const int inf=1e15;
+const int maxn=200010;
+const int inf=1e9;
 bool mbe;
 
-int n,a[3][maxn],ans;
-int b[maxn],c[maxn],val[maxn][3][3];
-int f[3][3][maxn];
-pii vl[maxn*3],vr[maxn*3];int nl,nr;
-int lsh[maxn*3],len;
-#define lb(x) (x&(-x))
-int c1[maxn*3],c2[maxn*3];
-void upd(int x,int w){
-	while(x<=len)c1[x]++,c2[x]+=w,x+=lb(x);
+inline int ksm(int a,int b=mod-2){
+    int ans=1;
+    while(b){
+        if(b&1)ans=ans*a%mod;
+        a=a*a%mod;
+        b>>=1;
+    }
+    return ans;
 }
-int que1(int x){
-	int res=0;
-	while(x)res+=c1[x],x-=lb(x);
-	return res;
+int fac[maxn<<1],inv[maxn<<1];
+int C(int m,int n){
+    if(n<0|m<0||m<n)return 0;
+    return fac[m]*inv[n]%mod*inv[m-n]%mod;}
+void init(int n){
+    fac[0]=1;for(int i=1;i<=n;i++)fac[i]=fac[i-1]*i%mod;
+    inv[n]=ksm(fac[n]);for(int i=n-1;~i;i--)inv[i]=inv[i+1]*(i+1)%mod;
 }
-int que2(int x){
-	int res=0;
-	while(x)res+=c2[x],x-=lb(x);
-	return res;
+inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
+namespace poly{
+    int gen=3,invg=ksm(3);
+    int to[maxn<<3];
+    void ntt(vector<int> &a,int fl){
+        int n=a.size();
+        for(int i=0;i<n;i++)if(i<to[i])swap(a[i],a[to[i]]);
+        for(int l=2;l<=n;l<<=1){
+            int bas=ksm(fl==1?gen:invg,(mod-1)/l),k=l>>1;
+            for(int i=0;i<n;i+=l){
+                int mul=1;
+                for(int j=i;j<i+k;j++){
+                    int val=a[j+k]*mul%mod;
+                    inc(a[j+k]=a[j],mod-val);
+                    inc(a[j],val);
+                    mul=mul*bas%mod;
+                }
+            }
+        }
+        if(fl==-1){
+            int inv=ksm(n);
+            for(int i=0;i<n;i++)a[i]=a[i]*inv%mod;
+        }
+    }
+    vector<int> mul(vector<int> a,vector<int> b){
+        int n=a.size()-1,m=b.size()-1,k=1;
+        while(k<n+m+1)k<<=1;
+        a.resize(k);b.resize(k);
+        for(int i=0;i<k;i++)to[i]=to[i>>1]>>1|((i&1)?(k>>1):0);
+        ntt(a,1);ntt(b,1);
+        for(int &v:a)v=(v%mod+mod)%mod;
+        for(int &v:b)v=(v%mod+mod)%mod;
+        for(int i=0;i<k;i++)a[i]=a[i]*b[i]%mod;
+        ntt(a,-1);a.resize(n+m+1);
+        return a;
+    }
 }
-void clr(){
-	for(int i=1;i<=len;i++)c1[i]=c2[i]=0;
-}
-void calc(){
-	sort(vl+1,vl+nl+1,[&](pii u,pii v){return u.fi<v.fi;});
-	sort(vr+1,vr+nr+1,[&](pii u,pii v){return u.fi<v.fi;});
-	len=0;
-	for(int i=1;i<=nl;i++)lsh[++len]=vl[i].fi-vl[i].se;
-	for(int i=1;i<=nr;i++)lsh[++len]=vr[i].fi-vr[i].se;
-	sort(lsh+1,lsh+len+1),len=unique(lsh+1,lsh+len+1)-lsh-1;
-	clr();
-	for(int i=nl,j=1;i;i--){
-		while(j<=nr&&vl[i].fi+vr[j].fi<0){
-			int p=lower_bound(lsh+1,lsh+len+1,vr[j].fi-vr[j].se)-lsh;
-			upd(p,vr[j].fi%mod);
-			j++;
-		}
-		int p=upper_bound(lsh+1,lsh+len+1,-(vl[i].fi-vl[i].se))-lsh-1;
-		(ans+=vl[i].fi%mod*que1(p)+que2(p))%=mod;
-	}
-	for(int i=1;i<=nl;i++)swap(vl[i].fi,vl[i].se);
-	for(int i=1;i<=nr;i++)swap(vr[i].fi,vr[i].se);
-	sort(vl+1,vl+nl+1,[&](pii u,pii v){return u.fi<v.fi;});
-	sort(vr+1,vr+nr+1,[&](pii u,pii v){return u.fi<v.fi;});
-	len=0;
-	for(int i=1;i<=nl;i++)lsh[++len]=vl[i].fi-vl[i].se;
-	for(int i=1;i<=nr;i++)lsh[++len]=vr[i].fi-vr[i].se;
-	sort(lsh+1,lsh+len+1),len=unique(lsh+1,lsh+len+1)-lsh-1;
-	clr();
-	for(int i=nl,j=1;i;i--){
-		while(j<=nr&&vl[i].fi+vr[j].fi<0){
-			int p=lower_bound(lsh+1,lsh+len+1,vr[j].fi-vr[j].se)-lsh;
-			upd(p,vr[j].fi%mod);
-			j++;
-		}
-		int p=lower_bound(lsh+1,lsh+len+1,-(vl[i].fi-vl[i].se))-lsh-1;
-		(ans+=vl[i].fi%mod*que1(p)+que2(p))%=mod;
-	}
-}
-void sovle(int l,int r){
+int a[maxn];
+vector<int> sovle(int l,int r,int p,vector<int> &dw){
 	if(l==r){
-		(ans+=val[l][0][1]+val[l][0][2]+val[l][1][2])%=mod;
-		return ;
+		vector<int> ans(a[l]-p+1,dw[0]);
+		return ans;
 	}
 	int mid=l+r>>1;
-	sovle(l,mid),sovle(mid+1,r);
-	for(int o=0;o<=2;o++){
-		for(int j=0;j<=2;j++){
-			for(int i=l;i<=r;i++)f[o][j][i]=inf;
-		}
-		for(int o1=0;o1<=2;o1++)f[o][o1][mid]=val[mid][o][o1];
-		for(int i=mid-1;i>=l;i--){
-			for(int o1=0;o1<=2;o1++){
-				for(int o2=0;o2<=2;o2++){
-					f[o][o2][i]=min(f[o][o2][i],f[o][o1][i+1]+val[i][o1][o2]);
-				}
-			}
-		}
-		for(int o1=0;o1<=2;o1++)f[o][o1][mid+1]=val[mid+1][o][o1];
-		for(int i=mid+2;i<=r;i++){
-			for(int o1=0;o1<=2;o1++){
-				for(int o2=0;o2<=2;o2++){
-					f[o][o2][i]=min(f[o][o2][i],f[o][o1][i-1]+val[i][o1][o2]);
-				}
-			}
-		}
-	}
-	nl=nr=0;
-	for(int j=0;j<=2;j++){
-		for(int i=l;i<=mid;i++){
-			(ans+=f[0][j][i]%mod*(r-mid)*3)%=mod;
-			vl[++nl]={f[1][j][i]-f[0][j][i],f[2][j][i]-f[0][j][i]};
-		}
-	}
-	for(int j=0;j<=2;j++){
-		for(int i=mid+1;i<=r;i++){
-			(ans+=f[0][j][i]%mod*(mid-l+1)*3)%=mod;
-			vr[++nr]={f[1][j][i]-f[0][j][i],f[2][j][i]-f[0][j][i]};
-		}
-	}
-	// for(int i=l;i<=mid;i++){
-		// for(int o1=0;o1<=2;o1++){
-			// for(int j=mid+1;j<=r;j++){
-				// for(int o2=0;o2<=2;o2++){
-					// int res=min({f[0][o1][i]+f[0][o2][j],f[1][o1][i]+f[1][o2][j],f[2][o1][i]+f[2][o2][j]});
-					// // cout<<i<<" "<<o1<<" "<<j<<" "<<o2<<" "<<res<<"\n";
-					// (ans+=res)%=mod;
-				// }
-			// }	
+	vector<int> dwl=dw;dwl.resize(mid-l+1);
+	vector<int> mf=sovle(l,mid,p,dwl);
+	vector<int> ans(a[r]-p+1),dwr(r-mid);
+	{
+		vector<int> ff(mf.size()),gg(r-mid+1+ff.size());
+		for(int i=1;i<ff.size();i++)ff[i]=mf[i]*inv[a[mid]-p-i]%mod;
+		for(int i=0;i<gg.size();i++)gg[i]=fac[i];
+		ff=poly::mul(ff,gg);
+		for(int i=0;i<r-mid;i++)(dwr[i]+=ff[i+a[mid]-p]*inv[i])%=mod;
+		// for(int i=1;i<=a[mid]-p;i++){
+			// for(int j=0;j<r-mid;j++)(dwr[j]+=mf[i]*C(j+a[mid]-p-i,j))%=mod;
 		// }
-	// }
-	calc();
-	// cout<<l<<" "<<r<<" "<<ans<<endl;
+	}
+	{
+		vector<int> ff(r-mid),gg(r-mid);
+		for(int i=0;i<r-mid;i++)ff[i]=dw[i+mid-l+1];
+		for(int i=0;i<r-mid;i++)gg[i]=C(i+a[mid]-p-1,a[mid]-p-1);
+		ff=poly::mul(ff,gg);
+		for(int i=0;i<r-mid;i++)(dwr[i]+=ff[i])%=mod;
+		// for(int i=0;i<r-mid;i++){
+			// for(int j=i;j<r-mid;j++)(dwr[j]+=dw[i+mid-l+1]*C(j-i+a[mid]-p-1,a[mid]-p-1))%=mod;
+		// }
+	}
+	{
+		vector<int> ff(a[mid]-p+1),gg(a[mid]-p+1);
+		for(int i=1;i<=a[mid]-p;i++)ff[i]=mf[i];
+		for(int i=0;i<=a[mid]-p;i++)gg[i]=C(r-mid-1+i,r-mid-1);
+		ff=poly::mul(ff,gg);
+		for(int i=1;i<=a[mid]-p;i++)(ans[i]+=ff[i])%=mod;
+		// for(int i=1;i<=a[mid]-p;i++){
+			// for(int j=i;j<=a[mid]-p;j++)(ans[j]+=mf[i]*C(r-mid-1+j-i,r-mid-1))%=mod;
+		// }
+	}
+	{
+		vector<int> ff(r-mid),gg(r-mid-1+a[mid]-p);
+		for(int i=0;i<r-mid;i++)ff[i]=dw[i+mid-l+1]*inv[r-mid-1-i]%mod;
+		for(int i=0;i<gg.size();i++)gg[i]=fac[i];
+		ff=poly::mul(ff,gg);
+		for(int i=1;i<a[mid]-p;i++)(ans[i]+=ff[r-mid-1+i-1]*inv[i-1])%=mod;
+		// for(int i=0;i<r-mid;i++){
+			// for(int j=1;j<a[mid]-p;j++)(ans[j]+=dw[i+mid-l+1]*C(r-mid-1-i+j-1,j-1))%=mod;
+		// }
+	}
+	ans[0]=dw[r-mid];
+	if(a[mid]==p){
+		for(int i=0;i<r-mid;i++)dwr[i]=dw[i+mid-l+1];
+	}
+	// cout<<l<<" "<<r<<" "<<p<<" s\n";
+	// for(int v:dwr)cout<<v<<" ";cout<<"\n";
+	// for(int i=0;i<=a[mid]-p;i++)cout<<ans[i]<<" ";cout<<"\n";
+	vector<int> rf=sovle(mid+1,r,a[mid],dwr);
+	for(int i=a[mid];i<=a[r];i++)ans[i-p]=rf[i-a[mid]];
+	// for(int v:ans)cout<<v<<" ";cout<<"\n";
+	return ans;
+}
+int n,m,k;
+int calc(vector<int> &lim){
+	for(int i=0;i<=n;i++)a[i]=lim[i];
+	for(int i=n-1;~i;i--)a[i]=min(a[i],a[i+1]);
+	// for(int i=0;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
+	vector<int> dw(n+1);
+	for(int i=0;i<=n;i++)dw[i]=1;
+	vector<int> f=sovle(0,n,0,dw);
+	// for(int i=0;i<=m;i++)cout<<f[i]<<" ";cout<<"\n";
+	return f[m];
 }
 void work(){
-	read();n=read();
-	for(int i=0;i<=2;i++){
-		for(int j=1;j<=n;j++)a[i][j]=read();
+	m=read();n=read();k=read();init(n+m);
+	vector<int> a(n+1,m),b(n+1,m);
+	for(int i=1;i<=k;i++){
+		int l2=read(),l1=read(),r2=read(),r1=read();
+		a[r1-1]=min(a[r1-1],l2);
+		b[l1+1]=min(b[l1+1],m-r2);
 	}
-	b[1]=c[n]=inf;
-	for(int i=2;i<=n;i++)b[i]=min(b[i-1],a[1][i-1])+a[0][i-1]+a[2][i-1];
-	for(int i=n-1;i;i--)c[i]=min(c[i+1],a[1][i+1])+a[0][i+1]+a[2][i+1];
-	for(int i=1;i<=n;i++){
-		for(int j=0;j<=2;j++)val[i][j][j]=a[j][i];
-		val[i][0][1]=val[i][1][0]=a[0][i]+a[1][i];
-		val[i][1][2]=val[i][2][1]=a[1][i]+a[2][i];
-		val[i][0][2]=val[i][2][0]=a[0][i]+a[2][i]+min({a[1][i],b[i],c[i]});
-	}
-	// cout<<val[2][0][2]<<"\n";
-	sovle(1,n);
-	ans%=mod,ans+=mod,ans%=mod;
-	printf("%lld\n",ans*2%mod);
+	reverse(b.begin(),b.end());
+	printf("%lld\n",(calc(a)+calc(b))*ksm(C(n+m,n))%mod);
 }
 
 bool med;

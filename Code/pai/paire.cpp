@@ -18,14 +18,14 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,m;
-mt19937 rnd(time(0));
 void work(){
-	n=m=10;
-	cout<<n<<" "<<m<<" "<<n<<"\n";
-	for(int i=1;i<=n;i++){
-		int p=rnd()%m+1;
-		cout<<i-1<<" "<<p-1<<" "<<i<<" "<<p<<"\n";
+	for(int i=1;i<=10000;i++){
+		system("data.exe>A.in");
+        if(system("my.exe<A.in>A.out")){
+            cout<<"Fail\n";
+            exit(0);
+        }
+		cout<<i<<" Ac\n";
 	}
 }
 
