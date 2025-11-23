@@ -1,10 +1,10 @@
-// Problem: D. Billion Players Game
+// Problem: E. Adjusting Drones
 // Contest: Codeforces - Codeforces Round 1066 (Div. 1 + Div. 2)
-// URL: https://codeforces.com/contest/2157/problem/D
+// URL: https://codeforces.com/contest/2157/problem/E
 // Memory Limit: 256 MB
 // Time Limit: 2000 ms
 // Written by yhm.
-// Start codeing:2025-11-23 17:53:19
+// Start codeing:2025-11-23 18:07:45
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
@@ -24,31 +24,25 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
+const int maxn=600010;
 const int inf=1e9;
 bool mbe;
 
-int n,pl,pr,a[maxn],ans;
-int val[maxn];
-void dfs(int d){
-	if(d==n+1){
-		int res=inf;
-		for(int i=pl;i<=pr;i++)res=min(res,val[i]);
-		ans=max(ans,res);
-		return ;
-	}
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]+=a[d]-i;
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]-=a[d]-i;
-	for(int i=pl;i<=pr;i++)val[i]+=i-a[d];
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]-=i-a[d];
-}
+int n,k,a[maxn],ans;
+int q[maxn],h,t,p[maxn];
 void work(){
-	n=read();pl=read();pr=read();ans=0;
-	for(int i=1;i<=n;i++)a[i]=read();
-	dfs(1);
+	n=read();k=read();ans=0;
+	for(int i=1;i<=3*n;i++)a[i]=0;
+	for(int i=1;i<=n;i++)a[read()]++;
+	h=3*n+1,t=3*n;
+	for(int i=1;i<=3*n;i++){
+		int tim=i;while(h<=t&&a[i]<=k)a[i]+=q[h++],tim=p[h-1];
+		if(a[i]>k){
+			q[--h]=a[i]-1;p[h]=tim;
+		}
+		ans=max(ans,i-tim);
+		// cout<<i<<" "<<tim<<" "<<ans<<" "<<h<<" "<<t<<"\n";
+	}
 	printf("%lld\n",ans);
 }
 

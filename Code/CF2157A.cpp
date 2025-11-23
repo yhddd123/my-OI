@@ -1,10 +1,10 @@
-// Problem: D. Billion Players Game
+// Problem: A. Dungeon Equilibrium
 // Contest: Codeforces - Codeforces Round 1066 (Div. 1 + Div. 2)
-// URL: https://codeforces.com/contest/2157/problem/D
+// URL: https://codeforces.com/contest/2157/problem/A
 // Memory Limit: 256 MB
-// Time Limit: 2000 ms
+// Time Limit: 1000 ms
 // Written by yhm.
-// Start codeing:2025-11-23 17:53:19
+// Start codeing:2025-11-23 17:36:01
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
@@ -28,27 +28,15 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,pl,pr,a[maxn],ans;
-int val[maxn];
-void dfs(int d){
-	if(d==n+1){
-		int res=inf;
-		for(int i=pl;i<=pr;i++)res=min(res,val[i]);
-		ans=max(ans,res);
-		return ;
-	}
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]+=a[d]-i;
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]-=a[d]-i;
-	for(int i=pl;i<=pr;i++)val[i]+=i-a[d];
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]-=i-a[d];
-}
+int n,a[maxn];
 void work(){
-	n=read();pl=read();pr=read();ans=0;
-	for(int i=1;i<=n;i++)a[i]=read();
-	dfs(1);
+	n=read();
+	for(int i=0;i<=n;i++)a[i]=0;
+	for(int i=1;i<=n;i++)a[read()]++;
+	int ans=0;for(int i=0;i<=n;i++)if(a[i]){
+		if(a[i]>=i)ans+=a[i]-i;
+		else ans+=a[i];
+	}
 	printf("%lld\n",ans);
 }
 

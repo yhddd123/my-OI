@@ -58,12 +58,23 @@ void init(int n){
 	}
 }
 int n,q,a[maxn];
-int pl[maxn];
+int pl[maxn],lst[maxn];
 void work(){
-	n=read();q=read();init(maxn-10);
+	n=read();q=read();init(maxn-1);
 	for(int i=1;i<=n;i++)a[i]=read();
-	
-	
+	for(int i=1;i<=n;i++){
+		int x=a[i];
+		while(x){
+			int xx=lst[x],num=0;
+			while(x%xx==0){
+				x/=xx;++num;
+			}
+			for(int v=1,mul=x;v<=num;v++,mul=mul*x){
+				pl[i]=max(pl[i],lst[mul]);
+				lst[mul]=i;
+			}
+		}
+	}
 }
 
 bool med;

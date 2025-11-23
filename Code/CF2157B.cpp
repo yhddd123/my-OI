@@ -1,10 +1,10 @@
-// Problem: D. Billion Players Game
+// Problem: B. Expansion Plan 2
 // Contest: Codeforces - Codeforces Round 1066 (Div. 1 + Div. 2)
-// URL: https://codeforces.com/contest/2157/problem/D
+// URL: https://codeforces.com/contest/2157/problem/B
 // Memory Limit: 256 MB
-// Time Limit: 2000 ms
+// Time Limit: 1000 ms
 // Written by yhm.
-// Start codeing:2025-11-23 17:53:19
+// Start codeing:2025-11-23 17:37:44
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
@@ -28,28 +28,26 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,pl,pr,a[maxn],ans;
-int val[maxn];
-void dfs(int d){
-	if(d==n+1){
-		int res=inf;
-		for(int i=pl;i<=pr;i++)res=min(res,val[i]);
-		ans=max(ans,res);
-		return ;
-	}
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]+=a[d]-i;
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]-=a[d]-i;
-	for(int i=pl;i<=pr;i++)val[i]+=i-a[d];
-	dfs(d+1);
-	for(int i=pl;i<=pr;i++)val[i]-=i-a[d];
-}
+int n,x,y;
+char s[maxn];
 void work(){
-	n=read();pl=read();pr=read();ans=0;
-	for(int i=1;i<=n;i++)a[i]=read();
-	dfs(1);
-	printf("%lld\n",ans);
+	n=read();x=read();y=read();scanf("%s",s+1);
+	if(x<0)x=-x;
+	if(y<0)y=-y;
+	if(!x&&!y){puts("YES");return ;}
+	for(int i=n;i;i--){
+		if(s[i]=='4'){
+			if(x<y)y--;
+			else x--;
+		}
+		else{
+			if(x&&y)x--,y--;
+			else if(x)x--;
+			else y--;
+		}
+		if(!x&&!y){puts("YES");return ;}
+	}
+	puts("NO");
 }
 
 bool med;
