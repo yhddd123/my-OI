@@ -18,12 +18,28 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,x;
-mt19937 rnd(time(0));
+int n,ans=inf;
+int x[maxn],p[maxn],d[maxn];
+int sum[maxn];
+bool vis1[maxn],vis2[maxn];
 void work(){
-	n=10,x=rnd()%3;
-	cout<<n<<" "<<x<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%3<<" ";cout<<"\n";
+	n=read();
+	for(int i=1;i<=n;i++)x[i]=read(),p[i]=read(),d[i]=read(),sum[i]=sum[i-1]+(d[i]==1);
+	for(int i=1;i<=n;i++){
+		vis1[i]=1;
+		if(x[i+1]-x[i]>p[i])break;
+	}
+	for(int i=n;i;i--){
+		vis2[i]=1;
+		if(x[i]-x[i-1]>p[i])break;
+	}
+	vis1[0]=vis2[n+1]=1;
+	for(int i=0;i<=n;i++)if(vis1[i]&&vis2[i+1]&&x[i]+p[i]>=x[i+1]-p[i+1]){
+		// cout<<i<<" "<<i-sum[i]+sum[n]-sum[i]<<"\n";
+		ans=min(ans,i-sum[i]+sum[n]-sum[i]);
+	}
+	if(ans==inf)ans=-1;
+	printf("%lld\n",ans);
 }
 
 bool med;

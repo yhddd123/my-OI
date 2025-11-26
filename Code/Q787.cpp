@@ -14,16 +14,25 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
+const int maxn=2000010;
 const int inf=1e9;
 bool mbe;
 
-int n,x;
-mt19937 rnd(time(0));
+int n,ans;
+char s[maxn],t[maxn];
+int len[maxn];
 void work(){
-	n=10,x=rnd()%3;
-	cout<<n<<" "<<x<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%3<<" ";cout<<"\n";
+	scanf("%s",t+1);n=strlen(t+1);
+	s[0]=s[1]='#';for(int i=1;i<=n;i++)s[i<<1]=t[i],s[i<<1|1]='#';
+	n=2*n+1;
+	for(int i=1,mxr=0,mid=0;i<=n;i++){
+		if(i<mxr)len[i]=min(len[2*mid-i],len[mid]+mid-i);
+		else len[i]=1;
+		while(s[i+len[i]]==s[i-len[i]])len[i]++;
+		if(len[i]+i>mxr)mxr=len[i]+i,mid=i;
+	}
+	for(int i=1;i<=n;i++)ans=max(ans,len[i]);
+	printf("%lld\n",ans-1);
 }
 
 bool med;

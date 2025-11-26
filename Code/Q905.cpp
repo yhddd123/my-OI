@@ -14,16 +14,35 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
+const int maxn=100010;
 const int inf=1e9;
 bool mbe;
 
-int n,x;
-mt19937 rnd(time(0));
+int n,m,a[maxn],ans;
+int d[maxn];
+vector<int> e[maxn];
+int vis[maxn];
+pii edge[maxn];
 void work(){
-	n=10,x=rnd()%3;
-	cout<<n<<" "<<x<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%3<<" ";cout<<"\n";
+	n=read();m=read();
+	for(int i=1;i<=n;i++)a[i]=read();
+	for(int i=1;i<=m;i++){
+		int u=read()+1,v=read()+1;
+		edge[i]={u,v};
+		d[u]++,d[v]++;
+	}
+	for(int i=1;i<=m;i++){
+		auto[u,v]=edge[i];
+		if(d[u]<d[v]||(d[u]==d[v]&&u>v))swap(u,v);
+		e[u].pb(v);
+	}
+	for(int u=1;u<=n;u++){
+		for(int v:e[u])vis[v]=u;
+		for(int v:e[u]){
+			for(int w:e[v])if(vis[w]==u)(ans+=a[u]*a[v]%mod*a[w])%=mod;
+		}
+	}
+	printf("%lld\n",ans);
 }
 
 bool med;

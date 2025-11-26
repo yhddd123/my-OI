@@ -419,41 +419,40 @@ inline int ksm(int a,int b=mod-2){
     }
     return ans;
 }
-int ni[maxn];
 inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
 vector<int> f,g;
-void cdqexp(int l,int r){
+void cdqni(int l,int r){
 	if(r-l+1<=64){
 		for(int i=l;i<=r;i++){
 			for(int j=l;j<i;j++)inc(g[i],1ll*g[j]*f[i-j]%mod);
-			g[i]=1ll*ni[i]*g[i]%mod;
+			g[i]=1ll*(mod-g[i])*g[0]%mod;
 		}
 		return ;
 	}
-    if(l==r){g[l]=1ll*ni[l]*g[l]%mod;return ;}
+    if(l==r){g[l]=1ll*(mod-g[l])*g[0]%mod;return ;}
     int mid=l+r>>1;
-    cdqexp(l,mid);
+    cdqni(l,mid);
     vector<int> ff(mid-l+1),gg(r-l+1);
     for(int i=l;i<=mid;i++)ff[i-l]=g[i];
     for(int i=0;i<=r-l;i++)gg[i]=f[i];
     ff=poly::mul(ff,gg);
     for(int i=mid+1;i<=r;i++)inc(g[i],ff[i-l]);
-    cdqexp(mid+1,r);
+    cdqni(mid+1,r);
 }
-vector<int> exp(vector<int> a){
+vector<int> ni(vector<int> a){
     int n=a.size()-1;
-    f.resize(n+1);g.resize(n+1);
-    for(int i=0;i<=n;i++)f[i]=1l*a[i]*i%mod,g[i]=0;
-    f[0]=0,g[0]=1;cdqexp(0,n);
+    f.resize(n+1),g.resize(n+1);
+    for(int i=0;i<=n;i++)f[i]=a[i],g[i]=0;
+    g[0]=ksm(f[0]);for(int i=1;i<=n;i++)inc(g[i],1ll*g[0]*f[i]%mod);
+	cdqni(1,n);
     return g;
 }
 int n;
 void work(){
 	n=read();
-	ni[0]=ni[1]=1;for(int i=2;i<=n;i++)ni[i]=1ll*(mod-mod/i)*ni[mod%i]%mod;
 	vector<int> a(n);
 	for(int i=0;i<n;i++)a[i]=read();
-	a=exp(a);
+	a=ni(a);
 	for(int i=0;i<n;i++)write(a[i]),putchar(' ');
 }
 

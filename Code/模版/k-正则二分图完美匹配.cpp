@@ -1,4 +1,3 @@
-
 mt19937 rnd(1);
 int id[maxn];
 int st[maxn*maxn],tp;

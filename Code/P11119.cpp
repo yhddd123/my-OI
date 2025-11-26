@@ -46,14 +46,16 @@ void work(){
 		val+=siz[i]*(n-i+1);
 		siz[to[i]]+=siz[i];
 		s1[i]=val;
-		s2[i]=s2[i-1]+siz[i]*(n-to[i]+1);
-		s3[i]=s3[i-1]+siz[i];
-		s4[i]=s4[i-1]+siz[i]*num[to[to[i]]];
 	}
 	val-=n*(n+1)/2;
 	ans=val;
 	for(int i=n;i;i--)num[i]=num[to[i]]+(n-i+1);
 	for(int i=1;i<=n;i++)sum[i]=sum[i-1]+num[i];
+	for(int i=1;i<=n;i++){
+		s2[i]=s2[i-1]+siz[i]*(n-to[i]+1);
+		s3[i]=s3[i-1]+siz[i];
+		s4[i]=s4[i-1]+siz[i]*num[to[to[i]]];
+	}
 	// for(int i=1;i<=n;i++)cout<<to[i]<<" ";cout<<"\n";
 	// for(int i=1;i<=n;i++)cout<<num[i]<<" ";cout<<"\n";
 	// cout<<ans<<"\n";
@@ -74,15 +76,7 @@ void work(){
 			if(p1<pl)res+=s2[pl-1]-s2[p1-1];
 			res+=(s3[min(pl-1,p2)]-s3[p1-1])*num[nw];
 			if(p2<pl)res+=s4[pl-1]-s4[p2];
-			// cout<<pl<<" "<<pr<<" "<<p1<<" "<<p2<<"\n";
-			// for(int j=1;j<pl;j++)if(to[j]>=pl){
-				// res+=siz[j]*(n-to[j]+1);
-				// if(j<=p2)res+=siz[j]*num[nw],cout<<j<<" ";
-				// if(to[j]<=pos[nw+1]-1)res+=siz[j]*num[nw],cout<<j<<" ";
-				// if(to[to[j]]<=nw)res+=siz[j]*num[nw],cout<<j<<" ";
-				// else res+=siz[j]*num[to[to[j]]];
-			// }
-			// cout<<"\n";
+			// cout<<p2+1<<" "<<pl-1<<"\n";
 			res+=(n-pl+1+n-pr+1)*(pr-pl+1)/2;
 			// cout<<i<<" "<<res<<" "<<sum[pr]<<" "<<s1[pl-1]<<"\n";
 			ans=min(ans,val+res);

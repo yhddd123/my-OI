@@ -1,20 +1,3 @@
-#include<bits/stdc++.h>
-// #define int long long
-#define pii pair<int,int>
-#define fi first
-#define se second
-#define pb push_back
-#define db long double
-#define mems(a,x) memset((a),(x),sizeof(a))
-using namespace std;
-static char buf[1000000],*p1=buf,*p2=buf;
-#define getchar() p1==p2&&(p2=(p1=buf)+fread(buf,1,1000000,stdin),p1==p2)?EOF:*p1++
-inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-1;c=getchar();}while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x*f;}
-inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
-const int maxn=1000010;
-const int inf=1e9;
-bool mbe;
-
 #pragma GCC target("avx2")
 namespace NTT {
 #include <type_traits>
@@ -407,64 +390,4 @@ namespace poly{
 	}
 	return res;
 }
-}
-
-#define mod 998244353ll
-inline int ksm(int a,int b=mod-2){
-    int ans=1;
-    while(b){
-        if(b&1)ans=1ll*ans*a%mod;
-        a=1ll*a*a%mod;
-        b>>=1;
-    }
-    return ans;
-}
-int ni[maxn];
-inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
-vector<int> f,g;
-void cdqexp(int l,int r){
-	if(r-l+1<=64){
-		for(int i=l;i<=r;i++){
-			for(int j=l;j<i;j++)inc(g[i],1ll*g[j]*f[i-j]%mod);
-			g[i]=1ll*ni[i]*g[i]%mod;
-		}
-		return ;
-	}
-    if(l==r){g[l]=1ll*ni[l]*g[l]%mod;return ;}
-    int mid=l+r>>1;
-    cdqexp(l,mid);
-    vector<int> ff(mid-l+1),gg(r-l+1);
-    for(int i=l;i<=mid;i++)ff[i-l]=g[i];
-    for(int i=0;i<=r-l;i++)gg[i]=f[i];
-    ff=poly::mul(ff,gg);
-    for(int i=mid+1;i<=r;i++)inc(g[i],ff[i-l]);
-    cdqexp(mid+1,r);
-}
-vector<int> exp(vector<int> a){
-    int n=a.size()-1;
-    f.resize(n+1);g.resize(n+1);
-    for(int i=0;i<=n;i++)f[i]=1l*a[i]*i%mod,g[i]=0;
-    f[0]=0,g[0]=1;cdqexp(0,n);
-    return g;
-}
-int n;
-void work(){
-	n=read();
-	ni[0]=ni[1]=1;for(int i=2;i<=n;i++)ni[i]=1ll*(mod-mod/i)*ni[mod%i]%mod;
-	vector<int> a(n);
-	for(int i=0;i<n;i++)a[i]=read();
-	a=exp(a);
-	for(int i=0;i<n;i++)write(a[i]),putchar(' ');
-}
-
-bool med;
-int T;
-signed main(){
-	// freopen(".in","r",stdin);
-	// freopen(".out","w",stdout);
-	
-	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
-	
-	T=1;
-	while(T--)work();
 }

@@ -14,16 +14,35 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
-const int inf=1e9;
+const int maxn=300010;
+const int inf=1e18;
 bool mbe;
 
-int n,x;
-mt19937 rnd(time(0));
+int n,m,s;
+vector<pii> e[maxn];
+int dis[maxn];
+bool vis[maxn];
+priority_queue<pii> q;
 void work(){
-	n=10,x=rnd()%3;
-	cout<<n<<" "<<x<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%3<<" ";cout<<"\n";
+	n=read();m=read();s=read();
+	for(int i=1;i<=m;i++){
+		int u=read(),v=read(),w=read();
+		e[u].pb({v,w});
+	}
+	for(int i=1;i<=n;i++)dis[i]=inf,vis[i]=0;
+	dis[s]=0;q.push({0,s});
+	while(!q.empty()){
+		int u=q.top().se;q.pop();
+		if(vis[u])continue;vis[u]=1;
+		for(auto[v,w]:e[u]){
+			if(dis[v]>dis[u]+w){
+				dis[v]=dis[u]+w;
+				q.push({-dis[v],v});
+			}
+		}
+	}
+	for(int i=1;i<=n;i++)if(dis[i]==inf)dis[i]=-1;
+	for(int i=1;i<=n;i++)printf("%lld ",dis[i]);
 }
 
 bool med;
