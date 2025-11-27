@@ -1,11 +1,12 @@
 #include<bits/stdc++.h>
 #define int long long
+#define mod 998244353
 #define pii pair<int,int>
 #define fi first
 #define se second
 #define mems(x,y) memset(x,y,sizeof(x))
 using namespace std;
-const int maxn=610;
+const int maxn=510;
 const int inf=1e18;
 inline int read(){
 	int x=0,f=1;
@@ -16,10 +17,10 @@ inline int read(){
 }
 bool Mbe;
 
-int n,mod,ans=1;
+int n,ans=1;
 int a[maxn][maxn];
 void work(){
-	n=read();mod=read();
+	n=read();
 	for(int i=1;i<=n;i++){
 		for(int j=1;j<=n;j++)a[i][j]=read();
 	}

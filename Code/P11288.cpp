@@ -24,7 +24,7 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
+const int maxn=1000010;
 const int inf=1e9;
 bool mbe;
 
@@ -40,7 +40,7 @@ inline int ksm(int a,int b=mod-2){
 int n,k,q,ans=1;
 int lim[maxn],lsh[maxn],len;
 tuple<int,int,int> ask[maxn];
-int st[18][maxn];
+int st[20][maxn];
 int quemx(int l,int r){
 	int k=__lg(r-l+1);
 	return max(st[k][l],st[k][r-(1<<k)+1]);
@@ -50,7 +50,7 @@ vector<int> upd[maxn];
 int f[maxn],sum,tag,pos;
 void work(){
 	n=read();q=read();k=read()-1;
-	for(int i=0;i<18;i++){
+	for(int i=0;i<20;i++){
 		for(int j=1;j<=n;j++)st[i][j]=k;
 	}
 	for(int i=1;i<=q;i++){
@@ -58,14 +58,14 @@ void work(){
 		int k=__lg(r-l+1);
 		st[k][l]=min(st[k][l],x),st[k][r-(1<<k)+1]=min(st[k][r-(1<<k)+1],x);
 	}
-	for(int i=17;i;i--){
+	for(int i=19;i;i--){
 		for(int j=1;j+(1<<i)-1<=n;j++){
 			st[i-1][j]=min(st[i-1][j],st[i][j]);
 			st[i-1][j+(1<<i-1)]=min(st[i-1][j+(1<<i-1)],st[i][j]);
 		}
 	}
 	for(int i=1;i<=n;i++)lim[i]=st[0][i];
-	for(int j=1;j<18;j++){
+	for(int j=1;j<20;j++){
 		for(int i=1;i+(1<<j)-1<=n;i++)st[j][i]=max(st[j-1][i],st[j-1][i+(1<<j-1)]);
 	}
 	lsh[++len]=k;sort(lsh+1,lsh+len+1),len=unique(lsh+1,lsh+len+1)-lsh-1;
