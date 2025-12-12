@@ -132,17 +132,21 @@ void work(){
 		for(int j=__lg(k)-1;~j;j--)if(chk(k+(1<<j))<=t[v])k+=(1<<j);
 		num=chk(k);
 		// cout<<v<<" "<<k<<" "<<num<<" "<<t[v]<<endl;
-		// for(int i=1;i<=k;i++)cout<<id[i]<<" ";cout<<"\n";
+		// for(int i=1;i<=k;i++)cout<<id[i]<<" "<<a[id[i]].fi<<" "<<a[id[i]].se<<"\n";
 		for(int i=1,p=0,nn=0;i<=k;i++)if(p<a[id[i]].fi)pr[++nn]=p=a[id[i]].se;
 		sort(id+1,id+k+1,[&](int u,int v){return a[u].fi>a[v].fi;});
 		for(int i=1,p=n+1,nn=num+1;i<=k;i++)if(p>a[id[i]].se)pl[--nn]=p=a[id[i]].fi;
-		for(int i=1;i<=k;i++)updata(1,1,n,a[id[i]].fi,a[id[i]].se,-id[i]),del(id[i],v);
 		// for(int i=1;i<=num;i++)cout<<pl[i]<<" "<<pr[i]<<"\n";
+		for(int i=1;i<=k;i++)updata(1,1,n,a[id[i]].fi,a[id[i]].se,-id[i]),del(id[i],v);
 		for(int i=1;i<=num;i++)mdf(i);
 		while(!q.empty()){
 			auto[id,p]=q.top();q.pop();mdf(p);
 			if(ff[id]!=id)continue;
 			del(id,v);
+		}
+		for(int i=1;i<=num;i++){
+			priority_queue<pii>().swap(ql[i]);
+			priority_queue<pii>().swap(qr[i]);
 		}
 	}
 	for(int i=1;i<=m;i++)printf("%lld\n",ans[i]);
