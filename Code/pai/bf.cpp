@@ -1,10 +1,10 @@
-// Problem: P11983 [JOIST 2025] 展览会 3 / Exhibition 3
+// Problem: T712268 [JOI 2026 二次预选] 船 / Ship
 // Contest: Luogu
-// URL: https://www.luogu.com.cn/problem/P11983
+// URL: https://www.luogu.com.cn/problem/T712268?contestId=298530
 // Memory Limit: 1024 MB
 // Time Limit: 3000 ms
 // Written by yhm.
-// Start codeing:2025-12-04 18:01:39
+// Start codeing:2025-12-19 19:50:59
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
@@ -24,41 +24,46 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=100010;
+const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,m,t[maxn],lst;
-pii a[maxn];
-int ans[maxn];
-int ff[maxn];
-int fd(int x){
-	if(ff[x]==x)return x;
-	return ff[x]=fd(ff[x]);
-}
-int id[maxn],k;
-int chk(){
-	sort(id+1,id+k+1,[&](int u,int v){return a[u].se<a[v].se;});
-	int num=0;for(int i=1,p=0;i<=k;i++)if(p<a[id[i]].fi)++num,p=a[id[i]].se;
-	sort(id+1,id+k+1);
-	return num;
-}
+int n,a[maxn];
 void work(){
-	n=read();m=read();lst=m;
-	for(int i=1;i<=n;i++)t[read()]++;
-	for(int i=1;i<=m;i++)a[i]={read(),read()};
-	for(int i=1;i<=m+1;i++)ff[i]=i;
-	for(int v=n;v&&lst;v--)if(t[v]){
-		k=0;for(int p=fd(1);p<=m;p=fd(p+1)){
-			id[++k]=p;
-			if(chk()>t[v])k--;
+	n=read();
+	for(int i=1;i<=n;i++)a[i]=read();
+	if(n&1){
+		map<int,bool> vis;for(int i=1;i<=n;i++)vis[a[i]]=1;
+		int ans=-1;
+		for(int i=1;i<=n;i++){
+			for(int j=i+1;j<=n;j++){
+				int k=0;
+				if(vis.find(2*a[i]-a[j])!=vis.end())k=lower_bound(a+1,a+n+1,2*a[i]-a[j])-a;
+				if(vis.find(2*a[j]-a[i])!=vis.end())k=lower_bound(a+1,a+n+1,2*a[j]-a[i])-a;
+				if(!k)continue;
+				int res=a[j]-a[i];
+				int p=1;
+				while(p==i||p==j||p==k)p++;
+				for(int t=1;t<=(n-3)/2;t++){
+					p++;
+					while(p==i||p==j||p==k)p++;
+				}
+				for(int t=1,p1=1,p2=p;t<=(n-3)/2;t++){
+					while(p1==i||p1==j||p1==k)p1++;
+					while(p2==i||p2==j||p2==k)p2++;
+					res=min(res,a[p2]-a[p1]);
+					p1++,p2++;
+				}
+				ans=max(ans,res);
+			}
 		}
-		// for(int i=1;i<=k;i++)cout<<id[i]<<" ";cout<<"\n";
-		for(int i=1;i<=k;i++){
-			ff[id[i]]=fd(id[i]+1),ans[id[i]]=v;lst--;
-		}
+		printf("%lld\n",ans);
 	}
-	for(int i=1;i<=m;i++)printf("%lld\n",ans[i]);
+	else{
+		int ans=inf;
+		for(int i=1;i<=n/2;i++)ans=min(ans,a[i+n/2]-a[i]);
+		printf("%lld\n",ans);
+	}
 }
 
 bool med;

@@ -18,17 +18,15 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,m;
+int n,m,a[maxn];
 mt19937 rnd(time(0));
 void work(){
-	n=20,m=20;
-	cout<<n<<" "<<m<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%5+1<<" ";cout<<"\n";
-	for(int i=1;i<=m;i++){
-		int l=rnd()%n+1,r=rnd()%n+1;
-		if(l>r)swap(l,r);
-		cout<<l<<" "<<r<<"\n";
-	}
+	n=7,m=20;
+	cout<<n<<"\n";
+	for(int i=1;i<=m;i++)a[i]=i;
+	shuffle(a+1,a+m+1,rnd);
+	sort(a+1,a+n+1);
+	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
 }
 
 bool med;
