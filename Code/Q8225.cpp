@@ -18,7 +18,7 @@ const int maxn=85;
 const int inf=1e9;
 bool mbe;
 
-int n,m=50,a[maxn],b[maxn];
+int n,a[maxn],b[maxn];
 bool f[maxn][maxn][maxn*maxn];
 pii pre[maxn][maxn][maxn*maxn];
 void dfs(int l,int r,int k,int s=0){

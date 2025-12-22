@@ -21,12 +21,8 @@ bool mbe;
 int n,m,a[maxn];
 mt19937 rnd(time(0));
 void work(){
-	n=7,m=20;
-	cout<<n<<"\n";
-	for(int i=1;i<=m;i++)a[i]=i;
-	shuffle(a+1,a+m+1,rnd);
-	sort(a+1,a+n+1);
-	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
+	n=rnd()%20+3;
+	cout<<n<<" "<<rnd()%50+1<<" "<<rnd()%50+1<<"\n";
 }
 
 bool med;

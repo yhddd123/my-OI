@@ -39,9 +39,16 @@ inline int ksm(int a,int b=mod-2){
 }
 int n,m,lim,ans;
 int calc(int v1,int v2,int n){
-	if(v1==v2)return n*ksm(v1,n-1)%mod;
+	if(v1==v2)return (n+1)*ksm(v1,n)%mod;
 	if(v1<v2)swap(v1,v2);
-	return (ksm(v1,n)+mod-ksm(v2,n))*ksm(v1-v2)%mod;
+	return (ksm(v1,n+1)+mod-ksm(v2,n+1))*ksm(v1-v2)%mod;
+}
+int calc1(int v1,int v2,int n){
+	if(v1==v2)return n*(n+1)/2%mod*ksm(v1,n)%mod;
+	// int res=0;
+	// for(int i=0;i<=n;i++)(res+=i*ksm(v1,i)%mod*ksm(v2,n-i))%=mod;
+	// return res;
+	return (n*ksm(v1,n+1)+mod-(n+1)*ksm(v1,n)%mod*v2%mod+v1*ksm(v2,n))%mod*ksm((v1-v2)*(v1-v2)%mod)%mod;
 }
 void work(){
 	n=read();m=read(),lim=read();
@@ -51,8 +58,24 @@ void work(){
 				int v=min(k,lim-i*k);
 				int t=min(i,lim-i*max(j,k));
 				// cout<<i<<" "<<j<<" "<<k<<" "<<v<<" "<<t<<"\n";
-				for(int p=2;p<n-1;p++){
-					int res=(ksm(j,p-1)+mod-ksm(j-1,p-1))*calc(v,k-1,n-p-1)%mod;
+				if(v==k){
+					int res=(calc(j,k,n-2)+mod-calc(j-1,k,n-2)+mod-calc(j,k-1,n-2)+calc(j-1,k-1,n-2))%mod;
+					(ans+=res*t)%=mod;
+				}
+				else if(v==k-1){
+					int res=(calc(j,k-1,n-3)+mod-calc(j-1,k-1,n-3))*(n-2)%mod;
+					if(n<=5){
+						for(int p=0;p<=n-3;p++){
+							int res=(ksm(j,p)+mod-ksm(j-1,p))%mod;
+							res=res*p%mod*ksm(k-1,n-p-3)%mod;
+							(ans+=mod-res*t%mod)%=mod;
+						}
+					}
+					else (res+=mod-(calc1(j,k-1,n-3)+mod-calc1(j-1,k-1,n-3))%mod)%=mod;
+					(ans+=res*t)%=mod;
+				}
+				else{
+					int res=(calc(j,k-1,n-2)+mod-calc(j-1,k-1,n-2)+mod-calc(j,v,n-2)+calc(j-1,v,n-2))%mod*ksm(k-1-v)%mod;
 					(ans+=res*t)%=mod;
 				}
 			}

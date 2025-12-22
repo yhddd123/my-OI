@@ -1,10 +1,10 @@
-// Problem: T712268 [JOI 2026 二次预选] 船 / Ship
-// Contest: Luogu
-// URL: https://www.luogu.com.cn/problem/T712268?contestId=298530
+// Problem: D - Max Prod Plus
+// Contest: AtCoder - AtCoder Grand Contest 075
+// URL: https://atcoder.jp/contests/agc075/tasks/agc075_d
 // Memory Limit: 1024 MB
 // Time Limit: 3000 ms
 // Written by yhm.
-// Start codeing:2025-12-19 19:50:59
+// Start codeing:2025-12-21 20:50:14
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
@@ -28,69 +28,91 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,a[maxn];
-struct ST{
-	int mn[12][maxn];
-	void init(){
-		for(int j=1;j<12;j++){
-			for(int i=1;i+(1<<j)-1<=n;i++)mn[j][i]=min(mn[j-1][i],mn[j-1][i+(1<<j-1)]);
-		}
-	}
-	int que(int l,int r){
-		if(l>r)return inf;
-		int k=__lg(r-l+1);
-		return min(mn[k][l],mn[k][r-(1<<k)+1]);
-	}
-}st[4];
-int pl[4],pr[4];
+inline int ksm(int a,int b=mod-2){
+    int ans=1;
+    while(b){
+        if(b&1)ans=ans*a%mod;
+        a=a*a%mod;
+        b>>=1;
+    }
+    return ans;
+}
+int n,m,lim,ans;
+int calc(int v1,int v2,int n){
+	if(v1==v2)return n*ksm(v1,n-1)%mod;
+	if(v1<v2)swap(v1,v2);
+	return (ksm(v1,n)+mod-ksm(v2,n))*ksm(v1-v2)%mod;
+}
+int calc1(int v1,int v2,int n){
+	if(v1==v2)return n*(n+1)/2%mod*ksm(v1,n)%mod;
+	// int res=0;
+	// for(int i=0;i<=n;i++)(res+=i*ksm(v1,i)%mod*ksm(v2,n-i))%=mod;
+	// return res;
+	return (n*ksm(v1,n+1)+mod-(n+1)*ksm(v1,n)%mod*v2%mod+v1*ksm(v2,n))%mod*ksm((v1-v2)*(v1-v2)%mod)%mod;
+}
 void work(){
-	n=read();
-	for(int i=1;i<=n;i++)a[i]=read();
-	if(n&1){
-		for(int i=1;i<=n/2+2;i++){
-			for(int j=0;j<4;j++)st[j].mn[0][i]=a[i+(n-3)/2+j]-a[i];
-		}
-		for(int i=0;i<4;i++)st[i].init();
-		map<int,bool> vis;for(int i=1;i<=n;i++)vis[a[i]]=1;
-		int ans=-1;
-		for(int i=1;i<=n;i++){
-			for(int j=i+1;j<=n;j++){
-				int k=0;
-				if(vis.find(2*a[i]-a[j])!=vis.end()){
-					k=lower_bound(a+1,a+n+1,2*a[i]-a[j])-a;
-					pl[0]=1,pr[0]=k-1;
-					pl[1]=k+1,pr[1]=i-1;
-					pl[2]=i+1,pr[2]=j-1;
-					pl[3]=j+1,pr[3]=n;
+	n=read();m=read(),lim=read();
+	for(int i=1;i<=m;i++){
+		for(int j=1;j<i&&i*j<=lim;j++){
+			for(int k=1;k<=i&&i*j+k<=lim&&i*k<=lim;k++){
+				int v=min(k,lim-i*k);
+				int t=min(i,lim-i*max(j,k));
+				// cout<<i<<" "<<j<<" "<<k<<" "<<v<<" "<<t<<"\n";
+				if(v==k){
+					int res=(calc(j,k,n-1)+mod-calc(j-1,k,n-1)+mod-calc(j,k-1,n-1)+calc(j-1,k-1,n-1))%mod;
+					(ans+=res*t)%=mod;
 				}
-				if(vis.find(2*a[j]-a[i])!=vis.end()){
-					k=lower_bound(a+1,a+n+1,2*a[j]-a[i])-a;
-					pl[0]=1,pr[0]=i-1;
-					pl[1]=i+1,pr[1]=j-1;
-					pl[2]=j+1,pr[2]=k-1;
-					pl[3]=k+1,pr[3]=n;
+				else if(v==k-1){
+					int res=(calc(j,k-1,n-2)+mod-calc(j-1,k-1,n-2))*(n-2)%mod;
+					(res+=mod-(calc1(j,k-1,n-3)+mod-calc1(j-1,k-1,n-3))%mod)%=mod;
+					(ans+=res*t)%=mod;
+					// for(int p=0;p<=n-3;p++){
+						// int res=(ksm(j,p)+mod-ksm(j-1,p))%mod;
+						// res=res*p%mod*ksm(k-1,n-p-3)%mod;
+						// cout<<res<<"\n";
+						// (ans+=mod-res*t%mod)%=mod;
+					// }
 				}
-				if(!k)continue;
-				int res=a[j]-a[i];
-				for(int i=0;i<4;i++){
-					for(int j=i;j<4;j++){
-						int l=max(pl[i]-i,pr[j]-j-(n-3)/2)+i,r=min(pr[i]-i,pr[j]-j-(n-3)/2)+i;
-						if(l>r)continue;
-						// cout<<i<<" "<<j<<" "<<l<<" "<<r<<" "<<st[j-i].que(l,r)<<"\n";
-						res=min(res,st[j-i].que(l,r));
-					}
+				else{
+					int res=(calc(j,k-1,n-1)+mod-calc(j-1,k-1,n-1)+mod-calc(j,v,n-1)+calc(j-1,v,n-1))%mod*ksm(k-1-v)%mod;
+					(ans+=res*t)%=mod;
 				}
-				// cout<<i<<" "<<j<<" "<<k<<" "<<res<<"\n";
-				ans=max(ans,res);
 			}
+			int res=(ksm(j,n-2)+mod-ksm(j-1,n-2))%mod;
+			res=res*min(i,lim-i*j)%mod;
+			(ans+=res)%=mod;
 		}
-		printf("%lld\n",ans);
 	}
-	else{
-		int ans=inf;
-		for(int i=1;i<=n/2;i++)ans=min(ans,a[i+n/2]-a[i]);
-		printf("%lld\n",ans);
+	// cout<<ans<<"\n";
+	for(int i=1;i<=m;i++){
+		for(int k=1;k<=i&&i*k<=lim;k++){
+			int v=min(k,lim-i*k);
+			int t=min(i,lim-i*k);
+			int res=1;
+			if(v==k)res=res*(ksm(k,n-2)+mod-ksm(k-1,n-2))%mod;
+			else if(v==k-1)res=res*(n-2)%mod*ksm(k-1,n-3)%mod;
+			else res=res*(ksm(k-1,n-2)+mod-ksm(v,n-2))%mod*ksm(k-1-v)%mod;
+			(ans+=res*t)%=mod;
+			// cout<<i<<" "<<k<<" "<<v<<" "<<res<<"\n";
+		}
 	}
+	// cout<<ans<<"\n";
+	for(int i=1;i<=m;i++){
+		if(i*i+i+1<=lim){
+			int x=min(m,lim-i*i)-i;
+			int res=(ksm(i,n-1)+mod-ksm(i-1,n-1)+mod-(n-1)*ksm(i-1,n-2)%mod)%mod;
+			(ans+=res*x)%=mod;
+			// cout<<ans<<" "<<res<<" "<<x<<"\n";
+		}
+		for(int j=1;j<i&&i*j+i+1<=lim;j++){
+			int x=min(m,lim-i*j)-i;
+			int res=(n-1)*(ksm(j,n-2)+mod-ksm(j-1,n-2))%mod;
+			// cout<<i<<" "<<j<<" "<<res<<" "<<x<<"\n";
+			(ans+=res*x)%=mod;
+		}
+	}
+	assert(ans>=0&&ans<mod);
+	printf("%lld\n",ans);
 }
 
 bool med;
