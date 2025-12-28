@@ -169,6 +169,8 @@ signed main(){
 	// freopen("frame.out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+
+	ios::sync_with_stdio(false);
 	
 	T=1;
 	while(T--)work();

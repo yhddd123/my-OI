@@ -6,29 +6,28 @@
 #define se second
 #define pb push_back
 using namespace std;
-inline int read(){
-    int x=0,fl=1;char ch=getchar();
-    while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
-    while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
-    return x*fl;
-}
+static char buf[1000000],*p1=buf,*p2=buf;
+#define getchar() p1==p2&&(p2=(p1=buf)+fread(buf,1,1000000,stdin),p1==p2)?EOF:*p1++
+inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-1;c=getchar();}while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x*f;}
+inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
 const int maxn=100010;
-const int BB=0;
-const int inf=1e9;
+const int BB=18;
+
 bool mbe;
 
 #define ull unsigned long long
+const ull U=-1ull;
 ull pw[65];
 struct bs{
 	vector<ull> a;
 	int len,n;
 	void init(int _n,ull w=0){
-		n=_n,len=(n+63)/64+1;a.resize(len+1,0);
+		n=_n,len=(n+63)/64;a.resize(len+1,0);
         if(w==1)w=-1ull;
         for(ull &v:a)v=w;
 	}
-	void set0(int x){a[x>>6]&=~pw[x&63];}
-	void set1(int x){a[x>>6]|=pw[x&63];}
+	inline void set0(int x){a[x>>6]&=~pw[x&63];}
+	inline void set1(int x){a[x>>6]|=pw[x&63];}
 	bool operator[](int x){return (a[x>>6]>>(x&63))&1;}
 	bs operator|(const bs&b)const{
 		bs c;c.init(max(n,b.n));
@@ -62,22 +61,22 @@ struct bs{
 	}
     int mex(){
         for(int i=0;i<a.size();i++){
-            if(a[i]!=(-1ull)){
+            if(a[i]!=U){
                 return (i<<6)+__builtin_ctzll(~a[i]);
             }
         }
     }
-    bs split(int l,int r){
-        bs res;res.init(r-l+1);r=min(r,n);
+    inline void split(bs &b,int l,int r){
+    	r=min(r,n);
         int pl=l>>6,pr=r>>6,p1=l&63,p2=(r&63);
-        for(int i=pl;i<pr-(p1>p2);i++){
-            res.a[i-pl]=(a[i]>>p1)|(p1?(a[i+1]<<64ll-p1):0);
+        for(int i=pl;i<pr-(p1>p2);i++)if(b.a[i-pl]){
+            b.a[i-pl]&=(a[i]>>p1)|(p1?(a[i+1]<<64ll-p1):0);
         }
-        if(p1<=p2)res.a[pr-pl]=(a[pr]&(pw[p2+1]-1))>>p1;
-        else res.a[pr-1-pl]=(a[pr-1]>>p1)|((a[pr]&(pw[p2+1]-1))<<64ll-p1);
-        return res;
+        if(p1<=p2)b.a[pr-pl]&=(a[pr]&(pw[p2+1]-1))>>p1;
+        else b.a[pr-1-pl]&=(a[pr-1]>>p1)|((a[pr]&(pw[p2+1]-1))<<64ll-p1);
+        for(int i=pr-pl-(p1>p2)+1;i<b.a.size();i++)b.a[i]=0;
     }
-}f[65],g;
+}f[BB+1],g;
 int n,q,a[maxn];
 struct node{
     int l,r,id,b;
@@ -100,9 +99,9 @@ void work(){
         if(b<=BB)ask[b].pb({l,r,i,0});
         else que.pb({l,r,i,b});
     }
+    for(int j=0;j<BB;j++)f[j].init(maxn+5);
     for(int i=1;i<=BB;i++)if(ask[i].size()){
         sort(ask[i].begin(),ask[i].end(),cmp);
-        for(int j=0;j<i;j++)f[j].init(n/i+5);
         auto add=[&](int p){++vis[a[p]];if(vis[a[p]]==1)f[a[p]%i].set1(a[p]/i);};
         auto del=[&](int p){--vis[a[p]];if(!vis[a[p]])f[a[p]%i].set0(a[p]/i);};
         int l=1,r=0;
@@ -116,10 +115,10 @@ void work(){
                 // cout<<l<<" "<<r<<" "<<j<<" "<<f[j].count()<<" "<<f[j].mex()<<" "<<f[j][96]<<"\n";
             }
         }
-        for(int i=l;i<=r;i++)vis[a[i]]=0;
+        for(int i=l;i<=r;i++)del(i);
     }
     sort(que.begin(),que.end(),cmp);
-    bs g;g.init(n+5);
+    bs g;g.init(maxn+5);
     auto add=[&](int p){++vis[a[p]];if(vis[a[p]]==1)g.set1(a[p]);};
     auto del=[&](int p){--vis[a[p]];if(!vis[a[p]])g.set0(a[p]);};
     int l=1,r=0;
@@ -128,19 +127,16 @@ void work(){
         while(r<qr)add(++r);
         while(l<ql)del(l++);
         while(r>qr)del(r--);
-        bs h;h.init(n/b+5,1);
+        bs h;h.init(b,1);
         // cout<<l<<" "<<r<<endl;
         // for(int i=l;i<=r;i++)cout<<a[i]<<" ";cout<<"\n";
-        ans[id]=n/b+1;
-        for(int t=0;t<=n/b;t++){
-            bs hh=g.split(b*t,b*(t+1)-1);
-            h=h&hh;
-            // cout<<hh.count()<<"\n";
-            // for(int i=0;i<b;i++)cout<<hh[i];cout<<"\n";
+        ans[id]=maxn/b+1;
+        for(int t=0;t<=maxn/b;t++){
+        	g.split(h,b*t,b*(t+1)-1);
             if(!h.count()){ans[id]=t;break;}
         }
     }
-    for(int i=1;i<=q;i++)printf("%d\n",ans[i]);
+    for(int i=1;i<=q;i++)write(ans[i]),puts("");
 }
 
 bool med;
