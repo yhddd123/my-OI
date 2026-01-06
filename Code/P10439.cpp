@@ -26,7 +26,7 @@ inline int read(){
 }
 const int maxn=100010;
 const int maxq=300010;
-const int B=200;
+const int B=100;
 const int inf=1e18;
 bool mbe;
 
