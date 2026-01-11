@@ -44,12 +44,5 @@ namespace poly{
 		f=ntt(f,-1);f.resize(n+m+1);
 		return f;
 	}
-	vector<int> add(vector<int> a,vector<int> b){
-		int n=a.size()-1,m=b.size()-1;
-		vector<int>f(max(n,m)+1);
-		for(int i=0;i<=n;i++)f[i]=a[i];
-		for(int i=0;i<=m;i++)inc(f[i],b[i]);
-		return f;
-	}
 }
 using poly::mul;

@@ -7,7 +7,7 @@ inline int ksm(int a,int b=mod-2){
     }
     return ans;
 }
-int fac[maxn<<1],inv[maxn<<1];
+int fac[maxn],inv[maxn];
 int C(int m,int n){
     if(n<0|m<0||m<n)return 0;
     return 1ll*fac[m]*inv[n]%mod*inv[m-n]%mod;}
