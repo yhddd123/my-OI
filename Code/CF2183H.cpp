@@ -23,7 +23,7 @@ static char buf[1000000],*p1=buf,*p2=buf;
 inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-1;c=getchar();}while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x*f;}
 inline void write(lll x){static char buf[60];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
 const int maxn=500010;
-const int inf=1e9;
+const lll inf=1e22;
 bool mbe;
 
 int n,k,p,a[maxn],b[maxn];
@@ -35,8 +35,8 @@ pii f[maxn];
 struct node{
 	int j,l,r;
 }st[maxn];int h,t;
-pii calc(int i,int j,int lim){return {f[j].fi+w(j+1,i)-lim,f[j].se+1};}
-pii calc(int lim){
+pii calc(int i,int j,lll lim){return {f[j].fi+w(j+1,i)-lim,f[j].se+1};}
+pii calc(lll lim){
 	f[0]={0,0};
 	st[h=t=1]={0,1,n};
 	// cout<<lim<<"\n";
@@ -61,7 +61,7 @@ pii calc(int lim){
 	// for(int i=1;i<=n;i++){
 		// f[i]={1e30,0};
 		// for(int j=0;j<i;j++)f[i]=min(f[i],calc(i,j,lim));
-		// write(f[i].fi),cout<<" "<<f[i].se<<"\n";
+		// // write(f[i].fi),cout<<" "<<f[i].se<<"\n";
 	// }
 	return f[n];
 }
@@ -86,14 +86,15 @@ void work(){
 	}
 	n=nn;
 	for(int i=1;i<=n;i++)sum[i]=sum[i-1]+sum[i],b[i]+=b[i-1];
-	int l=-inf,r=inf,res=-inf;
+	lll l=-inf,r=inf,res=-inf;
 	while(l<=r){
-		int mid=l+r>>1;
+		lll mid=l+r>>1;
 		if(calc(mid).se<=k)res=mid,l=mid+1;
 		else r=mid-1;
 	}
+	// cout<<res<<"\n";
 	pii dp=calc(res);
-	write(dp.fi+(lll)dp.se*res);puts("");
+	write(dp.fi+k*res);puts("");
 }
 
 bool med;

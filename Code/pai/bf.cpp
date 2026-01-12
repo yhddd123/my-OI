@@ -1,182 +1,104 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+#define int __int128
+#define pii pair<int, int>
+#define mp make_pair
+#define pb push_back
+#define fi first
+#define se second
 
 using namespace std;
 
-namespace FastRead{
-    char buf[1000005], *s = buf, *t = buf;
-    #define gc() s == t && (t = (s = buf) + fread(buf, 1, 1000000, stdin), s == t) ? EOF : *s ++ 
-    template <typename T>
-    inline void Read(T &x)
-    {
-        x = 0;
-        int f = 0;
-        char ch = gc();
-        while(ch < '0' || ch > '9') f = ch == '-', ch = gc();
-        while('0' <= ch && ch <= '9') x = x * 10 + ch - 48, ch = gc();
-        f && (x = -x);
-    }
-    inline void Read(char* str)
-    {
-        char ch = gc();
-        while(ch <= 32 || ch > 126) ch = gc();
-        while(32 < ch && ch <= 126) *(str ++ ) = ch, ch = gc();
-    }
-};
-using FastRead::Read;
-
-typedef unsigned long long ULL;
-
-const int N = 1.1e5 + 5, B = 128;
-
-int n, m;
-int x[N];
-int m0;
-struct Query{
-    int l, r, b, i;
-}q0[N];
-vector<Query> q1[B];
-int ans[N];
-
-int cnt[N];
-ULL a[N], b[N];
-
-inline void Init(int n)
-{
-    for(int i = 0; i < n >> 6; i ++ ) a[i] = -1;
-    a[(n >> 6)] = (1ULL << (n & 63)) - 1;
+template <typename T>
+inline void read(T &tr){
+    tr=0;char ch=getchar();bool f=false;
+    while(!isdigit(ch)){if(ch=='-'){f=true;}ch=getchar();}
+    while(isdigit(ch)){tr=(tr<<1)+(tr<<3)+(ch^48);ch=getchar();}
+    tr=f?-tr:tr;
+    return ;
 }
-inline int Any(int n)
-{
-    ULL res = 0;
-    for(int i = 0; i <= n >> 6; i ++ ) res |= a[i];
-    return !!res;
+template <typename T>
+inline void write(T tr){
+    if(tr<0) putchar('-'),tr=-tr;
+    if(tr>9) write(tr/10);
+    putchar(tr%10^48);
+    return ;
 }
-inline void Flip(int i)
-{
-    b[i >> 6] ^= 1ULL << (i & 63);
-}
-inline void Split(int l, int r)
-{
-    if(l >> 6 == r >> 6)
-    {
-        a[0] &= (b[l >> 6] >> l) & ((1ULL << (r - l)) - 1);
-    }
-    else if(l & 63)
-    {
-        for(int i = l >> 6; i <= r >> 6; i ++ )
-        {
-            a[i - (l >> 6)] &= ~((1ULL << (64 - (l & 63))) - 1) | (b[i] >> (l & 63));
+template <typename T>
+inline void print(T tr){write(tr);putchar('\n');}
+
+const int N = 5e5 + 10, inf = 1e20;
+
+int t, n, k;
+int a[N], b[N], s1[N], s2[N];
+int f[N], g[N];
+
+inline int w(int l, int r){return (s1[r] - s1[l]) * (s2[r] - s2[l]) + f[l];}
+struct S{int l, r, ls;};
+
+void solve(int wt){
+    deque<S> dq;
+    dq.pb({1, n, 0});
+    for(int i = 1; i <= n; i++){
+        S now = dq.front();
+        f[i] = wt + w(now.ls, i);g[i] = g[now.ls] + 1;
+        dq.front().l++;
+        if(dq.front().r <= i) dq.pop_front();
+        int lt = n + 1;
+        while(!dq.empty()){
+            S to = dq.back();
+            if(w(i, to.l) <= w(to.ls, to.l)) lt = to.l, dq.pop_back();
+            else if(w(i, to.r) >= w(to.ls, to.r)) break;
+            else{
+                int l = to.l, r = to.r;
+                while(l <= r){
+                    int mid = (l + r) >> 1;
+                    if(w(i, mid) <= w(to.ls, mid)) r = mid - 1;
+                    else l = mid + 1;
+                }
+                lt = r + 1;dq.back().r = r;break;
+            }
         }
-        for(int i = (l >> 6) + 1; i <= r >> 6; i ++ )
-        {
-            a[i - (l >> 6) - 1] &= ((1ULL << (64 - (l & 63))) - 1) | (b[i] & ((1ULL << (l & 63)) - 1)) << (64 - (l & 63));
+        if(lt <= n) dq.pb({lt, n, i});
+    }
+}
+
+signed main(){
+    read(t);
+    while(t--){
+        read(n); read(k);
+        for(int i = 1; i <= n; i++) read(a[i]), b[i] = 1;
+        sort(a + 1, a + n + 1);
+        int cnt = 0;
+        for(int i = 1; i <= n; i++) if(a[i] < 0) cnt++;
+        if(n - cnt + 1 <= k){
+            int ans = 0, sum = 0, len = 0;
+            for(int i = n; i >= 1; i--){
+                if(k > 1) ans += a[i], k--;
+                else sum += a[i], len++;
+            }
+            print(ans + sum * len);
+            continue;
         }
-    }
-    else
-    {
-        for(int i = l >> 6; i <= r >> 6; i ++ )
-        {
-            a[i - (l >> 6)] &= b[i];
+        int m = 1;
+        for(int i = 2; i <= n; i++){
+            if(a[i] < 0) a[1] += a[i], b[1]++;
+            else a[++m] = a[i];
         }
-    }
-}
-
-inline void Add(int i)
-{
-    if(!cnt[x[i]]) Flip(x[i]);
-    cnt[x[i]] ++ ;
-}
-inline void Del(int i)
-{
-    cnt[x[i]] -- ;
-    if(!cnt[x[i]]) Flip(x[i]);
-}
-inline int Get(int b)
-{
-    Init(b);
-    for(int i = 0; ; i ++ )
-    {
-        Split(i * b, (i + 1) * b);
-        if(!Any(b)) return i;
-    }
-}
-
-inline void Solve0()
-{
-    int siz = n / sqrt(m0) + 1;
-    sort(q0 + 1, q0 + m0 + 1, [&](const Query &x, const Query &y) {
-        return x.l / siz == y.l / siz ? x.r == y.r ? 0 : (x.r < y.r) ^ ((x.l / siz) & 1) : x.l < y.l;
-    });
-    for(int l = 1, r = 0, i = 1; i <= m0; i ++ )
-    {
-        while(r < q0[i].r) Add( ++ r);
-        while(l > q0[i].l) Add( -- l);
-        while(r > q0[i].r) Del(r -- );
-        while(l < q0[i].l) Del(l ++ );
-        ans[q0[i].i] = Get(q0[i].b);
-    }
-}
-
-struct SGT{
-    int m;
-    vector<int> t;
-
-    inline void Build(int n)
-    {
-        m = 1;
-        while(m < n) m <<= 1;
-        t.assign(m * 2, N);
-    }
-    inline void Modify(int i, int d)
-    {
-        for(i += m; i; i >>= 1) t[i] = d, d = max(d, t[i ^ 1]);
-    }
-    inline int Query(int k)
-    {
-        int u = 1;
-        while(u < m)
-        {
-            if(t[u << 1] > k) u = u << 1;
-            else u = u << 1 | 1;
+        n = m;
+        for(int i = 1; i <= n; i++) s1[i] = s1[i - 1] + a[i], s2[i] = s2[i - 1] + b[i];
+        int l = -inf, r = inf;
+        while(l <= r){
+            int mid = (l + r) >> 1;
+            solve(-mid);
+            if(g[n] < k) l = mid + 1;
+            else r = mid - 1;
         }
-        return u - m;
+        // print(n);
+        solve(-r - 1);
+        // print(f[n]);
+        // print(g[n]);
+        // print(r+1);
+        print(f[n] + k * (r + 1));
     }
-}t[B];
-
-inline void Solve1(int k)
-{
-    if(q1[k].empty()) return ;
-    const int m = 1e5;
-    for(int i = 0; i < k; i ++ ) t[i].Build(m / k + 1);
-    sort(q1[k].begin(), q1[k].end(), [&](const Query &x, const Query &y) {return x.l > y.l;});
-    for(int i = 0, j = n; i < (int)q1[k].size(); i ++ )
-    {
-        while(j >= q1[k][i].l)
-        {
-            t[x[j] % k].Modify(x[j] / k, j);
-            j -- ;
-        }
-        for(int j = 0; j < k; j ++ )
-        {
-            ans[q1[k][i].i] = max(ans[q1[k][i].i], t[j].Query(q1[k][i].r));
-        }
-    }
-}
-
-int main()
-{
-    Read(n);
-    for(int i = 1; i <= n; i ++ ) Read(x[i]);
-    Read(m);
-    for(int i = 1; i <= m; i ++ )
-    {
-        int l, r, b;
-        Read(l), Read(r), Read(b);
-        if(b < B) q1[b].push_back({l, r, b, i});
-        else q0[ ++ m0] = {l, r, b, i};
-    }
-    Solve0();
-    for(int i = 1; i < B; i ++ ) Solve1(i);
-    for(int i = 1; i <= m; i ++ ) printf("%d\n", ans[i]);
     return 0;
 }

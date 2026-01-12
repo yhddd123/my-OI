@@ -15,27 +15,22 @@ inline int read(){
 	return x*fl;
 }
 const int maxn=200010;
-const int inf=1e3;
+const int inf=1e9;
 bool mbe;
 
-int n,m,q,a[maxn];
-mt19937 rnd(time(0));
-int get(int l,int r){return rnd()%(r-l+1)+l;}
+int n;
 void work(){
-	n=rnd()%5+1;
-	cout<<n<<" "<<rnd()%n+1<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%inf-inf/2<<" ";cout<<"\n";
+	n=read();
 }
 
 bool med;
 int T;
 signed main(){
 	// freopen(".in","r",stdin);
-	// freopen("1.out","w",stdout);
+	// freopen(".out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=10000;
-	cout<<T<<"\n";
+	T=1;
 	while(T--)work();
 }
