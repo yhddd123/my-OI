@@ -15,16 +15,19 @@ inline int read(){
 	return x*fl;
 }
 const int maxn=200010;
-const int inf=1e3;
+const int inf=1e5;
 bool mbe;
 
 int n,m,q,a[maxn];
 mt19937 rnd(time(0));
 int get(int l,int r){return rnd()%(r-l+1)+l;}
 void work(){
-	n=rnd()%5+1;
-	cout<<n<<" "<<rnd()%n+1<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%inf-inf/2<<" ";cout<<"\n";
+	cout<<"0"<<"\n";
+	n=1000,m=1000,q=1000;
+	cout<<n<<" "<<m<<" "<<q<<" "<<rnd()%inf+1<<"\n";
+	for(int i=1;i<=n;i++)cout<<rnd()%inf+1<<" ";cout<<"\n";
+	for(int i=1;i<=m;i++)cout<<rnd()%n+1<<" "<<rnd()%n+1<<" "<<rnd()%inf+1<<"\n";
+	for(int i=1;i<=q;i++)cout<<rnd()%(n+1)<<" "<<rnd()%inf+1<<"\n";
 }
 
 bool med;
@@ -35,7 +38,7 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=10000;
-	cout<<T<<"\n";
+	T=1;
+	// cout<<T<<"\n";
 	while(T--)work();
 }

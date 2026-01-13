@@ -1,17 +1,17 @@
-// Problem: CF2183H Minimise Cost
+// Problem: P13758 【MX-X17-T7】夏终
 // Contest: Luogu
-// URL: https://www.luogu.com.cn/problem/CF2183H
-// Memory Limit: 500 MB
-// Time Limit: 6000 ms
+// URL: https://www.luogu.com.cn/problem/P13758
+// Memory Limit: 512 MB
+// Time Limit: 7000 ms
 // Written by yhm.
-// Start codeing:2026-01-12 15:41:24
+// Start codeing:2026-01-13 16:04:26
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
 #include<bits/stdc++.h>
-#define lll __int128
+#define int long long
 #define mod 998244353ll
-#define pii pair<lll,int>
+#define pii pair<int,int>
 #define fi first
 #define se second
 #define pb push_back
@@ -21,79 +21,159 @@ using namespace std;
 static char buf[1000000],*p1=buf,*p2=buf;
 #define getchar() p1==p2&&(p2=(p1=buf)+fread(buf,1,1000000,stdin),p1==p2)?EOF:*p1++
 inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-1;c=getchar();}while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x*f;}
-inline void write(lll x){static char buf[60];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
-const int maxn=500010;
-const int inf=1e9;
+inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
+const int maxn=200010;
+const int inf=2e15;
 bool mbe;
 
-int n,k,p,a[maxn],b[maxn];
-lll sum[maxn];
-lll w(int l,int r){
-	return (sum[r]-sum[l-1])*(b[r]-b[l-1]);
+int n,m,q,a[maxn];
+int ff[maxn],hd[maxn],ed[maxn],nxt[maxn],fr[maxn],val[maxn];
+int fd(int x){
+	if(ff[x]==x)return x;
+	return ff[x]=fd(ff[x]);
 }
-pii f[maxn];
-struct node{
-	int j,l,r;
-}st[maxn];int h,t;
-pii calc(int i,int j,int lim){return {f[j].fi+w(j+1,i)-lim,f[j].se+1};}
-pii calc(int lim){
-	f[0]={0,0};
-	st[h=t=1]={0,1,n};
-	// cout<<lim<<"\n";
-	for(int i=1;i<=n;i++){
-		f[i]=calc(i,st[h].j,lim);
-		st[h].l++;
-		while(h<=t&&st[h].l>st[h].r)h++;
-		while(h<=t&&calc(st[t].l,st[t].j,lim)>=calc(st[t].l,i,lim))t--;
-		if(h>t)st[++t]={i,i+1,n};
-		else{
-			int l=st[t].l,r=st[t].r,res=l;
-			while(l<=r){
-				int mid=l+r>>1;
-				if(calc(mid,st[t].j,lim)<calc(mid,i,lim))res=mid,l=mid+1;
-				else r=mid-1;
-			}
-			st[t].r=res;
-			if(res+1<=n)st[++t]={i,res+1,n};
-		}
-		// write(f[i].fi),cout<<" "<<f[i].se<<"\n";
+int id[maxn],tmp[maxn];
+const int B=1000;
+const int maxm=maxn/B+5;
+vector<int> operator*(vector<int> u,vector<int> v){
+	if(!u.size())return v;
+	if(!v.size())return u;
+	int n=u.size()-1,m=v.size()-1;
+	int p=0,q=0,t=0;
+	while(p<=n&&u[p]==inf)p++;
+	while(q<=m&&v[q]==inf)q++;
+	for(int i=n;i>p;i--)u[i]-=u[i-1];
+	for(int i=m;i>q;i--)v[i]-=v[i-1];
+	// for(int i=p+1;i<n;i++)assert(u[i]<=u[i+1]);
+	vector<int> res(p+q,inf);
+	if(p<=n&&q<=m)res.pb(u[p]+v[q]),p++,q++;
+	while(p<=n&&q<=m){
+		if(u[p]<v[q])res.pb(res.back()+u[p++]);
+		else res.pb(res.back()+v[q++]);
 	}
-	// for(int i=1;i<=n;i++){
-		// f[i]={1e30,0};
-		// for(int j=0;j<i;j++)f[i]=min(f[i],calc(i,j,lim));
-		// write(f[i].fi),cout<<" "<<f[i].se<<"\n";
-	// }
-	return f[n];
+	while(p<=n)res.pb(res.back()+u[p++]);
+	while(q<=m)res.pb(res.back()+v[q++]);
+	return res;
+}
+vector<int> operator+(vector<int> u,vector<int> v){
+	int n=u.size()-1,m=v.size()-1;
+	vector<int> res(max(n,m)+1,inf);
+	for(int i=0;i<=n;i++)res[i]=min(res[i],u[i]);
+	for(int i=0;i<=m;i++)res[i]=min(res[i],v[i]);
+	return res;
+}
+int pl[maxm],pr[maxm],bel[maxn],num;
+#define mid ((l+r)>>1)
+#define ls nd<<1
+#define rs nd<<1|1
+struct mat{
+	vector<int> e[2][2];
+	mat(vector<int> _e00={},vector<int> _e01={},vector<int> _e10={},vector<int> _e11={}){
+		e[0][0]=_e00,e[0][1]=_e01,e[1][0]=_e10,e[1][1]=_e11;
+	}
+};
+mat operator*(mat u,mat v){
+	mat res;
+	for(int i=0;i<2;i++){
+		for(int k=0;k<2;k++){
+			for(int j=0;j<2;j++){
+				res.e[i][j]=res.e[i][j]+u.e[i][k]*v.e[k][j];
+			}
+		}
+	}
+	return res;
+}
+struct sgt{
+	mat tree[B<<2];
+	void build(int nd,int l,int r){
+		if(l==r){
+			tree[nd]={{val[l]},{inf,0},{val[l]+a[l]},{val[l],a[l]}};
+			return ;
+		}
+		build(ls,l,mid),build(rs,mid+1,r);
+		tree[nd]=tree[rs]*tree[ls];
+	}
+	void modif(int nd,int l,int r,int p){
+		if(l==r){
+			tree[nd]={{val[l]},{inf,0},{val[l]+a[l]},{val[l],a[l]}};
+			return ;
+		}
+		if(p<=mid)modif(ls,l,mid,p);
+		else modif(rs,mid+1,r,p);
+		tree[nd]=tree[rs]*tree[ls];
+	}
+}t[maxm];
+#undef mid
+int calc(vector<int> &a,int x){
+	if(!a.size())return inf;
+	// cout<<a.size()<<" "<<x<<endl;
+	int l=0,r=a.size()-1;
+	while(l<r){
+		int mid=l+r>>1;
+		if(a[mid]==inf||a[mid]+mid*x>=a[mid+1]+(mid+1)*x)l=mid+1;
+		else r=mid;
+	}
+	return a[l]+l*x;
+	// int res=inf;
+	// for(int i=0;i<a.size();i++)res=min(res,a[i]+i*x);
+	// return res;
 }
 void work(){
-	n=read();k=read();
+	n=read();m=read();q=read();a[0]=read();
 	for(int i=1;i<=n;i++)a[i]=read();
-	sort(a+1,a+n+1,greater<int>());
-	for(int i=1;i<=n;i++)sum[i]=sum[i-1]+a[i];
-	p=0;for(int i=1;i<=n;i++)if(a[i]>=0)p=i;
-	if(p<k){
-		write(sum[k-1]+(lll)(sum[n]-sum[k-1])*(n-k+1));puts("");
-		return ;
+	vector<tuple<int,int,int>> edge;
+	for(int i=1;i<=m;i++){
+		int u=read(),v=read(),w=read();
+		edge.pb({w,u,v});
 	}
-	reverse(a+1,a+n+1);
-	int nn=0;
-	for(int i=1;i<=n;i++){
-		if(a[i]<0){
-			if(i==1)sum[++nn]=a[i],b[nn]=1;
-			else sum[nn]+=a[i],b[nn]++;
+	sort(edge.begin(),edge.end());
+	for(int i=1;i<=n;i++)ff[i]=i,hd[i]=ed[i]=i;
+	for(auto[w,u,v]:edge){
+		u=fd(u),v=fd(v);
+		if(u==v)continue;
+		ff[u]=v;
+		nxt[ed[u]]=hd[v],fr[hd[v]]=ed[u],val[hd[v]]=w;
+		hd[v]=hd[u];
+	}
+	for(int i=1,j=0;i<=n;i++)if(!fr[i]){
+		int x=i;val[i]=inf;
+		while(x)id[x]=++j,x=nxt[x];
+	}
+	for(int i=1;i<=n;i++)tmp[id[i]]=a[i];
+	for(int i=1;i<=n;i++)a[i]=tmp[i];
+	for(int i=1;i<=n;i++)tmp[id[i]]=val[i];
+	for(int i=1;i<=n;i++)val[i]=tmp[i];
+	for(int l=1,r;l<=n;l=r+1){
+		r=min(l+B-1,n);pl[++num]=l,pr[num]=r;
+		for(int j=l;j<=r;j++)bel[j]=num;
+		t[num].build(1,l,r);
+	}
+	multiset<int> s;
+	for(int i=1;i<=n;i++)s.insert(a[i]);
+	while(q--){
+		int x=id[read()],y=read();
+		if(x)s.erase(s.find(a[x]));
+		a[x]=y;
+		if(x)s.insert(a[x]);
+		if(x)t[bel[x]].modif(1,pl[bel[x]],pr[bel[x]],x);
+		int mn=*s.begin(),w=mn+a[0];
+		// cout<<mn<<" "<<w<<"\n";
+		mat ans={{0},{inf},{inf},{0}};
+		for(int i=1;i<=num;i++){
+			mat res;
+			for(int j=0;j<2;j++){
+				for(int k=0;k<2;k++){
+					res.e[j][k]={calc(t[i].tree[1].e[j][k],w)};
+				}
+			}
+			// for(int k=0;k<2;k++)cout<<res.e[1][k][0]<<" ";cout<<"\n";
+			ans=res*ans;
 		}
-		else sum[++nn]=a[i],b[nn]=1;
+		// for(int j=0;j<2;j++){
+			// for(int k=0;k<2;k++)cout<<ans.e[j][k][0]<<" ";cout<<"\n";
+		// }
+		write(ans.e[1][1][0]-mn-w);puts("");
 	}
-	n=nn;
-	for(int i=1;i<=n;i++)sum[i]=sum[i-1]+sum[i],b[i]+=b[i-1];
-	int l=-inf,r=inf,res=-inf;
-	while(l<=r){
-		int mid=l+r>>1;
-		if(calc(mid).se<=k)res=mid,l=mid+1;
-		else r=mid-1;
-	}
-	pii dp=calc(res);
-	write(dp.fi+(lll)dp.se*res);puts("");
 }
 
 bool med;
@@ -104,6 +184,6 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=read();
+	read();T=1;
 	while(T--)work();
 }
