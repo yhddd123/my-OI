@@ -1,15 +1,15 @@
-// Problem: P13758 【MX-X17-T7】夏终
+// Problem: P13843 集合幂级数 exp（非素数模数）
 // Contest: Luogu
-// URL: https://www.luogu.com.cn/problem/P13758
+// URL: https://www.luogu.com.cn/problem/P13843
 // Memory Limit: 512 MB
-// Time Limit: 7000 ms
+// Time Limit: 3000 ms
 // Written by yhm.
-// Start codeing:2026-01-13 16:04:26
+// Start codeing:2026-01-14 07:51:57
 // 
 // Powered by CP Editor (https://cpeditor.org)
 
 #include<bits/stdc++.h>
-#define int long long
+#define ull unsigned long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -18,162 +18,59 @@
 #define db long double
 #define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
-static char buf[1000000],*p1=buf,*p2=buf;
-#define getchar() p1==p2&&(p2=(p1=buf)+fread(buf,1,1000000,stdin),p1==p2)?EOF:*p1++
-inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-1;c=getchar();}while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x*f;}
-inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
-const int maxn=200010;
-const int inf=2e15;
+inline int read(){
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x*fl;
+}
+const int maxn=20;
+const int inf=1e9;
 bool mbe;
 
-int n,m,q,a[maxn];
-int ff[maxn],hd[maxn],ed[maxn],nxt[maxn],fr[maxn],val[maxn];
-int fd(int x){
-	if(ff[x]==x)return x;
-	return ff[x]=fd(ff[x]);
-}
-int id[maxn],tmp[maxn];
-const int B=1000;
-const int maxm=maxn/B+5;
-vector<int> operator*(vector<int> u,vector<int> v){
-	if(!u.size())return v;
-	if(!v.size())return u;
-	int n=u.size()-1,m=v.size()-1;
-	int p=0,q=0,t=0;
-	while(p<=n&&u[p]==inf)p++;
-	while(q<=m&&v[q]==inf)q++;
-	for(int i=n;i>p;i--)u[i]-=u[i-1];
-	for(int i=m;i>q;i--)v[i]-=v[i-1];
-	// for(int i=p+1;i<n;i++)assert(u[i]<=u[i+1]);
-	vector<int> res(p+q,inf);
-	if(p<=n&&q<=m)res.pb(u[p]+v[q]),p++,q++;
-	while(p<=n&&q<=m){
-		if(u[p]<v[q])res.pb(res.back()+u[p++]);
-		else res.pb(res.back()+v[q++]);
-	}
-	while(p<=n)res.pb(res.back()+u[p++]);
-	while(q<=m)res.pb(res.back()+v[q++]);
-	return res;
-}
-vector<int> operator+(vector<int> u,vector<int> v){
-	int n=u.size()-1,m=v.size()-1;
-	vector<int> res(max(n,m)+1,inf);
-	for(int i=0;i<=n;i++)res[i]=min(res[i],u[i]);
-	for(int i=0;i<=m;i++)res[i]=min(res[i],v[i]);
-	return res;
-}
-int pl[maxm],pr[maxm],bel[maxn],num;
-#define mid ((l+r)>>1)
-#define ls nd<<1
-#define rs nd<<1|1
-struct mat{
-	vector<int> e[2][2];
-	mat(vector<int> _e00={},vector<int> _e01={},vector<int> _e10={},vector<int> _e11={}){
-		e[0][0]=_e00,e[0][1]=_e01,e[1][0]=_e10,e[1][1]=_e11;
-	}
-};
-mat operator*(mat u,mat v){
-	mat res;
-	for(int i=0;i<2;i++){
-		for(int k=0;k<2;k++){
-			for(int j=0;j<2;j++){
-				res.e[i][j]=res.e[i][j]+u.e[i][k]*v.e[k][j];
-			}
+int n;ull a[1<<maxn],b[1<<maxn];
+ull ff[maxn+1][1<<maxn],gg[maxn+1][1<<maxn],hh[1<<maxn];
+void fmt(ull *a,int n,ull w){
+	for(int l=2;l<=n;l<<=1){
+		int k=l>>1;
+		for(int i=0;i<n;i+=l){
+			for(int j=i;j<i+k;j++)a[j+k]+=a[j]*w;
 		}
 	}
-	return res;
 }
-struct sgt{
-	mat tree[B<<2];
-	void build(int nd,int l,int r){
-		if(l==r){
-			tree[nd]={{val[l]},{inf,0},{val[l]+a[l]},{val[l],a[l]}};
-			return ;
+void xormul(ull *a,ull *b,ull *c,int n){
+	for(int i=0;i<=n;i++){
+		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
+	}
+	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
+	for(int s=0;s<(1<<n);s++)gg[__builtin_popcount(s)][s]=b[s];
+	for(int i=0;i<=n;i++)fmt(ff[i],1<<n,1);
+	for(int i=0;i<=n;i++)fmt(gg[i],1<<n,1);
+	for(int s=0;s<(1<<n);s++){
+		for(int i=0;i<=n;i++){
+			hh[i]=0;
+			for(int j=0;j<=i;j++)hh[i]+=ff[j][s]*gg[i-j][s];
 		}
-		build(ls,l,mid),build(rs,mid+1,r);
-		tree[nd]=tree[rs]*tree[ls];
+		for(int i=0;i<=n;i++)ff[i][s]=hh[i];
 	}
-	void modif(int nd,int l,int r,int p){
-		if(l==r){
-			tree[nd]={{val[l]},{inf,0},{val[l]+a[l]},{val[l],a[l]}};
-			return ;
-		}
-		if(p<=mid)modif(ls,l,mid,p);
-		else modif(rs,mid+1,r,p);
-		tree[nd]=tree[rs]*tree[ls];
+	for(int i=0;i<=n;i++)fmt(ff[i],1<<n,-1);
+	for(int s=0;s<(1<<n);s++)c[s]=ff[__builtin_popcount(s)][s];
+}
+ull tmpf[1<<maxn],tmpg[1<<maxn],tmph[1<<maxn];
+void exp(ull *a,ull *b,int n){
+	b[0]=1;
+	for(int i=0;i<n;i++){
+		for(int s=0;s<(1<<i);s++)tmpf[s]=a[s|(1<<i)];
+		for(int s=0;s<(1<<i);s++)tmpg[s]=b[s];
+		xormul(tmpf,tmpg,tmph,i);
+		for(int s=0;s<(1<<i);s++)b[s|(1<<i)]+=tmph[s];
 	}
-}t[maxm];
-#undef mid
-int calc(vector<int> &a,int x){
-	if(!a.size())return inf;
-	// cout<<a.size()<<" "<<x<<endl;
-	int l=0,r=a.size()-1;
-	while(l<r){
-		int mid=l+r>>1;
-		if(a[mid]==inf||a[mid]+mid*x>=a[mid+1]+(mid+1)*x)l=mid+1;
-		else r=mid;
-	}
-	return a[l]+l*x;
-	// int res=inf;
-	// for(int i=0;i<a.size();i++)res=min(res,a[i]+i*x);
-	// return res;
 }
 void work(){
-	n=read();m=read();q=read();a[0]=read();
-	for(int i=1;i<=n;i++)a[i]=read();
-	vector<tuple<int,int,int>> edge;
-	for(int i=1;i<=m;i++){
-		int u=read(),v=read(),w=read();
-		edge.pb({w,u,v});
-	}
-	sort(edge.begin(),edge.end());
-	for(int i=1;i<=n;i++)ff[i]=i,hd[i]=ed[i]=i;
-	for(auto[w,u,v]:edge){
-		u=fd(u),v=fd(v);
-		if(u==v)continue;
-		ff[u]=v;
-		nxt[ed[u]]=hd[v],fr[hd[v]]=ed[u],val[hd[v]]=w;
-		hd[v]=hd[u];
-	}
-	for(int i=1,j=0;i<=n;i++)if(!fr[i]){
-		int x=i;val[i]=inf;
-		while(x)id[x]=++j,x=nxt[x];
-	}
-	for(int i=1;i<=n;i++)tmp[id[i]]=a[i];
-	for(int i=1;i<=n;i++)a[i]=tmp[i];
-	for(int i=1;i<=n;i++)tmp[id[i]]=val[i];
-	for(int i=1;i<=n;i++)val[i]=tmp[i];
-	for(int l=1,r;l<=n;l=r+1){
-		r=min(l+B-1,n);pl[++num]=l,pr[num]=r;
-		for(int j=l;j<=r;j++)bel[j]=num;
-		t[num].build(1,l,r);
-	}
-	multiset<int> s;
-	for(int i=1;i<=n;i++)s.insert(a[i]);
-	while(q--){
-		int x=id[read()],y=read();
-		if(x)s.erase(s.find(a[x]));
-		a[x]=y;
-		if(x)s.insert(a[x]);
-		if(x)t[bel[x]].modif(1,pl[bel[x]],pr[bel[x]],x);
-		int mn=*s.begin(),w=mn+a[0];
-		// cout<<mn<<" "<<w<<"\n";
-		mat ans={{0},{inf},{inf},{0}};
-		for(int i=1;i<=num;i++){
-			mat res;
-			for(int j=0;j<2;j++){
-				for(int k=0;k<2;k++){
-					res.e[j][k]={calc(t[i].tree[1].e[j][k],w)};
-				}
-			}
-			// for(int k=0;k<2;k++)cout<<res.e[1][k][0]<<" ";cout<<"\n";
-			ans=res*ans;
-		}
-		// for(int j=0;j<2;j++){
-			// for(int k=0;k<2;k++)cout<<ans.e[j][k][0]<<" ";cout<<"\n";
-		// }
-		write(ans.e[1][1][0]-mn-w);puts("");
-	}
+	n=read();
+	for(int s=0;s<(1<<n);s++)a[s]=read();
+	exp(a,b,n);
+	for(int s=0;s<(1<<n);s++)printf("%llu ",b[s]);
 }
 
 bool med;
@@ -184,6 +81,6 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	read();T=1;
+	T=1;
 	while(T--)work();
 }
