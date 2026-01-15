@@ -98,14 +98,16 @@ void sovle(int u,vector<int> &id,vector<tuple<int,int,int>> &ask){
 	for(int i=0;i<son.size();i++){
 		int v=son[i];
 		if(s+siz[v]>sum/2){
-			if(s>sum/4){
+			// cout<<i<<" "<<s<<" "<<siz[v]<<endl;
+			if(s>=sum/4){
 				for(int j=0;j<i;j++){
 					int v=son[j];
 					for(int k=dfn[v];k<dfn[v]+siz[v];k++){
-						idl.pb(rnk[k]);
-						for(auto[v,w]:g[k]){
+						int u=rnk[k];
+						idl.pb(u);
+						for(auto[v,w]:g[u]){
 							if(vis[v]&&dfn[v]>=dfn[son[i-1]]+siz[son[i-1]]){
-								if(p1==u)p1=v;
+								if(p1==rt)p1=v;
 								else p2=v;
 							}
 						}
@@ -121,10 +123,11 @@ void sovle(int u,vector<int> &id,vector<tuple<int,int,int>> &ask){
 				for(int j=0;j<=i;j++){
 					int v=son[j];
 					for(int k=dfn[v];k<dfn[v]+siz[v];k++){
-						idl.pb(rnk[k]);
-						for(auto[v,w]:g[k]){
+						int u=rnk[k];
+						idl.pb(u);
+						for(auto[v,w]:g[u]){
 							if(vis[v]&&dfn[v]>=dfn[son[i]]+siz[son[i]]){
-								if(p1==u)p1=v;
+								if(p1==rt)p1=v;
 								else p2=v;
 							}
 						}
@@ -139,8 +142,7 @@ void sovle(int u,vector<int> &id,vector<tuple<int,int,int>> &ask){
 		}
 		s+=siz[v];
 	}
-	// cout<<u<<" "<<id.size()<<" "<<idl.size()<<" "<<idr.size()<<endl;
-	// cout<<u<<" "<<p1<<" "<<p2<<" s"<<endl;
+	// cout<<u<<" "<<id.size()<<" "<<idl.size()<<" "<<idr.size()<<" "<<p1<<" "<<p2<<" s"<<endl;
 	// for(int x:idl)cout<<x<<" ";cout<<endl;
 	// for(int x:idr)cout<<x<<" ";cout<<endl;
 	dij(u,id,d1);

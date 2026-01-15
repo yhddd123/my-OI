@@ -15,16 +15,24 @@ inline int read(){
 	return x*fl;
 }
 const int maxn=200010;
-const int inf=1e9;
+const int inf=20;
 bool mbe;
 
-int n;
+int n,q;
 mt19937 rnd(time(0));
 void work(){
-	n=5;
+	n=10,q=100;
 	cout<<n<<"\n";
-	cout<<"0 ";
-	for(int s=1;s<(1<<n);s++)cout<<rnd()<<" ";
+	for(int i=2;i<=n;i++){
+		cout<<"1"<<" "<<rnd()%inf+1<<"\n";
+	}
+	for(int i=1;i<n;i++)cout<<rnd()%inf+1<<" ";cout<<"\n";
+	cout<<q<<"\n";
+	for(int i=1;i<=q;i++){
+		int u=rnd()%n+1,v=rnd()%n+1;
+		while(u==v)v=rnd()%n+1;
+		cout<<u<<" "<<v<<"\n";
+	}
 }
 
 bool med;

@@ -1,5 +1,4 @@
 #include<bits/stdc++.h>
-#include <cstdio>
 #define ll long long
 #define mod 998244353ll
 #define pii pair<int,int>
@@ -26,28 +25,31 @@ int dep;
 ll mx[maxn<<2],hmx[maxn<<2],tag[maxn<<2],htag[maxn<<2];
 ll _mx[maxd][maxn<<2],_hmx[maxd][maxn<<2],_tag[maxd][maxn<<2],_htag[maxd][maxn<<2];
 bool vis[maxd][maxn<<2];
-void up(int nd){
-    mx[nd]=max(mx[ls],mx[rs]);
-    hmx[nd]=max(hmx[nd],mx[nd]);
+int st[maxd][maxn<<2],tp[maxd];
+inline void chkmx(ll &u,ll v){(u<v)&&(u=v);}
+inline void up(int nd){
+    chkmx(mx[nd]=mx[ls],mx[rs]);
+    chkmx(hmx[nd],mx[nd]);
 }
-void updt(int nd,ll w,ll hw){
-    htag[nd]=max(htag[nd],tag[nd]+hw);
-    hmx[nd]=max(hmx[nd],mx[nd]+hw);
+inline void updt(int nd,ll w,ll hw){
+    chkmx(htag[nd],tag[nd]+hw);
+    chkmx(hmx[nd],mx[nd]+hw);
     mx[nd]+=w,tag[nd]+=w;
 }
-void down(int nd){
-    updt(ls,tag[nd],htag[nd]),updt(rs,tag[nd],htag[nd]),tag[nd]=htag[nd]=0;
-}
-void init(int nd){
+inline void init(int nd){
     if(!vis[dep][nd]){
-        vis[dep][nd]=1;
+        vis[dep][nd]=1;st[dep][++tp[dep]]=nd;
         _mx[dep][nd]=mx[nd],_hmx[dep][nd]=hmx[nd],_tag[dep][nd]=tag[nd],_htag[dep][nd]=htag[nd];
     }
+}
+void down(int nd){
+    init(ls),init(rs);
+    updt(ls,tag[nd],htag[nd]),updt(rs,tag[nd],htag[nd]),tag[nd]=htag[nd]=0;
 }
 void updata(int nd,int l,int r,int ql,int qr,int w){
     init(nd);
     if(l>=ql&&r<=qr)return updt(nd,w,w);
-    init(ls),init(rs);down(nd);
+    if(tag[nd]||htag[nd])down(nd);
     if(ql<=mid)updata(ls,l,mid,ql,qr,w);
     if(qr>mid)updata(rs,mid+1,r,ql,qr,w);
     up(nd);
@@ -55,7 +57,7 @@ void updata(int nd,int l,int r,int ql,int qr,int w){
 ll quehis(int nd,int l,int r,int ql,int qr){
     init(nd);
     if(l>=ql&&r<=qr)return hmx[nd];
-    init(ls),init(rs);down(nd);
+    if(tag[nd]||htag[nd])down(nd);
     if(qr<=mid)return quehis(ls,l,mid,ql,qr);
     if(ql>mid)return quehis(rs,mid+1,r,ql,qr);
     return max(quehis(ls,l,mid,ql,qr),quehis(rs,mid+1,r,ql,qr));
@@ -64,10 +66,11 @@ void redo(int nd){
     vis[dep][nd]=0;
     mx[nd]=_mx[dep][nd],hmx[nd]=_hmx[dep][nd],tag[nd]=_tag[dep][nd],htag[nd]=_htag[dep][nd];
 }
-void clear(int nd,int l,int r){
-    if(!vis[dep][nd])return ;
-    redo(nd);
-    clear(ls,l,mid),clear(rs,mid+1,r);
+void clear(){
+    while(tp[dep]){
+    	int nd=st[dep][tp[dep]--];
+	    redo(nd);
+    }
 }
 vector<tuple<int,int,int>> add[maxn],ask[maxn];
 void sovle(int nd,int l,int r){
@@ -97,30 +100,35 @@ void sovle(int nd,int l,int r){
     for(int i=mid;i>=l;i--){
         sort(add[i].begin(),add[i].end(),[&](auto u,auto v){return get<2>(u)<get<2>(v);});
         for(auto[pl,pr,w]:add[i])updata(1,1,n,pl,pr,w);
-        for(auto[pl,pr,id]:ask[i])ans[id]=max(ans[id],quehis(1,1,n,pl,pr));
+        for(auto[pl,pr,id]:ask[i])chkmx(ans[id],quehis(1,1,n,pl,pr));
     }
-    clear(1,1,n);
+    clear();
     for(int i=mid;i<=r;i++){
         sort(add[i].begin(),add[i].end(),[&](auto u,auto v){return get<2>(u)<get<2>(v);});
         for(auto[pl,pr,w]:add[i])updata(1,1,n,pl,pr,w);
-        for(auto[pl,pr,id]:ask[i])ans[id]=max(ans[id],quehis(1,1,n,pl,pr));
+        for(auto[pl,pr,id]:ask[i])chkmx(ans[id],quehis(1,1,n,pl,pr));
     }
-    clear(1,1,n);
-    for(int i=l;i<=r;i++)add[i].clear(),ask[i].clear();
+    clear();
+    for(int i=l;i<=r;i++){
+    	vector<tuple<int,int,int>>().swap(add[i]);
+    	vector<tuple<int,int,int>>().swap(ask[i]);
+	}
     for(auto[xl,xr,yl,yr,w]:upd[nd]){
         if(xl<mid&&xr>=mid){
             if(xl<=l)updata(1,1,n,yl,yr,w);
             else upd[ls].pb({xl,mid-1,yl,yr,w});
         }
     }
-    dep++;sovle(ls,l,mid-1);dep--;clear(1,1,n);
+    dep++;sovle(ls,l,mid-1);dep--;clear();
     for(auto[xl,xr,yl,yr,w]:upd[nd]){
         if(xl<=mid&&xr>mid){
             if(xr>=r)updata(1,1,n,yl,yr,w);
             else upd[rs].pb({mid+1,xr,yl,yr,w});
         }
     }
-    dep++;sovle(rs,mid+1,r);dep--;clear(1,1,n);
+    dep++;sovle(rs,mid+1,r);dep--;clear();
+	vector<tuple<int,int,int,int,int>>().swap(upd[nd]);
+	vector<tuple<int,int,int,int,int>>().swap(que[nd]);
 }
 void work(){
     n=read();m=read();q=read();
