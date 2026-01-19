@@ -1,22 +1,12 @@
-// Problem: P6097 【模板】子集卷积
-// Contest: Luogu
-// URL: https://www.luogu.com.cn/problem/P6097
-// Memory Limit: 1 MB
-// Time Limit: 5000 ms
-// Written by yhm.
-// Start codeing:2024-05-12 10:07:45
-// 
-// Powered by CP Editor (https://cpeditor.org)
-
 #include<bits/stdc++.h>
-#define int long long
+// #define int long long
 #define mod 1000000009ll
 #define pii pair<int,int>
 #define fi first
 #define se second
 #define mems(x,y) memset(x,y,sizeof(x))
 using namespace std;
-const int maxn=200010;
+const int maxn=21;
 const int inf=1e18;
 inline int read(){
 	int x=0,f=1;
@@ -27,30 +17,52 @@ inline int read(){
 }
 bool Mbe;
 
-int n,m;
-int a[21][1<<21],b[21][1<<21],ans[21][1<<21];
-void fmt(int *a,int n,int w=1){
-	for(int i=0;i<n;i++){
-		if(w==1){
-			for(int s=0;s<(1<<n);s++)if(s&(1<<i))(a[s]+=a[s^(1<<i)])%=mod;
-		}
-		else{
-			for(int s=(1<<n)-1;~s;s--)if(s&(1<<i))(a[s]+=mod-a[s^(1<<i)])%=mod;
+int n,a[1<<maxn],b[1<<maxn],c[1<<maxn];
+inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
+int ff[maxn+1][1<<maxn],gg[maxn+1][1<<maxn];
+void fmt1(int *a,int n){
+	for(int l=2;l<=n;l<<=1){
+		int k=l>>1;
+		for(int i=0;i<n;i+=l){
+			for(int j=i;j<i+k;j++)inc(a[j+k],a[j]);
 		}
 	}
 }
-void work(){
-	n=read(),m=1<<n;
-	for(int i=0;i<m;i++)a[__builtin_popcount(i)][i]=read();
-	for(int i=0;i<m;i++)b[__builtin_popcount(i)][i]=read();
-	for(int i=0;i<=n;i++)fmt(a[i],n),fmt(b[i],n);
-	for(int i=0;i<=n;i++){
-		for(int j=0;j<=i;j++){
-			for(int k=0;k<m;k++)(ans[i][k]+=a[j][k]*b[i-j][k])%=mod;
+void fmt2(int *a,int n){
+	for(int l=2;l<=n;l<<=1){
+		int k=l>>1;
+		for(int i=0;i<n;i+=l){
+			for(int j=i;j<i+k;j++)inc(a[j+k],mod-a[j]);
 		}
 	}
-	for(int i=0;i<=n;i++)fmt(ans[i],n,mod-1);
-	for(int i=0;i<m;i++)printf("%lld ",ans[__builtin_popcount(i)][i]);
+}
+int tf[maxn+1],tg[maxn+1],hh[maxn+1];
+void xormul(int *a,int *b,int *c,int n){
+	for(int i=0;i<=n;i++){
+		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
+	}
+	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
+	for(int s=0;s<(1<<n);s++)gg[__builtin_popcount(s)][s]=b[s];
+	for(int i=0;i<=n;i++)fmt1(ff[i],1<<n);
+	for(int i=0;i<=n;i++)fmt1(gg[i],1<<n);
+	for(int s=0;s<(1<<n);s++){
+		for(int i=0;i<=n;i++)tf[i]=ff[i][s];
+		for(int i=0;i<=n;i++)tg[i]=gg[i][s];
+		for(int i=0;i<=n;i++){
+			hh[i]=0;
+			for(int j=0;j<=i;j++)inc(hh[i],1ll*tf[j]*tg[i-j]%mod);
+		}
+		for(int i=0;i<=n;i++)ff[i][s]=hh[i];
+	}
+	for(int i=0;i<=n;i++)fmt2(ff[i],1<<n);
+	for(int s=0;s<(1<<n);s++)inc(c[s],ff[__builtin_popcount(s)][s]);
+}
+void work(){
+	n=read();
+	for(int s=0;s<(1<<n);s++)a[s]=read();
+	for(int s=0;s<(1<<n);s++)b[s]=read();
+	xormul(a,b,c,n);
+	for(int s=0;s<(1<<n);s++)printf("%lld ",c[s]);
 }
 
 // \

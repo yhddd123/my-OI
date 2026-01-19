@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define int long long
+// #define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -15,29 +15,41 @@ inline int read(){
 	return x*fl;
 }
 const int maxn=200010;
+const int maxm=910;
 const int inf=1e9;
 bool mbe;
 
-int n,m,q;
-mt19937 rnd(time(0));
+int n,a[maxn],ans;
+int f[maxn][maxm],p[maxn];
 void work(){
-	n=m=q=5;
-	cout<<n<<" "<<m<<" "<<q<<"\n";
-	for(int i=2;i<=n;i++)cout<<i/2<<" ";cout<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%1000+1<<" ";cout<<"\n";
-	for(int i=1;i<=m;i++)cout<<rnd()%(n-n/2+1)+n/2<<" ";cout<<"\n";
-	for(int i=1;i<=q;i++){
-		int l=rnd()%n+1,r=rnd()%n+1;
-		if(l>r)swap(l,r);
-		cout<<l<<" "<<r<<" "<<rnd()%n+1<<"\n";
+	n=read();
+	for(int i=1;i<=n;i++){
+		int u=read(),v=read();
+		a[u]=v,a[v]=u;
 	}
+	for(int i=1;i<=2*n+1;i++){
+		f[i][0]=i-1;
+		for(int j=1;j<=maxm-10;j++)f[i][j]=2*n+1;
+	}
+	for(int j=1;j<=maxm-10;j++){
+		for(int i=2*n;i;i--){
+			f[i][j]=f[i+1][j];
+			if(i<=a[i]){
+				while(p[i]<j&&f[i+1][p[i]+1]<a[i])p[i]++;
+				// cout<<i<<" "<<p[i]<<"\n";
+				if(p[i]<j)f[i][j]=min(f[i][j],f[a[i]+1][j-1-p[i]]);
+			}
+		}
+		if(f[1][j]<=2*n)ans=j;
+	}
+	printf("%d\n",ans);
 }
 
 bool med;
 int T;
 signed main(){
 	// freopen(".in","r",stdin);
-	// freopen("1.out","w",stdout);
+	// freopen(".out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	

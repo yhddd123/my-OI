@@ -9,7 +9,7 @@
 // Powered by CP Editor (https://cpeditor.org)
 
 #include<bits/stdc++.h>
-#define int long long
+// #define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -30,111 +30,51 @@ bool mbe;
 
 int n,f[1<<maxn],g[1<<maxn];
 inline int ksm(int a,int b=mod-2){
-	int ans=1;
-	while(b){
-		if(b&1)ans=ans*a%mod;
-		a=a*a%mod;
-		b>>=1;
-	}
-	return ans;
+    int ans=1;
+    while(b){
+        if(b&1)ans=1ll*ans*a%mod;
+        a=1ll*a*a%mod;
+        b>>=1;
+    }
+    return ans;
 }
-void fmt(int *a,int n,int w=1){
-	for(int i=0;i<n;i++){
-		for(int s=0;s<(1<<n);s++)if(s&(1<<i))(a[s]+=a[s^(1<<i)]*w)%=mod;
-	}
-}
-int ff[maxn+1][1<<maxn],gg[maxn+1][1<<maxn],hh[1<<maxn],ni[maxn+1];
-void xormul(int *a,int *b,int *c,int n){//a*b=c
-	for(int i=0;i<=n;i++){
-		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
-	}
-	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
-	for(int s=0;s<(1<<n);s++)gg[__builtin_popcount(s)][s]=b[s];
-	for(int i=0;i<=n;i++)fmt(ff[i],n,1);
-	for(int i=0;i<=n;i++)fmt(gg[i],n,1);
-	for(int s=0;s<(1<<n);s++){
-		for(int i=0;i<=n;i++)hh[i]=0;
-		for(int i=0;i<=n;i++){
-			for(int j=0;j<=i;j++)(hh[i]+=ff[j][s]*gg[i-j][s])%=mod;
+inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
+void fmt1(int *a,int n){
+	for(int l=2;l<=n;l<<=1){
+		int k=l>>1;
+		for(int i=0;i<n;i+=l){
+			for(int j=i;j<i+k;j++)inc(a[j+k],a[j]);
 		}
-		for(int i=0;i<=n;i++)ff[i][s]=hh[i];
 	}
-	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
-	for(int s=0;s<(1<<n);s++)c[s]=ff[__builtin_popcount(s)][s];
 }
-void xordiv(int *a,int *b,int *c,int n){//a/b=c
-	for(int i=0;i<=n;i++){
-		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
-	}
-	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
-	for(int s=0;s<(1<<n);s++)gg[__builtin_popcount(s)][s]=b[s];
-	for(int i=0;i<=n;i++)fmt(ff[i],n,1);
-	for(int i=0;i<=n;i++)fmt(gg[i],n,1);
-	for(int s=0;s<(1<<n);s++){
-		for(int i=0;i<=n;i++)hh[i]=0;
-		int nig=ksm(gg[0][s]);
-		for(int i=0;i<=n;i++){
-			hh[i]=ff[i][s];
-			for(int j=1;j<=i;j++)(hh[i]+=mod-gg[j][s]*hh[i-j]%mod)%=mod;
-			hh[i]=hh[i]*nig%mod;
+void fmt2(int *a,int n){
+	for(int l=2;l<=n;l<<=1){
+		int k=l>>1;
+		for(int i=0;i<n;i+=l){
+			for(int j=i;j<i+k;j++)inc(a[j+k],mod-a[j]);
 		}
-		for(int i=0;i<=n;i++)ff[i][s]=hh[i];
 	}
-	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
-	for(int s=0;s<(1<<n);s++)c[s]=ff[__builtin_popcount(s)][s];
 }
+int ff[maxn+1][1<<maxn],gg[maxn+1][1<<maxn];
+int tf[maxn+1],tg[maxn+1],hh[maxn+1];
 void xorni(int *a,int *b,int n){//b=1/a
 	for(int i=0;i<=n;i++){
 		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
 	}
 	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
-	for(int i=0;i<=n;i++)fmt(ff[i],n,1);
+	for(int i=0;i<=n;i++)fmt1(ff[i],1<<n);
 	for(int s=0;s<(1<<n);s++){
-		for(int i=0;i<=n;i++)hh[i]=0;
-		int nif=ksm(ff[0][s]);
+		for(int i=0;i<=n;i++)tf[i]=ff[i][s];
+		int nif=ksm(tf[0]);
 		for(int i=0;i<=n;i++){
 			hh[i]=1;
-			for(int j=1;j<=i;j++)(hh[i]+=mod-ff[j][s]*hh[i-j]%mod)%=mod;
-			hh[i]=hh[i]*nif%mod;
+			for(int j=1;j<=i;j++)inc(hh[i],mod-1ll*tf[j]*hh[i-j]%mod);
+			hh[i]=1ll*hh[i]*nif%mod;
 		}
 		for(int i=0;i<=n;i++)ff[i][s]=hh[i];
 	}
-	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
+	for(int i=0;i<=n;i++)fmt2(ff[i],1<<n);
 	for(int s=0;s<(1<<n);s++)b[s]=ff[__builtin_popcount(s)][s];
-}
-void xorln(int *a,int *b,int n){//exp(a)=b
-	for(int i=0;i<=n;i++){
-		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
-	}
-	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
-	for(int i=0;i<=n;i++)fmt(ff[i],n,1);
-	for(int s=0;s<(1<<n);s++){
-		for(int i=0;i<=n;i++)hh[i]=0;
-		for(int i=0;i<n;i++){
-			hh[i]=ff[i+1][s]*(i+1)%mod;
-			for(int j=1;j<=i;j++)(hh[i]+=mod-ff[j][s]*hh[i-j]%mod)%=mod;
-		}
-		for(int i=1;i<=n;i++)ff[i][s]=hh[i-1]*ni[i]%mod;
-	}
-	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
-	b[0]=0;for(int s=0;s<(1<<n);s++)b[s]=ff[__builtin_popcount(s)][s];
-}
-void xorexp(int *a,int *b,int n){//ln(a)=b
-	for(int i=0;i<=n;i++){
-		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
-	}
-	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
-	for(int i=0;i<=n;i++)fmt(ff[i],n,1);
-	for(int s=0;s<(1<<n);s++){
-		for(int i=0;i<=n;i++)hh[i]=0;
-		for(int i=0;i<=n;i++){
-			if(i<n)hh[i]=ff[i+1][s]*(i+1)%mod;
-			for(int j=1;j<=i;j++)(hh[i]+=ff[j][s]*j%mod*hh[i-j]%mod*ni[i-j+1])%=mod;
-		}
-		for(int i=1;i<=n;i++)ff[i][s]=hh[i-1]*ni[i]%mod;
-	}
-	for(int i=0;i<=n;i++)fmt(ff[i],n,mod-1);
-	b[0]=1;for(int s=1;s<(1<<n);s++)b[s]=ff[__builtin_popcount(s)][s];
 }
 void work(){
 	n=read();

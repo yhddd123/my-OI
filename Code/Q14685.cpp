@@ -185,21 +185,21 @@ int lshl[maxn],lshr[maxn];
 void sovle(){
 	if(!qq)return ;
 	// for(int i=1;i<=cnt;i++)cout<<a[i]<<" "<<b	[i]<<"\n";
-	// if(cnt<=BB){
-	// 	for(int i=1;i<=qq;i++){
-	// 		auto[p,id]=que[i];
-	// 		for(int j=1;j<=p;j++){
-	// 			if(a[j]>0)inc1(ans[id],a[j]);
-	// 			if(a[j]==0&&ql[id]<=b[j]&&b[j]<=qr[id])inc1(ans[id],0);
-	// 		}
-	// 		for(int j=p+1;j<=cnt;j++){
-	// 			if(ql[id]<=b[j]&&b[j]<=qr[id])inc1(ans[id],0);
-	// 		}
-	// 	}
-	// 	return ;
-	// }
-	// int B=max(1.0,sqrt(cnt)*1.2);
-	int B=4;
+	if(cnt<=BB){
+		for(int i=1;i<=qq;i++){
+			auto[p,id]=que[i];
+			for(int j=1;j<=p;j++){
+				if(a[j]>0)inc1(ans[id],a[j]);
+				if(a[j]==0&&ql[id]<=b[j]&&b[j]<=qr[id])inc1(ans[id],0);
+			}
+			for(int j=p+1;j<=cnt;j++){
+				if(ql[id]<=b[j]&&b[j]<=qr[id])inc1(ans[id],0);
+			}
+		}
+		return ;
+	}
+	int B=max(1.0,sqrt(cnt)*1.2);
+	// int B=4;
 	for(int i=1;i<=qq;i++)qql[i]={ql[que[i].se],que[i].se},qqr[i]={qr[que[i].se],que[i].se};
 	sort(qql+1,qql+qq+1),sort(qqr+1,qqr+qq+1);
 	for(int i=1;i<=cnt;i++)if(b[i])t.upd(b[i]);

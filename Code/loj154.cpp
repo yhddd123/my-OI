@@ -14,12 +14,20 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=20;
+const int maxn=21;
 const int inf=1e9;
 bool mbe;
 
-int n,a[1<<maxn],b[1<<maxn];
-int ni[maxn+1];
+inline int ksm(int a,int b=mod-2){
+    int ans=1;
+    while(b){
+        if(b&1)ans=1ll*ans*a%mod;
+        a=1ll*a*a%mod;
+        b>>=1;
+    }
+    return ans;
+}
+int n,m,k,a[1<<maxn],b[maxn+1],c[1<<maxn];
 inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
 int ff[maxn+1][1<<maxn],gg[maxn+1][1<<maxn];
 void fmt1(int *a,int n){
@@ -38,31 +46,46 @@ void fmt2(int *a,int n){
 		}
 	}
 }
-int tf[maxn+1],tg[maxn+1],hh[maxn+1];
-void xorln(int *a,int *b,int n){//ln(a)=b
-	ni[0]=ni[1]=1;for(int i=2;i<=n;i++)ni[i]=1ll*(mod-mod/i)*ni[mod%i]%mod;
+int tf[maxn+1],tg[maxn+1],th[maxn+1],ni[maxn+1];
+void xormul(int *a,int *b,int *c,int n){
 	for(int i=0;i<=n;i++){
-		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
+		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
 	}
 	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
+	for(int s=0;s<(1<<n);s++)gg[__builtin_popcount(s)][s]=b[s];
 	for(int i=0;i<=n;i++)fmt1(ff[i],1<<n);
+	for(int i=0;i<=n;i++)fmt1(gg[i],1<<n);
 	for(int s=0;s<(1<<n);s++){
-		for(int i=0;i<=n;i++)hh[i]=0;
 		for(int i=0;i<=n;i++)tf[i]=ff[i][s];
-		for(int i=0;i<n;i++){
-			hh[i]=1ll*tf[i+1]*(i+1)%mod;
-			for(int j=1;j<=i;j++)inc(hh[i],mod-1ll*tf[j]*hh[i-j]%mod);
+		for(int i=0;i<=n;i++)tg[i]=gg[i][s];
+		for(int i=0;i<=n;i++){
+			th[i]=0;
+			for(int j=0;j<=i;j++)inc(th[i],1ll*tf[j]*tg[i-j]%mod);
 		}
-		for(int i=1;i<=n;i++)ff[i][s]=1ll*hh[i-1]*ni[i]%mod;
+		for(int i=0;i<=n;i++)ff[i][s]=th[i];
 	}
 	for(int i=0;i<=n;i++)fmt2(ff[i],1<<n);
-	b[0]=0;for(int s=1;s<(1<<n);s++)b[s]=ff[__builtin_popcount(s)][s];
+	for(int s=0;s<(1<<n);s++)inc(c[s],ff[__builtin_popcount(s)][s]);
+}
+int hh[maxn+1][1<<maxn];
+void comp(int *a,int *b,int *c,int n){
+	for(int i=0;i<=n;i++){
+		for(int j=1;j<=i;j++)b[i]=1ll*b[i]*j%mod;
+	}
+	for(int i=0;i<=n;i++)hh[i][0]=b[i];
+	for(int i=1;i<=n;i++){
+		for(int j=1;j<=n-i+1;j++){
+			xormul(hh[j],a+(1<<i-1),hh[j-1]+(1<<i-1),i-1);
+		}
+	}
+	for(int s=0;s<(1<<n);s++)c[s]=hh[0][s];
 }
 void work(){
-	n=read();
-	for(int s=0;s<(1<<n);s++)a[s]=read();
-	xorln(a,b,n);
-	for(int s=0;s<(1<<n);s++)printf("%d ",b[s]);
+	n=read();m=read();k=read();
+	for(int i=1;i<=m;i++)a[read()]++;
+	for(int i=0,ni=1;i<=k;i++,ni=1ll*ni*ksm(i)%mod)b[i]=ni;
+	comp(a,b,c,n);
+	printf("%lld\n",c[(1<<n)-1]);
 }
 
 bool med;
