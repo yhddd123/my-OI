@@ -18,19 +18,24 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n;
+int n,q;
 mt19937 rnd(time(0));
 void work(){
-	n=rnd()%7+3;
-	cout<<n<<"\n";
-	for(int i=1;i<=n;i++)cout<<(int)rnd()%200-100<<" ";cout<<"\n";
+	n=rnd()%10+1,q=10;
+	cout<<n<<" "<<rnd()%3+1<<" "<<q<<"\n";
+	for(int i=2;i<=n;i++)cout<<rnd()%(i-1)+1<<" "<<i<<"\n";
+	for(int i=1;i<=q;i++){
+		int l=rnd()%n+1,r=rnd()%n+1;
+		if(l>r)swap(l,r);
+		cout<<l<<" "<<r<<"\n";
+	}
 }
 
 bool med;
 int T;
 signed main(){
 	// freopen(".in","r",stdin);
-	// freopen(".out","w",stdout);
+	// freopen("1.out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
