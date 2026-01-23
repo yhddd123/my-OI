@@ -18,19 +18,25 @@ const int maxn=100010;
 const int inf=1e9;
 bool mbe;
 
-int n,q,a[maxn],b[maxn];
-const int B=450;
+int n,q,a[maxn],b[maxn],tmp[maxn];
+const int B=500;
 const int maxm=maxn/B+5;
 int pl[maxm],pr[maxm],Bnum,bel[maxn];
+const int BB=9;
 struct DS{
-	int s1[maxm],s2[maxn];
+	int s1[(maxn>>BB)+5],s2[maxn];
 	void upd(int p,int w){
-		for(int i=bel[p]+1;i<=Bnum;i++)s1[i]+=w;
-		for(int i=p;i<=pr[bel[p]];i++)s2[i]+=w;
+		for(int i=(p>>BB)+1;i<=(n+1>>BB);i++)s1[i]+=w;
+		int pr=min(n+1,(((p>>BB)+1)<<BB)-1);
+		for(int i=p;i<=pr;i++)s2[i]+=w;
 	}
-	inline int que(int p){return s1[bel[p]]+s2[p];}
+	inline int que(int p){return s1[p>>BB]+s2[p];}
 	inline int que(int l,int r){return que(r)-que(l-1);}
-}ka,ba,num[maxm],sum[maxm];
+	void clr(){
+		for(int i=0;i<=(n+1)>>BB;i++)s1[i]=0;
+		for(int i=0;i<=n+1;i++)s2[i]=0;
+	}
+}ka,ba,num,sum;
 void upda(int l,int r,int w){
 	ka.upd(l,w),ka.upd(r+1,-w);
 	ba.upd(l,-w*(l-1)),ba.upd(r+1,w*r);
@@ -80,7 +86,6 @@ void init(int id){
 void mdfa(int p,int w){
 	for(int id=1;id<=Bnum;id++){
 		if(cov[id])ans[id]=(pr[id]-pl[id]+1)*quea(cov[id]);
-		else ans[id]+=(num[id].que(p+1,n)*p+sum[id].que(1,p))*w;
 	}
 }
 void mdfb(int l,int r,int w){
@@ -103,7 +108,7 @@ void mdfb(int l,int r,int w){
 		init(bel[r]);
 	}
 }
-void updb(int id,int w,int o){num[id].upd(w,o),sum[id].upd(w,o*w);}
+void updb(int w,int o){num.upd(w,o),sum.upd(w,o*w);}
 void updb(int l,int r,int w1,int w2){
 	if(bel[l]==bel[r]){
 		updb(bel[l],w1,-(r-l+1)),updb(bel[l],w2,r-l+1);
@@ -135,6 +140,9 @@ int queb(int l,int r){
 	}
 	return res;
 }
+vector<node> mdf[maxn];
+tuple<int,int,int,int> ask[maxn];
+int res[maxn];
 void work(){
 	n=read();q=read();
 	for(int i=1;i<=n;i++)a[i]=read();
@@ -148,13 +156,13 @@ void work(){
 	for(int id=1;id<=Bnum;id++){
 		int l=pl[id],r=pr[id];
 		init(id);
-		for(int i=l;i<=r;i++)updb(id,b[i],1);
 	}
-	while(q--){
-		int op=read();
+	for(int i=1;i<=n;i++)tmp[i]=b[i];
+	for(int i=1;i<=q;i++){
+		int op=read(),l,r,c;
 		if(op==1){
-			int l=read(),r=read(),c=read();
-			vector<node> va=ta.ins(l,r,c);
+			l=read(),r=read(),c=read();
+			mdf[i]=ta.ins(l,r,c);
 			for(auto [ll,rr,cc]:va){
 				cc=c-cc;
 				upda(ll,rr,cc);
@@ -163,17 +171,61 @@ void work(){
 			}
 		}
 		if(op==2){
-			int l=read(),r=read(),c=read();
-			vector<node> vb=tb.ins(l,r,c);
-			for(auto [ll,rr,cc]:vb)updb(ll,rr,cc,c);
+			l=read(),r=read(),c=read();
+			mdf[i]=tb.ins(l,r,c);
 			mdfb(l,r,c);
 		}
 		if(op==3){
-			int l=read(),r=read();
-			printf("%u\n",queb(l,r));
+			l=read(),r=read();
+			res[i]+=queb(l,r);
 		}
+		ask[i]={op,l,r,c};
 		// for(int i=1;i<=n;i++)cout<<ans[i]<<" "<<sum[i].que(n)<<"\n";
 	}
+	for(int i=1;i<=n;i++)b[i]=tmp[i];
+	for(int id=1;id<=Bnum;id++){
+		cov[id]=ans[id]=0;
+		auto mdfa1=[&](int p,int w){
+			ans[id]+=(num.que(p+1,n)*p+sum.que(1,p))*w;
+		};
+		auto in=[&](int l,int r){return l<=id&&id<=r;};
+		auto mdfb1=[&](int l,int r,int w){
+			if(id==bel[l]||id==bel[r])cov[id]=ans[id]=0;
+			else if(in(bel[l]+1,bel[r]-1))cov[id]=w,ans[id]=0;
+		};
+		auto updb1=[&](int l,int r,int w1,int w2){
+			if(bel[l]==bel[r]){
+				if(id==bel[l])upd(w1,-(r-l+1)),upd(w2,r-l+1);
+			}
+			else{
+				if(id==bel[l])upd(w1,-(pr[id]-l+1)),upd(w2,pr[id]-l+1);
+				else if(in(bel[l]+1,bel[r]-1))upd(w1,-(pr[id]-pl[id]+1)),upd(w2,pr[id]-pl[id]+1);
+				else if(id==bel[r])upd(w1,-(r-pl[id]+1)),upd(w2,r-pl[id]+1);
+			}
+		};
+		auto queb1=[&](int l,int r){
+			
+		};
+		num.clr(),sum.clr();
+		for(int i=l;i<=r;i++)updb(b[i],1);
+		for(int i=1;i<=q;i++){
+			auto[op,l,r,c]=ask[i];
+			if(op==1){
+				for(auto[ll,rr,cc]:mdf[i]){
+					if(ll>1)mdfa1(ll-1,-cc);
+					mdfa1(rr,cc);
+				}
+			}
+			if(op==2){
+				for(auto[ll,rr,cc]:mdf[i]){
+					updb1(ll,rr,cc,c);
+				}
+				mdfb1(l,r,c);
+			}
+			if(op==3)res[i]+=queb1(l,r);
+		}
+	}
+	for(int i=1;i<=q;i++)if(get<0>(ask[i])==3)printf("%u\n",res[i]);
 }
 
 bool med;

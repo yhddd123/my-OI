@@ -1,245 +1,367 @@
-#include<stdio.h>
-#include<algorithm>
-#include<cstring>
-#include<utility>
-#include<map>
-typedef unsigned int uint;
+#include <bits/stdc++.h>
+#define pb emplace_back
+#define fst first
+#define scd second
+#define mkp make_pair
+#define mems(a, x) memset((a), (x), sizeof(a))
+
+using namespace std;
+typedef long long ll;
+typedef double db;
 typedef unsigned long long ull;
-constexpr int N(100000),K(20),Q(500000);
-struct edge {
-    int v,next;
-};
-edge e[(N<<1)+5];
-int en,last[N+5];
-inline void add_edge(const int &u,const int &v) {
-    e[++en]={v,last[u]};
-    last[u]=en;
+typedef long double ldb;
+typedef pair<ll, ll> pii;
+
+namespace IO {
+	const int maxn = 1 << 20;
+	
+	char ibuf[maxn], *iS, *iT, obuf[maxn], *oS = obuf;
+
+	inline char gc() {
+		return (iS == iT ? iT = (iS = ibuf) + fread(ibuf, 1, maxn, stdin), (iS == iT ? EOF : *iS++) : *iS++);
+	}
+
+	template<typename T = int>
+	inline T read() {
+		char c = gc();
+		T x = 0;
+		bool f = 0;
+		while (c < '0' || c > '9') {
+			f |= (c == '-');
+			c = gc();
+		}
+		while (c >= '0' && c <= '9') {
+			x = (x << 1) + (x << 3) + (c ^ 48);
+			c = gc();
+		}
+		return f ? ~(x - 1) : x;
+	}
+	
+	inline int reads(char *s) {
+		char c = gc();
+		int len = 0;
+		while (isspace(c)) {
+			c = gc();
+		}
+		while (!isspace(c) && c != -1) {
+			s[len++] = c;
+			c = gc();
+		}
+		return len;
+	}
+
+	inline void flush() {
+		fwrite(obuf, 1, oS - obuf, stdout);
+		oS = obuf;
+	}
+	
+	struct Flusher {
+		~Flusher() {
+			flush();
+		}
+	} AutoFlush;
+
+	inline void pc(char ch) {
+		if (oS == obuf + maxn) {
+			flush();
+		}
+		*oS++ = ch;
+	}
+
+	template<typename T>
+	inline void write(T x) {
+		static char stk[64], *tp = stk;
+		if (x < 0) {
+			x = ~(x - 1);
+			pc('-');
+		}
+		do {
+			*tp++ = x % 10;
+			x /= 10;
+		} while (x);
+		while (tp != stk) {
+			pc((*--tp) | 48);
+		}
+	}
+	
+	template<typename T>
+	inline void writesp(T x) {
+		write(x);
+		pc(' ');
+	}
+	
+	template<typename T>
+	inline void writeln(T x) {
+		write(x);
+		pc('\n');
+	}
 }
-int fa[N+5];
-int bfn[N+5];
-int que[N+5];
-int lp[N+5][K+1],rp[N+5][K+1];
-struct qry {
-    int id,l,r;
-};
-qry qq[Q+5];
-int ans[Q+5];
-namespace BIT {
-    int sum[N+5];
-    inline void clear(const int &n) {
-        std::memset(sum+1,0,n*sizeof(int));
-    }
-    inline void modify(int x,const int &y) {
-        while(x) {
-            sum[x]+=y;
-            x-=x&-x;
-        }
-    }
-    inline int query(const int &n,int x) {
-        int y(0);
-        while(x<=n) {
-            y+=sum[x];
-            x+=x&-x;
-        }
-        return y;
-    }
+
+using IO::read;
+using IO::reads;
+using IO::write;
+using IO::pc;
+using IO::writesp;
+using IO::writeln;
+
+const int maxn = 300100;
+const int logn = 20;
+
+int n, m, B;
+
+struct graph {
+	int hd[maxn], len, to[maxn << 1], nxt[maxn << 1];
+	ll dis[maxn << 1];
+	
+	inline void add_edge(int u, int v, ll d) {
+		to[++len] = v;
+		dis[len] = d;
+		nxt[len] = hd[u];
+		hd[u] = len;
+	}
+} G1, G2;
+
+int st[logn][maxn], dfn[maxn], tim;
+ll dep[maxn];
+
+inline int get(int i, int j) {
+	return dfn[i] < dfn[j] ? i : j;
 }
-namespace ODT {
-    namespace MAP {
-        std::pair<int,int> val[N+5];
-        ull a1[(N>>6)+1],a2[(N>>12)+1],a3;
-        inline void clear(const int &n) {
-            std::memset(a1,0,((n>>6)+1)*sizeof(ull));
-            std::memset(a2,0,((n>>12)+1)*sizeof(ull));
-            a3=0;
-        }
-        inline void set(const uint &x) {
-            a1[x>>6]|=1ull<<(x&63);
-            a2[x>>12]|=1ull<<(x>>6&63);
-            a3|=1ull<<(x>>12);
-        }
-        inline void reset(const uint &x) {
-            (a1[x>>6]&=~(1ull<<(x&63)))||
-            (a2[x>>12]&=~(1ull<<(x>>6&63)))||
-            (a3&=~(1ull<<(x>>12)));
-        }
-        inline uint prev(uint x) {
-            ull y(a1[x>>6]&(1ull<<(x&63))-1);
-            if(y) {
-                return (x&-1u<<6)|63-__builtin_clzll(y);
-            }
-            y=a2[x>>12]&(1ull<<(x>>6&63))-1;
-            if(y) {
-                x=(x&-1u<<12)|63-__builtin_clzll(y)<<6;
-                return x|63-__builtin_clzll(a1[x>>6]);
-            }
-            y=a3&(1ull<<(x>>12))-1;
-            if(y) {
-                x=63-__builtin_clzll(y)<<12;
-                x=x|63-__builtin_clzll(a2[x>>12])<<6;
-                return x|63-__builtin_clzll(a1[x>>6]);
-            }
-            return -1u;
-        }
-        inline uint next(uint x) {
-            ull y(a1[x>>6]&-2ull<<(x&63));
-            if(y) {
-                return (x&-1u<<6)|__builtin_ctzll(y);
-            }
-            y=a2[x>>12]&-2ull<<(x>>6&63);
-            if(y) {
-                x=(x&-1u<<12)|__builtin_ctzll(y)<<6;
-                return x|__builtin_ctzll(a1[x>>6]);
-            }
-            y=a3&-2ull<<(x>>12);
-            if(y) {
-                x=__builtin_ctzll(y)<<12;
-                x=x|__builtin_ctzll(a2[x>>12])<<6;
-                return x|__builtin_ctzll(a1[x>>6]);
-            }
-            return -1u;
-        }
-        inline std::pair<int,int> &at(const uint &x) {
-            return val[x];
-        }
-        inline void emplace(const uint &x,const std::pair<int,int> &y) {
-            set(x),val[x]=y;
-        }
-        inline void erase(const uint &x) {
-            reset(x);
-        }
-    }
-    inline void clear(const int &n) {
-        MAP::clear(n);
-    }
-    inline void erase(const int &l,const int &r,const int &c) {
-        BIT::modify(c,-(r-l+1));
-    }
-    inline void color(const int &l,const int &r,const int &c) {
-        BIT::modify(c,r-l+1);
-    }
-    inline void cover(const int &l,const int &r,const int &c) {
-        if(l>r) {
-            return;
-        }
-        // segments crossing left boundary
-        uint it(MAP::prev(l+1));
-        if(it!=-1u) {
-            if(MAP::at(it).first>=r) {
-                erase(l,r,MAP::at(it).second);
-                if(MAP::at(it).first>r) {
-                    MAP::emplace(r+1,MAP::at(it));
-                }
-            }
-            else if(MAP::at(it).first>=l) {
-                erase(l,MAP::at(it).first,MAP::at(it).second);
-            }
-            if(it<l) {
-                MAP::at(it).first=l-1;
-            }
-            else {
-                MAP::erase(it);
-            }
-        }
-        // segments crossing right boundary
-        it=MAP::prev(r+1);
-        if(it!=-1u) {
-            if(it>l) {
-                erase(it,r,MAP::at(it).second);
-                if(MAP::at(it).first>r) {
-                    MAP::emplace(r+1,MAP::at(it));
-                }
-                MAP::erase(it);
-            }
-        }
-        // segments inside
-        for(it=MAP::next(l-1);it!=-1u&&it<=r;MAP::erase(it),it=MAP::next(it)) {
-            erase(it,MAP::at(it).first,MAP::at(it).second);
-        }
-        // insert the new segment
-        color(l,r,c);
-        MAP::emplace(l,std::make_pair(r,c));
-    }
+
+inline int qlca(int x, int y) {
+	if (x == y) {
+		return x;
+	}
+	x = dfn[x];
+	y = dfn[y];
+	if (x > y) {
+		swap(x, y);
+	}
+	++x;
+	int k = __lg(y - x + 1);
+	return get(st[k][x], st[k][y - (1 << k) + 1]);
 }
+
+inline ll qdis(int x, int y) {
+	return dep[x] + dep[y] - dep[qlca(x, y)] * 2;
+}
+
+void dfs(int u, int t) {
+	dfn[u] = ++tim;
+	st[0][tim] = t;
+	for (int i = G1.hd[u]; i; i = G1.nxt[i]) {
+		int v = G1.to[i], d = G1.dis[i];
+		if (v == t) {
+			continue;
+		}
+		dep[v] = dep[u] + d;
+		dfs(v, u);
+	}
+}
+
+int bel[maxn], L[maxn], R[maxn];
+
+struct node {
+	int x, y;
+	vector<int> vc;
+} f[logn][3030];
+
+int bot[maxn], son[maxn], tot;
+ll len[maxn];
+pii p[maxn];
+
+void dfs2(int u, int fa) {
+	son[u] = 0;
+	bot[u] = u;
+	ll mx = 0;
+	for (int i = G2.hd[u]; i; i = G2.nxt[i]) {
+		int v = G2.to[i];
+		ll d = G2.dis[i];
+		if (v == fa) {
+			continue;
+		}
+		dfs2(v, u);
+		if (len[v] + d > mx) {
+			mx = len[v] + d;
+			son[u] = v;
+		}
+	}
+	len[u] = mx;
+	if (son[u]) {
+		bot[u] = bot[son[u]];
+	}
+	for (int i = G2.hd[u]; i; i = G2.nxt[i]) {
+		int v = G2.to[i];
+		ll d = G2.dis[i];
+		if (v == fa || v == son[u]) {
+			continue;
+		}
+		p[++tot] = mkp(len[v] + d, bot[v]);
+	}
+}
+
+inline node operator + (const node &a, const node &b) {
+	int c[4] = {a.x, a.y, b.x, b.y};
+	ll mx = -1;
+	node res;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = i + 1; j < 4; ++j) {
+			int x = c[i], y = c[j];
+			ll d = qdis(x, y);
+			if (d > mx) {
+				mx = d;
+				res.x = x;
+				res.y = y;
+			}
+		}
+	}
+	vector<int> pt = a.vc;
+	for (int u : b.vc) {
+		pt.pb(u);
+	}
+	pt.pb(res.x);
+	pt.pb(res.y);
+	sort(pt.begin(), pt.end(), [&](const int &x, const int &y) {
+		return dfn[x] < dfn[y];
+	});
+	int len = (int)pt.size();
+	for (int i = 1; i < len; ++i) {
+		pt.pb(qlca(pt[i - 1], pt[i]));
+	}
+	sort(pt.begin(), pt.end(), [&](const int &x, const int &y) {
+		return dfn[x] < dfn[y];
+	});
+	pt.erase(unique(pt.begin(), pt.end()), pt.end());
+	for (int i = 1; i < (int)pt.size(); ++i) {
+		int u = qlca(pt[i - 1], pt[i]);
+		G2.add_edge(u, pt[i], dep[pt[i]] - dep[u]);
+		G2.add_edge(pt[i], u, dep[pt[i]] - dep[u]);
+	}
+	tot = 0;
+	dfs2(res.x, -1);
+	p[++tot] = mkp(::len[res.x], bot[res.x]);
+	nth_element(p + 1, p + min(tot, 100), p + tot + 1, greater<pii>());
+	res.vc.pb(res.x);
+	for (int i = 1; i <= min(tot, 100); ++i) {
+		res.vc.pb(p[i].scd);
+	}
+	G2.len = 0;
+	for (int u : pt) {
+		G2.hd[u] = 0;
+	}
+	return res;
+}
+
+inline node brute(int l, int r) {
+	int x = l, y = l;
+	ll mx = 0;
+	for (int i = l + 1; i <= r; ++i) {
+		ll xx = qdis(x, i), yy = qdis(y, i);
+		if (xx == max({xx, yy, mx})) {
+			y = i;
+		} else if (yy == max({xx, yy, mx})) {
+			x = i;
+		}
+		mx = max({xx, yy, mx});
+	}
+	node res;
+	res.x = x;
+	res.y = y;
+	for (int i = l; i <= r; ++i) {
+		res.vc.pb(i);
+	}
+	return res;
+}
+
+inline node query(int l, int r) {
+	int k = __lg(r - l + 1);
+	return f[k][l] + f[k][r - (1 << k) + 1];
+}
+
 void solve() {
-    int n,k,q;
-    scanf("%d%d%d",&n,&k,&q);
-    std::memset(last+1,0,n*sizeof(int)),en=0;
-    for(int i=1;i<n;i++) {
-        int u,v;
-        scanf("%d%d",&u,&v);
-        add_edge(u,v);
-        add_edge(v,u);
-    }
-    int cnt(0);
-    int qb(1),qe(1);
-    fa[1]=0,que[1]=1;
-    while(qb<=qe) {
-        const int u(que[qb++]);
-        bfn[u]=++cnt;
-        for(int i=last[u];i;i=e[i].next) {
-            const int v(e[i].v);
-            if(v==fa[u]) {
-                continue;
-            }
-            fa[v]=u,que[++qe]=v;
-        }
-    }
-    for(int i=n;i>=1;i--) {
-        const int u(que[i]);
-        lp[u][0]=rp[u][0]=bfn[u];
-        for(int j=1;j<=k;j++) {
-            lp[u][j]=n+1,rp[u][j]=0;
-        }
-        for(int j=last[u];j;j=e[j].next) {
-            const int v(e[j].v);
-            if(v==fa[u]) {
-                continue;
-            }
-            for(int l=1;l<=k;l++) {
-                lp[u][l]=std::min(lp[u][l],lp[v][l-1]);
-                rp[u][l]=std::max(rp[u][l],rp[v][l-1]);
-            }
-        }
-    }
-    for(int i=1;i<=q;i++) {
-        scanf("%d%d",&qq[i].l,&qq[i].r);
-        qq[i].id=i;
-    }
-    std::sort(qq+1,qq+q+1,[](const qry &x,const qry &y)->bool {
-        return x.r<y.r;
-    });
-    BIT::clear(n);
-    ODT::MAP::emplace(1,{n,0});
-    for(int i=1,j=1;i<=n;i++) {
-        for(int j=0,u=i;j<=k;j++,u=fa[u]) {
-            if(u==0) {
-                for(int l=k-j-1;l>=0;l--) {
-                    ODT::cover(lp[1][l],rp[1][l],i);
-                }
-                break;
-            }
-            ODT::cover(bfn[u],bfn[u],i);
-            ODT::cover(lp[u][k-j],rp[u][k-j],i);
-            if(j<k) {
-                ODT::cover(lp[u][k-j-1],rp[u][k-j-1],i);
-            }
-        }
-        while(j<=q&&qq[j].r==i) {
-            ans[qq[j].id]=BIT::query(n,qq[j].l);
-            ++j;
-        }
-    }
-    ODT::clear(n);
-    for(int i=1;i<=q;i++) {
-        printf("%d\n",ans[i]);
-    }
+	n = read();
+	for (int i = 1; i < n; ++i) {
+		int u = read();
+		int v = read();
+		int d = read();
+		G1.add_edge(u, v, d);
+		G1.add_edge(v, u, d);
+	}
+	dfs(1, 0);
+	for (int j = 1; (1 << j) <= n; ++j) {
+		for (int i = 1; i + (1 << j) - 1 <= n; ++i) {
+			st[j][i] = get(st[j - 1][i], st[j - 1][i + (1 << (j - 1))]);
+		}
+	}
+	B = min(n, 100);
+	for (int i = 1; i <= n; ++i) {
+		bel[i] = (i - 1) / B + 1;
+		if (!L[bel[i]]) {
+			L[bel[i]] = i;
+		}
+		R[bel[i]] = i;
+	}
+	for (int k = 1; k <= bel[n]; ++k) {
+		f[0][k] = brute(L[k], R[k]);
+	}
+	for (int j = 1; (1 << j) <= bel[n]; ++j) {
+		for (int i = 1; i + (1 << j) - 1 <= bel[n]; ++i) {
+			f[j][i] = f[j - 1][i] + f[j - 1][i + (1 << (j - 1))];
+		}
+	}
+	m = read();
+	while (m--) {
+		int l = read();
+		int r = read();
+		int k = read();
+		node res;
+		if (bel[l] == bel[r]) {
+			res = brute(l, r);
+		} else {
+			res = brute(l, R[bel[l]]);
+			if (bel[l] + 1 < bel[r]) {
+				res = res + query(bel[l] + 1, bel[r] - 1);
+			}
+			res = res + brute(L[bel[r]], r);
+		}
+		auto pt = res.vc;
+		sort(pt.begin(), pt.end(), [&](const int &x, const int &y) {
+			return dfn[x] < dfn[y];
+		});
+		int len = (int)pt.size();
+		for (int i = 1; i < len; ++i) {
+			pt.pb(qlca(pt[i - 1], pt[i]));
+		}
+		sort(pt.begin(), pt.end(), [&](const int &x, const int &y) {
+			return dfn[x] < dfn[y];
+		});
+		pt.erase(unique(pt.begin(), pt.end()), pt.end());
+		for (int i = 1; i < (int)pt.size(); ++i) {
+			int u = qlca(pt[i - 1], pt[i]);
+			G2.add_edge(u, pt[i], dep[pt[i]] - dep[u]);
+			G2.add_edge(pt[i], u, dep[pt[i]] - dep[u]);
+		}
+		tot = 0;
+		dfs2(res.x, -1);
+		p[++tot] = mkp(::len[res.x], bot[res.x]);
+		nth_element(p + 1, p + min(tot, k - 1), p + tot + 1, greater<pii>());
+		ll ans = 0;
+		for (int i = 1; i <= min(tot, k - 1); ++i) {
+			ans += p[i].fst;
+		}
+		writeln(ans);
+		G2.len = 0;
+		for (int u : pt) {
+			G2.hd[u] = 0;
+		}
+	}
 }
+
 int main() {
-    int t;
-    scanf("%d",&t);
-    while(t--) {
-        solve();
-    }
-    return 0;
+	int T = 1;
+	// scanf("%d", &T);
+	while (T--) {
+		solve();
+	}
+	return 0;
 }

@@ -1,3 +1,4 @@
+mt19937 rnd(time(0));
 struct fhq{
 	int w[maxn],ls[maxn],rs[maxn],idx,rt;
 	int siz[maxn],sz[maxn];
@@ -32,8 +33,11 @@ struct fhq{
 			return {u,t.se};
 		}
 	}
-	int newnode(int s,int v){
-		w[++idx]=rnd();siz[idx]=sz[idx]=s,val[idx]=num[idx]=v;
+	int newnode(){
+		w[++idx]=rnd();siz[idx]=sz[idx]=1;ls[idx]=rs[idx]=0;
 		return idx;
+	}
+	void clr(){
+		rt=idx=0;
 	}
 }t;

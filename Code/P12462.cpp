@@ -26,7 +26,7 @@ inline int read(){
 }
 const int maxn=300010;
 const int maxm=3010;
-const int k=5;
+const int k=100;
 const int inf=1e9;
 bool mbe;
 
@@ -120,7 +120,7 @@ void work(){
 		e[u].pb({v,w}),e[v].pb({u,w});
 	}
 	dfspre(1,0);
-	for(int j=1;j<18;j++){
+	for(int j=1;j<=18;j++){
 		for(int i=1;i+(1<<j)-1<=n;i++)st[j][i]=mmax(st[j-1][i],st[j-1][i+(1<<j-1)]);
 	}
 	for(int l=1,r;l<=n;l=r+1){

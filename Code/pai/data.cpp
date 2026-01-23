@@ -21,25 +21,30 @@ bool mbe;
 int n,q;
 mt19937 rnd(time(0));
 void work(){
-	n=rnd()%10+1,q=10;
-	cout<<n<<" "<<rnd()%3+1<<" "<<q<<"\n";
-	for(int i=2;i<=n;i++)cout<<rnd()%(i-1)+1<<" "<<i<<"\n";
-	for(int i=1;i<=q;i++){
-		int l=rnd()%n+1,r=rnd()%n+1;
-		if(l>r)swap(l,r);
-		cout<<l<<" "<<r<<"\n";
+	n=rnd()%20+1;
+	cout<<n<<"\n";
+	for(int i=2;i<=n;i++){
+		int u=rnd()%(i-1)+1,v=i,w=rnd()%10+1;
+		cout<<u<<" "<<v<<" "<<w<<"\n";
 	}
+	vector<tuple<int,int,int>> ask;
+	for(int i=1;i<=n;i++){
+		for(int j=i;j<=n;j++){
+			for(int k=1;k<=j-i+1&&k<=5;k++)ask.pb({i,j,k});
+		}
+	}
+	cout<<ask.size()<<"\n";
+	for(auto[l,r,k]:ask)cout<<l<<" "<<r<<" "<<k<<"\n";
 }
 
 bool med;
 int T;
 signed main(){
 	// freopen(".in","r",stdin);
-	// freopen("1.out","w",stdout);
+	// freopen(".out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=10;
-	cout<<T<<"\n";
+	T=1;
 	while(T--)work();
 }
