@@ -8,14 +8,12 @@
 #define db long double
 #define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
-inline int read(){
-	int x=0,fl=1;char ch=getchar();
-	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
-	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
-	return x*fl;
-}
-const int maxn=500100;
-const int B=512;
+static char buf[1000000],*p1=buf,*p2=buf;
+#define getchar() p1==p2&&(p2=(p1=buf)+fread(buf,1,1000000,stdin),p1==p2)?EOF:*p1++
+inline int read(){int x=0;char c=getchar();while(c<'0'||c>'9')c=getchar();while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x;}
+inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
+const int maxn=500600;
+const int B=700;
 const int inf=1e9;
 bool mbe;
 
@@ -24,72 +22,88 @@ struct ask{
 	int l,r,id;
 }que[maxn];
 int ans[maxn];
-struct ds{
-	int a[maxn],b[maxn>>3],c[maxn>>6],d[maxn>>3],e[maxn>>6];
-	void upd(int p,int w){
-		p++;
-		// cout<<p<<" "<<w<<"\n";
-		a[p]+=w,b[p>>3]+=w,c[p>>6]+=w;
-		int &vd=d[p>>3]=-inf;
-		for(int i=(p>>3)<<3,s=0;i<((p>>3)+1)<<3;i++){
-			vd=max(vd,s+a[i]);
-			s+=a[i];
-		}
-		int &ve=e[p>>6]=-inf;
-		for(int i=(p>>6)<<3,s=0;i<((p>>6)+1)<<3;i++){
-			ve=max(ve,s+d[i]);
-			s+=b[i];
-		}
+alignas(64) int val[maxn];
+alignas(64) int b[maxn>>3],c[maxn>>3];
+alignas(64) int d[maxn>>5],e[maxn>>5];
+alignas(64) int f[maxn>>7],g[maxn>>7];
+#pragma GCC optimize("Ofast,unroll-loops")
+inline void chkmx(int &u,int v){u=(u>v)?u:v;}
+inline void upd(int p,int w){
+	p++;
+	int p1=p>>3,p2=p>>5,p3=p>>7;
+	val[p]+=w,b[p1]+=w,d[p2]+=w,f[p3]+=w;
+	int s=0;
+	int &vd=c[p1]=-inf;p1<<=3;s=0;
+	chkmx(vd,s+val[p1]),s+=val[p1];
+	chkmx(vd,s+val[p1+1]),s+=val[p1+1];
+	chkmx(vd,s+val[p1+2]),s+=val[p1+2];
+	chkmx(vd,s+val[p1+3]),s+=val[p1+3];
+	chkmx(vd,s+val[p1+4]),s+=val[p1+4];
+	chkmx(vd,s+val[p1+5]),s+=val[p1+5];
+	chkmx(vd,s+val[p1+6]),s+=val[p1+6];
+	chkmx(vd,s+val[p1+7]),s+=val[p1+7];
+	int &ve=e[p2]=-inf;p2<<=2;s=0;
+	chkmx(ve,s+c[p2]),s+=b[p2];
+	chkmx(ve,s+c[p2+1]),s+=b[p2+1];
+	chkmx(ve,s+c[p2+2]),s+=b[p2+2];
+	chkmx(ve,s+c[p2+3]),s+=b[p2+3];
+	int &vg=g[p3]=-inf;p3<<=2;s=0;
+	chkmx(vg,s+e[p3]),s+=d[p3];
+	chkmx(vg,s+e[p3+1]),s+=d[p3+1];
+	chkmx(vg,s+e[p3+2]),s+=d[p3+2];
+	chkmx(vg,s+e[p3+3]),s+=d[p3+3];
+}
+inline int calc(){
+	int p=-1,t=0;
+	for(int i=0,s=0;i<=(n>>7);i++){
+		if(s+g[i]>=0)p=i,t=s;
+		s+=f[i];
 	}
-	int query(){
-		int p=-1,t=0;
-		for(int i=0,s=0;i<=n>>6;i++){
-			if(s+e[i]>=0)p=i,t=s;
-			s+=c[i];
-		}
-		if(p==-1)return -1;
-		int x=-1;
-		int s=t;
-		for(int i=p<<6;i<(p+1)<<6;i++){
-			s+=a[i];
-			if(s>=0)x=i;
-		}
-		return x;
+	if(p==-1)return -1;
+	int x=-1;
+	int s=t;p<<=7;
+	for(int i=p;i<p+128;i+=8){
+		s+=val[i];if(s>=0)x=i;
+		s+=val[i+1];if(s>=0)x=i+1;
+		s+=val[i+2];if(s>=0)x=i+2;
+		s+=val[i+3];if(s>=0)x=i+3;
+		s+=val[i+4];if(s>=0)x=i+4;
+		s+=val[i+5];if(s>=0)x=i+5;
+		s+=val[i+6];if(s>=0)x=i+6;
+		s+=val[i+7];if(s>=0)x=i+7;
 	}
-}d;
+	return x;
+}
 int t[maxn];
-inline void add(int p){
-	d.upd(a[p],1);
-}
-inline void del(int p){
-	d.upd(a[p],-1);
-}
 void work(){
 	n=read();q=read();
 	for(int i=1;i<=n;i++)a[i]=read();
-	for(int i=0;i<=n+1;i++)d.upd(i,-1);
-	// for(int i=0;i<=n;i++)cout<<d.a[i]<<" ";cout<<"\n";
-	for(int i=1;i<=q;i++)que[i]={read(),read(),i};
+	reverse(a+1,a+n+1);
+	for(int i=1;i<=q;i++){
+		int l=read(),r=read();
+		que[i]={n-r+1,n-l+1,i};
+	}
 	sort(que+1,que+q+1,[&](ask u,ask v){
 		if(u.l/B==v.l/B)return ((u.l/B)&1)?u.r>v.r:u.r<v.r;
 		return u.l<v.l;
 	});
+	for(int i=0;i<=n+1;i++)upd(i,-1);
 	for(int i=1,l=1,r=0;i<=q;i++){
-		while(r<que[i].r)add(++r);
-		while(l>que[i].l)add(--l);
-		while(r>que[i].r)del(r--);
-		while(l<que[i].l)del(l++);
-		ans[que[i].id]=d.query();
+		while(r<que[i].r)upd(a[++r],1);
+		while(l>que[i].l)upd(a[--l],1);
+		while(r>que[i].r)upd(a[r--],-1);
+		while(l<que[i].l)upd(a[l++],-1);
+		ans[que[i].id]=calc();
 		// cout<<i<<" "<<que[i].l<<" "<<que[i].r<<" "<<que[i].id<<" "<<ans[que[i].id]<<"\n";
 	}
-	for(int i=1;i<=q;i++)printf("%d\n",ans[i]);
+	for(int i=1;i<=q;i++)write(ans[i]),puts("");
 }
 
 bool med;
 int T;
 signed main(){
-	// freopen(".in","r",stdin);
-	// freopen(".out","w",stdout);
+	// freopen("sequence.in","r",stdin);
+	// freopen("sequence.out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
