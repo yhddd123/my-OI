@@ -1,3 +1,22 @@
+#include<bits/stdc++.h>
+// #define int long long
+#define pii pair<int,int>
+#define fi first
+#define se second
+#define pb push_back
+#define db long double
+#define mems(a,x) memset((a),(x),sizeof(a))
+using namespace std;
+inline int read(){
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x*fl;
+}
+const int maxn=3010;
+const int inf=1e9;
+bool mbe;
+
 #pragma GCC target("avx2")
 namespace NTT {
 #include <type_traits>
@@ -390,4 +409,83 @@ namespace polymul{
 	}
 	return res;
 }
+}
+
+#define mod 998244353
+inline int ksm(int a,int b=mod-2){
+    int ans=1;
+    while(b){
+        if(b&1)ans=1ll*ans*a%mod;
+        a=1ll*a*a%mod;
+        b>>=1;
+    }
+    return ans;
+}
+int fac[maxn],inv[maxn];
+int C(int m,int n){
+    if(n<0||m<0||m<n)return 0;
+    return 1ll*fac[m]*inv[n]%mod*inv[m-n]%mod;}
+void init(int n){
+    fac[0]=1;for(int i=1;i<=n;i++)fac[i]=1ll*fac[i-1]*i%mod;
+    inv[n]=ksm(fac[n]);for(int i=n-1;~i;i--)inv[i]=1ll*inv[i+1]*(i+1)%mod;
+}
+inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
+int n,ans[maxn<<1];
+char s[maxn];
+int f1[maxn],f2[maxn],c1,c2;
+int f[maxn][maxn],g[maxn];
+void work(){
+	n=read();scanf("%s",s+1);init(n);
+	f1[0]=f2[0]=1;
+	for(int i=1;i<=n;i++){
+		if(s[i]=='B'){
+			for(int j=c2;j;j--)inc(f2[j],1ll*f2[j-1]*(c2-j+1)%mod);
+			c1++;
+		}
+		else{
+			for(int j=c1;j;j--)inc(f1[j],1ll*f1[j-1]*(c1-j+1)%mod);
+			c2++;
+		}
+	}
+	for(int i=0;i<=c1;i++){
+		for(int j=0;j<=c2;j++)f[i][j]=1ll*f1[i]*f2[j]%mod*fac[n-i-j-1]%mod;
+	}
+	// for(int i=0;i<=c1;i++){
+		// for(int j=0;j<=c2;j++)cout<<f[i][j]<<" ";cout<<"\n";
+	// }
+	for(int i=0;i<=c1;i++){
+		vector<int> ff(c2+1),gg(c2+1);
+		for(int j=0;j<=c2;j++)ff[j]=1ll*fac[j]*f[i][j]%mod;
+		for(int j=0;j<=c2;j++)gg[j]=1ll*((j&1)?mod-1:1)*inv[j]%mod;
+		reverse(gg.begin(),gg.end());
+		ff=polymul::mul(ff,gg);
+		for(int j=0;j<=c2;j++)f[i][j]=1ll*ff[j+c2]*inv[j]%mod;
+	}
+	for(int i=0;i<=c2;i++){
+		vector<int> ff(c1+1),gg(c1+1);
+		for(int j=0;j<=c1;j++)ff[j]=1ll*fac[j]*f[j][i]%mod;
+		for(int j=0;j<=c1;j++)gg[j]=1ll*((j&1)?mod-1:1)*inv[j]%mod;
+		reverse(gg.begin(),gg.end());
+		ff=polymul::mul(ff,gg);
+		for(int j=0;j<=c1;j++)f[j][i]=1ll*ff[j+c1]*inv[j]%mod;
+	}
+	// for(int i=0;i<=c1;i++){
+		// for(int j=0;j<=c2;j++)cout<<f[i][j]<<" ";cout<<"\n";
+	// }
+	for(int i=0;i<=c1;i++){
+		for(int j=0;j<=c2;j++)inc(ans[i-2*j+n],f[i][j]);
+	}
+	for(int i=-n;i<=n;i++)printf("%d ",ans[i+n]);
+}
+
+bool med;
+int T;
+signed main(){
+	// freopen(".in","r",stdin);
+	// freopen(".out","w",stdout);
+	
+	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+	
+	T=1;
+	while(T--)work();
 }
