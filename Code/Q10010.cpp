@@ -39,15 +39,13 @@ void work(){
 		for(int j=k;~j;j--)add(b,(x>>j)&1ll);
 		for(int v:b)c.pb(v);
 	}
-	sort(c.begin(),c.end(),greater<int>());
+	sort(c.begin(),c.end());
 	// for(int i=1;i<=n;i++){
 		// int x=a[i],k=__lg(x);
 		// for(int j=0;j<=k;j++)cout<<((x>>j)&1);cout<<"\n";
 	// }
-	// cout<<ans<<"\n";
-	// for(int v:c)cout<<v<<" ";cout<<"\n";
 	add(c,0),add(c,0);
-	for(int i=0;i<c.size();i++)ans+=((i&1)?-1:1)*c[i];
+	for(int i=c.size()-1,o=0;~i;i--,o^=1)ans+=(o?-1:1)*c[i];
 	printf("%lld\n",ans);
 }
 

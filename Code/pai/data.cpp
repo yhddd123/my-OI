@@ -21,20 +21,9 @@ bool mbe;
 int n,q;
 mt19937 rnd(time(0));
 void work(){
-	n=rnd()%20+1;
+	n=rnd()%5+1;
 	cout<<n<<"\n";
-	for(int i=2;i<=n;i++){
-		int u=rnd()%(i-1)+1,v=i,w=rnd()%10+1;
-		cout<<u<<" "<<v<<" "<<w<<"\n";
-	}
-	vector<tuple<int,int,int>> ask;
-	for(int i=1;i<=n;i++){
-		for(int j=i;j<=n;j++){
-			for(int k=1;k<=j-i+1&&k<=5;k++)ask.pb({i,j,k});
-		}
-	}
-	cout<<ask.size()<<"\n";
-	for(auto[l,r,k]:ask)cout<<l<<" "<<r<<" "<<k<<"\n";
+	for(int i=1;i<=n;i++)cout<<rnd()%8+1<<" ";
 }
 
 bool med;
