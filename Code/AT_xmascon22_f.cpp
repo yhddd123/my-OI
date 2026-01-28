@@ -109,7 +109,7 @@ void comptrans(ull *a,ull *b,ull *c,int n){
 }
 
 int n,N;ull a[maxn<<1][maxn<<1];
-int msk[1<<maxn];
+ull msk[1<<maxn];
 ull f[1<<maxn][maxn<<1],g[1<<maxn],h[1<<maxn];
 ull ans[maxn+1];
 void work(){
@@ -126,7 +126,7 @@ void work(){
 		f[1<<mx/2-1][mx-2]=1;
 		for(int s=(1<<mx/2-1);s<(1<<mx/2);s++){
 			for(int i=0;i<mx;i++)if(f[s][i]){
-				for(int t=msk[s]&((1ll<<mx)-1);t;t&=t-1){
+				for(ull t=msk[s]&((1ll<<mx)-1);t;t&=t-1){
 					int j=__builtin_ctzll(t);
 					f[s^(1<<j/2)][j^1]+=f[s][i]*a[i][j];
 				}
@@ -137,15 +137,12 @@ void work(){
 	}
 	exp(h,g,n/2);
 	for(int s=0;s<(1<<n/2);s++)h[s]=g[s],g[s]=0;
-	for(int s=0;s<(1<<n/2);s++){
-		for(int i=0;i<2*n;i++)f[s][i]=0;
-	}
 	for(int mx=2;mx<=n;mx+=2){
 		for(int s=(1<<mx/2-1);s<(1<<mx/2);s++)mems(f[s],0);
 		f[1<<mx/2-1][mx-2]=1;
 		for(int s=(1<<mx/2-1);s<(1<<mx/2);s++){
 			for(int i=0;i<mx;i++)if(f[s][i]){
-				for(int t=msk[s]&((1ll<<mx)-1);t;t&=t-1){
+				for(ull t=msk[s]&((1ll<<mx)-1);t;t&=t-1){
 					int j=__builtin_ctzll(t);
 					f[s^(1<<j/2)][j^1]+=f[s][i]*a[i][j];
 				}
@@ -155,7 +152,7 @@ void work(){
 		}
 		for(int s=(1<<mx/2-1);s<(1<<mx/2);s++){
 			for(int i=0;i<mx;i++)if(f[s][i]){
-				for(int t=msk[s]&((1ll<<mx)-1);t;t&=t-1){
+				for(ull t=msk[s]&((1ll<<mx)-1);t;t&=t-1){
 					int j=__builtin_ctzll(t);
 					f[s^(1<<j/2)][j^1]+=f[s][i]*a[i][j];
 				}

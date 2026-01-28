@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define int long long
+#define int unsigned long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -18,12 +18,17 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,q;
-mt19937 rnd(time(0));
+int n,m,a[110][110];
+mt19937_64 rnd(time(0));
 void work(){
-	n=rnd()%5+1;
+	n=rnd()%20+1;
 	cout<<n<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%8+1<<" ";
+	for(int i=1;i<=n;i++){
+		for(int j=i+1;j<=n;j++)a[i][j]=a[j][i]=rnd();
+	}
+	for(int i=1;i<=n;i++){
+		for(int j=1;j<=n;j++)cout<<a[i][j]<<" ";cout<<"\n";
+	}
 }
 
 bool med;

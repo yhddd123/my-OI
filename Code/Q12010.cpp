@@ -56,7 +56,7 @@ struct automation{
 		int son[2];
 		bool ok;
 		__int128 nxt;
-	}dft[55];int idx;
+	}dfa[55];int idx;
 	node init(int l,int s){
 		node res; 
 		res.len=l,res.sta=s;
@@ -72,16 +72,16 @@ struct automation{
 		return res;
 	}
 	void init(){
-		dft[idx=0]=init(0,0);
+		dfa[idx=0]=init(0,0);
 		for(int id=0;id<=idx;id++){
 			for(int c=0;c<2;c++){
-				int l=dft[id].len+1,s=dft[id].sta|(c<<l-1);
+				int l=dfa[id].len+1,s=dfa[id].sta|(c<<l-1);
 				node nw=init(l,s);
-				int p=-1;for(int j=0;j<=idx;j++)if(nw.nxt==dft[j].nxt)p=j;
-				if(p==-1)dft[++idx]=nw,p=idx;
-				dft[id].son[c]=p;
+				int p=-1;for(int j=0;j<=idx;j++)if(nw.nxt==dfa[j].nxt)p=j;
+				if(p==-1)dfa[++idx]=nw,p=idx;
+				dfa[id].son[c]=p;
 			}
-			// cout<<dft[id].len<<" "<<dft[id].sta<<" "<<dft[id].son[0]<<" "<<dft[id].son[1]<<" a\n";
+			// cout<<dfa[id].len<<" "<<dfa[id].sta<<" "<<dfa[id].son[0]<<" "<<dfa[id].son[1]<<" a\n";
 		}
 		// cout<<idx<<"\n";
 	}
@@ -94,10 +94,10 @@ void work(){
 	for(int i=1;i<=n;i++){
 		for(int j=0;j<=a.idx;j++)f[i][j]=0;
 		for(int j=0;j<=a.idx;j++)if(f[i-1][j]){
-			for(int c=0;c<2;c++)if(s[i]-'0'!=(c^1))inc(f[i][a.dft[j].son[c]],f[i-1][j]);
+			for(int c=0;c<2;c++)if(s[i]-'0'!=(c^1))inc(f[i][a.dfa[j].son[c]],f[i-1][j]);
 		}
 	}
-	ans=0;for(int i=0;i<=a.idx;i++)if(a.dft[i].ok)inc(ans,f[n][i]);
+	ans=0;for(int i=0;i<=a.idx;i++)if(a.dfa[i].ok)inc(ans,f[n][i]);
 	printf("%d\n",ans);
 }
 

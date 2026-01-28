@@ -58,7 +58,7 @@ namespace automation{
 		vector<int> sta;
 		pii son[3];
 		int val;
-	}dft[maxn*6];
+	}dfa[maxn*6];
 	int pw[8]={1,3,9,27,81,243,729,6561};
 	bool operator==(node u,node v){
 		for(int s=0;s<pw[6];s++){
@@ -75,12 +75,12 @@ namespace automation{
 			int tmp=idx;
 			for(int i=lst;i<=tmp;i++){
 				for(int j=0;j<3;j++){
-					node nw=dft[i];
+					node nw=dfa[i];
 					nw.sta.pb(j);nw.val=calc(nw.sta);
 					int p=-1;
-					for(int k=0;k<=idx;k++)if(nw==dft[k]){p=k;break;}
-					if(p==-1)dft[++idx]=nw,p=idx;
-					dft[i].son[j]={p,nw.val-dft[i].val};
+					for(int k=0;k<=idx;k++)if(nw==dfa[k]){p=k;break;}
+					if(p==-1)dfa[++idx]=nw,p=idx;
+					dfa[i].son[j]={p,nw.val-dfa[i].val};
 				}
 			}
 			lst=tmp+1;
@@ -91,24 +91,24 @@ namespace automation{
 		return i+2;
 	}
 	void init(int N){
-		for(int i=1;i<=3;i++)dft[i-1]=dft[i];
-		for(int i=idx;i>=4;i--)dft[i+2]=dft[i];
+		for(int i=1;i<=3;i++)dfa[i-1]=dfa[i];
+		for(int i=idx;i>=4;i--)dfa[i+2]=dfa[i];
 		idx+=2;
 		for(int i=0;i<=idx;i++){
-			for(int j=0;j<3;j++)dft[i].son[j].fi=id(dft[i].son[j].fi);
+			for(int j=0;j<3;j++)dfa[i].son[j].fi=id(dfa[i].son[j].fi);
 		}
 		// for(int i=0;i<=idx;i++)if(i<3||i>=6){
 			// cout<<i<<" ";
-			// for(int j=0;j<3;j++)cout<<dft[i].son[j].fi<<" "<<dft[i].son[j].se<<" ";cout<<"\n";
-			// for(int v:dft[i].sta)cout<<v;cout<<"\n";
+			// for(int j=0;j<3;j++)cout<<dfa[i].son[j].fi<<" "<<dfa[i].son[j].se<<" ";cout<<"\n";
+			// for(int v:dfa[i].sta)cout<<v;cout<<"\n";
 		// }
 		for(int i=30;i<=N;i++){
-			dft[i]=dft[i-18];
-			for(int j=0;j<3;j++)dft[i].son[j].fi+=18;
+			dfa[i]=dfa[i-18];
+			for(int j=0;j<3;j++)dfa[i].son[j].fi+=18;
 		}
 	}
 }
-using automation::dft;
+using automation::dfa;
 int f[2][maxn*6],g[2][maxn*6],cur;
 inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
 void work(){
@@ -122,9 +122,9 @@ void work(){
 		for(int j=0;j<=n*6;j++)if(f[(i&1)^1][j]||g[(i&1)^1][j]){
 			// cout<<i<<" "<<j<<" "<<f[(i&1)^1][j]<<" "<<g[(i&1)^1][j]<<"\n";
 			for(int c=0;c<3;c++)if(val&(1<<c)){
-				inc(f[i&1][dft[j].son[c].fi],f[(i&1)^1][j]);
-				inc(g[i&1][dft[j].son[c].fi],g[(i&1)^1][j]);
-				if(dft[j].son[c].se)inc(g[i&1][dft[j].son[c].fi],f[(i&1)^1][j]);
+				inc(f[i&1][dfa[j].son[c].fi],f[(i&1)^1][j]);
+				inc(g[i&1][dfa[j].son[c].fi],g[(i&1)^1][j]);
+				if(dfa[j].son[c].se)inc(g[i&1][dfa[j].son[c].fi],f[(i&1)^1][j]);
 			}
 		}
 	}

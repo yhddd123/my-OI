@@ -1,43 +1,49 @@
-#include<bits/stdc++.h>
-using namespace std;bool Mbe;
-namespace MAOJUN{
 
+
+#include <cstdio>
+#define ull unsigned long long
+
+using namespace std;
+
+int N;
+ull A[49][49];
 int n;
+ull f[21][1048579];
+int id[1048579];
+ull g[2][1048579][41];
 
-int tp=0,sk[70];
-inline void main(){
-	scanf("%d",&n);
-	vector<int>A;int t=0;
-	for(int i=1;i<=n;i++){
-		long long x;scanf("%lld",&x);
-		tp=0;
-		for(int i=__lg(x);~i;i--){
-			sk[++tp]=x>>i&1;
-			// printf("%d",x>>i&1);
-			while(tp>1&&sk[tp-1]>sk[tp]){
-				int w=sk[tp]-sk[tp-1];
-				if(tp>2)sk[tp-=2]+=w;
-				else{t+=w;tp=0;}
-			}
-		}
-		// puts("");
-		for(int i=1;i<=tp;i++)A.emplace_back(sk[i]);
-	}
-	sort(A.begin(),A.end(),greater<int>());
-	if(t)A.emplace_back(t);
-	int z=A.size(),s=0;
-	for(int i=0;i<z;i++)s+=i&1?-A[i]:A[i];
-	printf("%d\n",s);
-}
-
-}bool Med;int main(){
-#ifdef IO
-	freopen("2.in","r",stdin);
-	freopen(".out","w",stdout);
-#endif
-#ifdef TM
-	atexit([]{fprintf(stderr,"%.lfms\n%lfMB\n",clock()*1000./CLOCKS_PER_SEC,(&Mbe-&Med)/1024./1024);});
-#endif
-	MAOJUN::main();
-	return 0;
+int main () {
+    scanf("%d", &N);
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++) scanf("%llu", &A[i][j]);
+    int t = (N >> 1);
+    if (N & 1) N++;
+    n = (N >> 1);
+    for (int i = 0; i < (1 << n); i++) id[i] = (i & 1) ? id[i >> 1] + 1 : 0;
+    f[0][0] = 1;
+    int s, p;
+    ull v0, v1;
+    for (int i = 0; i <= n; i++)
+        for (int j = 0; j < (1 << (n - i)); j++) {
+            s = ((j << i) ^ ((1 << i) - 1)), p = id[s];
+            g[0][s][p << 1] += f[i][s];
+            for (int k = (p << 1); k < N; k++) g[1][s][p << 1 | 1] += g[0][s][k];
+            for (int k = (p << 1); k < N; k++)
+                if (g[0][s][k] || g[1][s][k]) {
+                    v0 = g[0][s][k], v1 = g[1][s][k];
+                    f[i + 1][s ^ (1 << p)] += v1;
+                    f[i][s ^ (1 << p)] += (v0 * A[k][p << 1 | 1]);
+                    for (int l = p + 1; l < n; l++)
+                        if (!((s >> l) & 1)) {
+                            g[0][s ^ (1 << l)][l << 1 | 1] += (v0 * A[k][l << 1]);
+                            g[0][s ^ (1 << l)][l << 1] += (v0 * A[k][l << 1 | 1]);
+                            g[1][s ^ (1 << l)][l << 1 | 1] += (v1 * A[k][l << 1]);
+                            g[1][s ^ (1 << l)][l << 1] += (v1 * A[k][l << 1 | 1]);
+                        }
+                    g[0][s][k] = g[1][s][k] = 0;
+                }
+        }
+    for (int i = 0; i <= t; i++) printf("%llu ", f[n - i][(1 << n) - 1]);
+    puts("");
+    return 0;
 }
