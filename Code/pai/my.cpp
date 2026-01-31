@@ -14,178 +14,137 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=300010;
+const int maxn=500010;
 const int inf=1e9;
 bool mbe;
 
-inline int ksm(int a,int b=mod-2){
-    int ans=1;
-    while(b){
-        if(b&1)ans=1ll*ans*a%mod;
-        a=1ll*a*a%mod;
-        b>>=1;
-    }
-    return ans;
+int op,n,m;
+vector<int> e[maxn];
+namespace sub1{
+	int a[maxn];
+	bool vis[maxn],bk[maxn];
+	vector<pii> sovle(){
+		vector<pii> edge,nw;
+		for(int i=1;i<=m;i++){
+			int u=read(),v=read();
+			edge.pb({u,v});
+		}
+		int k=read();
+		for(int i=1;i<=k;i++)a[i]=read(),vis[a[i]]=1;
+		for(auto[u,v]:edge){
+			if(!vis[u]&&!vis[v]){
+				if(u>v)swap(u,v);
+				nw.pb({u,v});
+			}
+			else if(vis[u]&&vis[v]){
+				e[u].pb(v),e[v].pb(u);
+			}
+			else{
+				if(!vis[u])swap(u,v);
+				nw.pb({u,v});
+			}
+		}
+		for(int i=1;i<=k;i++){
+			int u=a[i];
+			for(int v:e[u])if(vis[v]){
+				if(i!=k&&v==a[i%k+1])nw.pb({u,v});
+				else if(!bk[v])nw.pb({v,u});
+			}
+			bk[u]=1;
+		}
+		return nw;
+	}
+}
+namespace sub2{
+	int ff[maxn],hd[maxn];
+	int fd(int x){
+		if(ff[x]==x)return x;
+		return x=fd(ff[x]);
+	}
+	list<int> a[maxn];
+	set<int> e[maxn],g[maxn];
+	int d[maxn];
+	bool vis[maxn],bk[maxn];
+	vector<int> sovle(vector<pii> edge){
+		for(auto[u,v]:edge)d[u]++,e[u].insert(v),g[v].insert(u);
+		queue<int> q;
+		for(int i=1;i<=n;i++)if(!d[i])q.push(i);
+		while(!q.empty()){
+			int u=q.front();q.pop();
+			for(int v:g[u]){
+				d[v]--;
+				if(!d[v])q.push(v);
+			}
+		}
+		for(int i=1;i<=n;i++)if(d[i])bk[i]=1;
+		for(int u=1;u<=n;u++)if(bk[u]){
+			set<int> ee;
+			for(int v:e[u])if(bk[v])ee.insert(v);
+			e[u]=ee;
+			set<int> gg;
+			for(int v:g[u])if(bk[v])gg.insert(v);
+			g[u]=gg;
+		}
+		int p=0;for(int i=1;i<=n;i++)if(d[i]==1)q.push(i);
+		for(int i=1;i<=n;i++)if(bk[i])a[i].pb(i);
+		for(int i=1;i<=n;i++)ff[i]=hd[i]=i;
+		int rt=0;
+		while(!q.empty()){
+			int u=q.front();q.pop();
+			// cout<<u<<"\n";
+			// for(int v:e[u])cout<<v<<" "<<fd(v)<<" e\n";
+			while(e[u].size()&&fd(*e[u].begin())==u)e[u].erase(e[u].begin());
+			// cout<<u<<" "<<e[u].size()<<"\n";
+			int v=fd(*e[u].begin()),vv=*e[u].begin();
+			rt=v;ff[u]=v;hd[v]=hd[u];
+			for(int w:g[v]){
+				d[w]--;e[w].erase(vv);
+				if(d[w]==1)q.push(w);
+			}
+			if(e[v].find(hd[u])!=e[v].end()){
+				d[v]--;e[v].erase(hd[u]);
+				if(d[v]==1)q.push(v);
+			}
+			g[v].clear();swap(g[u],g[v]);
+			a[u].splice(a[u].end(),a[v]),swap(a[u],a[v]);
+			// cout<<u<<" "<<v<<" "<<vv<<" "<<a[u].size()<<" "<<a[v].size()<<" d\n";
+		}
+		vector<int> id;
+		for(int u:a[rt])id.pb(u);
+		return id;
+	}
 }
 mt19937 rnd(0);
-int n,q,x,y;
-vector<int> e[maxn];
-int fa[maxn],dep[maxn],siz[maxn],son[maxn];
-void dfs(int u){
-    dep[u]=dep[fa[u]]+1,siz[u]=1,son[u]=0;
-    for(int v:e[u])if(v!=fa[u]){
-        fa[v]=u;dfs(v),siz[u]+=siz[v];
-        if(siz[v]>=siz[son[u]])son[u]=v;
-    }
-}
-int dfn[maxn],rnk[maxn],idx,tp[maxn],ed[maxn];
-void dfs(int u,int lst){
-    rnk[dfn[u]=++idx]=u;tp[u]=lst;ed[u]=u;
-    if(!son[u])return ;dfs(son[u],lst);ed[u]=ed[son[u]];
-    for(int v:e[u])if(v!=fa[u]&&v!=son[u])dfs(v,v);
-}
-int h1[maxn],h2[maxn];
-#define mid ((l+r)>>1)
-#define ls nd<<1
-#define rs nd<<1|1
-pii operator*(pii u,pii v){return {u.fi*v.fi%mod,(u.fi*v.se+u.se)%mod};}
-pii tree[maxn<<2];
-void build(int nd,int l,int r){
-	tree[nd]={0,1};
-	if(l==r)return ;
-	build(ls,l,mid),build(rs,mid+1,r);
-}
-void modif(int nd,int l,int r,int p){
-	if(l==r){
-		tree[nd]={h2[rnk[l]],y};
-		return ;
-	}
-	if(p<=mid)modif(ls,l,mid,p);
-	else modif(rs,mid+1,r,p);
-	tree[nd]=tree[ls]*tree[rs];
-}
-pii query(int nd,int l,int r,int ql,int qr){
-	if(l>=ql&&r<=qr)return tree[nd];
-	if(qr<=mid)return query(ls,l,mid,ql,qr);
-	if(ql>mid)return query(rs,mid+1,r,ql,qr);
-	return query(ls,l,mid,ql,qr)*query(rs,mid+1,r,ql,qr);
-}
-int que(int u){
-	pii res=query(1,1,n,dfn[u],dfn[ed[u]]);
-	// cout<<u<<" "<<res.fi<<" "<<res.se<<"\n";
-	return (res.fi+res.se)%mod;
-}
-void add(int u){
-	h2[u]=x;
-	while(u){
-		modif(1,1,n,dfn[u]);
-		u=tp[u];
-		h2[fa[u]]=h2[fa[u]]*ksm(h1[u])%mod;
-		h1[u]=que(u);
-		h2[fa[u]]=h2[fa[u]]*h1[u]%mod;
-		u=fa[u];
-	}
-}
-#define lb(x) (x&(-x))
-struct bit1{
-	int tree[maxn];
-	inline void upd(int x,int w){
-		while(x<=n)tree[x]+=w,x+=lb(x);
-	}
-	inline int que(int x){
-		int res=0;
-		while(x)res+=tree[x],x-=lb(x);
-		return res;
-	}
-	inline int ask(int u){return que(dfn[u]+siz[u]-1)-que(dfn[u]);}
-}t1;
-int find(int u){
-	if(u==1)return 0;
-	int sz=t1.ask(u);
-	if(2*sz<=t1.ask(fa[u]))return u;
-	else u=fa[u];
-	while(u){
-		if(fa[tp[u]]&&2*sz>t1.ask(fa[tp[u]]))u=fa[tp[u]];
-		else{
-			int l=dfn[tp[u]],r=dfn[u]-1,res=dfn[u];
-			while(l<=r){
-				if(2*sz>t1.ask(rnk[mid]))res=mid,r=mid-1;
-				else l=mid+1,res=mid;
-			}
-			u=rnk[res];
-			if(u==1)return 0;
-			sz=t1.ask(u);
-			if(2*sz<=t1.ask(fa[u]))return u;
-			else u=fa[u];
-		}
-	}
-	return u;
-}
-struct bit2{
-	int tree[maxn];
-	void init(){
-		for(int i=1;i<=n;i++)tree[i]=1;
-	}
-	inline void upd(int x,int w){
-		while(x<=n)tree[x]=tree[x]*w%mod,x+=lb(x);
-	}
-	inline int que(int x){
-		int res=1;
-		while(x)res=res*tree[x]%mod,x-=lb(x);
-		return res;
-	}
-	int calc(int u){
-		return que(dfn[u]+siz[u]-1)*ksm(que(dfn[u]-1))%mod;
-	}
-}t2;
-int f[maxn],ni[maxn];
-map<int,int> mp[maxn];
-pii ask[maxn];
-int st[maxn],top,tmp[maxn];
+int id[maxn],rnk[maxn];
 void work(){
-	x=rnd()%mod,y=rnd()%mod;
-	// cout<<x<<" "<<y<<" i\n";
-	q=read();n=1;
-	for(int i=1;i<=q;i++){
-		int op=read(),x=read();ask[i]={op,x};
-		if(op==0)++n,e[x].pb(n);
+	op=read();n=read();m=read();
+	vector<pii> edge;
+	if(op==1){
+		edge=sub1::sovle();
+		// for(auto[u,v]:edge)printf("%d %d\n",u,v);
+		assert(edge.size()==m);
+		shuffle(edge.begin(),edge.end(),rnd);
+		for(int i=1;i<=n;i++)id[i]=i;
+		shuffle(id+1,id+n+1,rnd);
+		for(int i=1;i<=n;i++)rnk[id[i]]=i;
+		for(auto&[u,v]:edge)u=rnk[u],v=rnk[v];
+		// for(auto[u,v]:edge)printf("%d %d\n",u,v);
+		vector<int> a=sub2::sovle(edge);
+		// for(int u:a)printf("%d ",u);puts("");
+		for(int &u:a)u=id[u];
+		// for(int u:a)printf("%d ",u);puts("");
+		pii mn={a[0],0};
+		for(int i=1;i<a.size();i++)mn=min(mn,{a[i],i});
+		rotate(a.begin(),a.begin()+mn.se,a.end());
+		for(int u:a)printf("%d ",u);puts("");
 	}
-	dfs(1),dfs(1,1);
-	build(1,1,n);add(1);
-	for(int i=1;i<=n;i++)f[i]=h1[i]=1;
-	t1.upd(dfn[1],1);
-	t2.init(),t2.upd(dfn[1],f[1]);
-	ni[0]=ni[1]=1;for(int i=2;i<=n;i++)ni[i]=(mod-mod/i)*ni[mod%i]%mod;
-	for(int i=1,nn=1;i<=q;i++){
-		auto[o,u]=ask[i];
-		if(o==0){
-			u=++nn;
-			t1.upd(dfn[u],1);
-			top=0;while(u){
-				u=find(u);
-				if(!u)break ;
-				st[++top]=u;tmp[u]=que(u);
-				u=fa[u];
-			}
-			add(nn);
-			// for(int i=1;i<=top;i++)cout<<st[i]<<" ";cout<<" a\n";
-			if(st[top]==9)exit(0);
-			for(int i=1;i<=top;i++){
-				int u=st[i];
-				t2.upd(dfn[fa[u]],ksm(f[fa[u]]));
-				if(u!=nn){
-					f[fa[u]]=f[fa[u]]*ni[mp[fa[u]][tmp[u]]--]%mod;
-				}
-				h1[u]=que(u);
-				f[fa[u]]=f[fa[u]]*(++mp[fa[u]][h1[u]])%mod;
-				t2.upd(dfn[fa[u]],f[fa[u]]);
-			}
+	else{
+		for(int i=1;i<=m;i++){
+			int u=read(),v=read();
+			edge.pb({u,v});
 		}
-		else{
-			printf("%lld\n",t2.calc(u));
-		}
-		// for(int i=1;i<=nn;i++)cout<<que(i)<<" ";cout<<"\n";
-		// for(int i=1;i<=nn;i++)cout<<f[i]<<" ";cout<<"\n";
+		vector<int> a=sub2::sovle(edge);
+		for(int u:a)printf("%d ",u);puts("");
 	}
 }
 

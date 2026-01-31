@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define int unsigned long long
+#define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -18,25 +18,17 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,n1,n2,m,q,k,a[110];
-mt19937_64 rnd(time(0));
-char s[maxn],t[maxn];
-map<int,int> mp;
-bool vis[110][110];
 void work(){
-	n=rnd()%30+3;
-	k=n;
-	for(int i=1;i<=n;i++)a[i]=i;
-	shuffle(a+1,a+n+1,rnd);
-	for(int i=1;i<=k;i++)vis[a[i]][a[i%k+1]]=vis[a[i%k+1]][a[i]]=1;
-	vector<pii> edge;
-	for(int i=1;i<=n;i++){
-		for(int j=i+1;j<=n;j++)if(vis[i][j]||rnd()%5==0)edge.pb({i,j});
+	for(int i=1;i<=10000;i++){
+		system("data.exe>A.in");
+		system("my.exe<A.in>A.out");
+		system("bf.exe<A.in>A.ans");
+		if(system("check.exe A.in A.out A.ans")){
+			cout<<"Wa\n";
+			exit(0);
+		}
+		cout<<i<<" Ac\n";
 	}
-	cout<<"1 "<<n<<" "<<edge.size()<<"\n";
-	for(auto[u,v]:edge)cout<<u<<" "<<v<<"\n";
-	cout<<k<<"\n";
-	for(int i=1;i<=k;i++)cout<<a[i]<<" ";cout<<"\n";
 }
 
 bool med;
