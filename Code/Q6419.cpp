@@ -24,12 +24,7 @@ namespace SA{
 int sa[maxn],rk[maxn<<1],tmp[maxn<<1],ht[maxn],cnt[maxn],id[maxn];
 void init(){
 	int w=26;
-	mems(sa,0);
-	mems(rk,0);
-	mems(tmp,0);
-	mems(ht,0);
-	mems(cnt,0);
-	mems(id,0);
+	for(int i=1;i<=max(n,w);i++)tmp[i]=0;
 	for(int i=1;i<=n;i++)++cnt[rk[i]=s[i]-'a'+1];
 	for(int i=1;i<=w;i++)cnt[i]+=cnt[i-1];
 	for(int i=n;i;i--)sa[cnt[rk[i]]--]=i;

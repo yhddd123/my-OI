@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define int unsigned long long
+#define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -14,24 +14,21 @@ inline int read(){
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
 	return x*fl;
 }
-const int maxn=200010;
+const int maxn=2000010;
 const int inf=1e9;
 bool mbe;
 
 int n;
-mt19937 rnd(time(0));
-char a[maxn];
+char s[maxn];
+int z[maxn];
 void work(){
-	n=rnd()%10+1;
-	vector<tuple<int,int,int>> que;
-	for(int i=1;i<=n;i++){
-		for(int j=i;j<=n;j++){
-			for(int k=i;k<=j;k++)que.pb({i,j,k});
-		}
+	scanf("%s",s+1);n=strlen(s+1);
+	for(int i=2,l=1;i<=n;i++){
+		if(l+z[l]>i)z[i]=min(z[i-l+1],l+z[l]-i);
+		while(i+z[i]<=n&&s[z[i]+1]==s[i+z[i]])z[i]++;
+		if(i+z[i]>l+z[l])l=i;
 	}
-	cout<<n<<" "<<que.size()<<"\n";
-	for(int i=1;i<=n;i++)cout<<char(rnd()%2+'a');cout<<"\n";
-	for(auto[l,r,k]:que)cout<<l<<" "<<r<<" "<<k<<"\n";
+	for(int i=1;i<=n;i++)printf("%lld ",z[i]);
 }
 
 bool med;
@@ -42,7 +39,6 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=100;
-	cout<<T<<"\n";
+	T=1;
 	while(T--)work();
 }
