@@ -39,4 +39,8 @@ struct bs{
 		int res=0;for(int i=0;i<len;i++)res+=__builtin_popcountll(a[i]);
 		return res;
 	}
+	bool any(){
+		for(int i=0;i<len;i++)if(a[i])return true;
+		return false;
+	}
 }f;

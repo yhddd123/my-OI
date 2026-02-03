@@ -48,10 +48,6 @@ void work(){
 	sort(edge.begin(),edge.end());
 	l=read();
 	for(int i=0;i<l;i++)a[i]=read(),b[i]=read();
-	int p=0;for(int i=1;i<l;i++)if(a[i]>a[p])p=i;
-	rotate(a,a+p+1,a+l),rotate(b,b+p+1,b+l);
-	// for(int i=0;i<l;i++)cout<<a[i]<<" ";cout<<"\n";
-	// for(int i=0;i<l;i++)cout<<b[i]<<" ";cout<<"\n";
 	k=read();
 	for(int i=1;i<=k;i++)vis[read()+1]=1;
 	for(int i=1;i<=n;i++)ff[i]=i;
@@ -64,12 +60,12 @@ void work(){
 	}
 	for(int i=0;i<l;i++)ans+=b[i]*(n-1)+sum;
 	for(int i=0;i<l;i++)id[i]=i;
-	sort(id,id+l,[&](int u,int v){return a[u]<a[v];});
 	for(int i=0;i<l;i++)ff[i]=i;
+	sort(id,id+l,[&](int u,int v){return a[u]<a[v];});
 	// cout<<ans<<" "<<sum<<"\n";
 	for(int ii=0;ii<l-1;ii++){
 		int i=id[ii];
-		int u=fd(i),v=fd(i+1);
+		int u=fd(i),v=fd((i+1)%l);
 		if(b[u]>b[v])swap(u,v);
 		ff[v]=u;
 		int t=a[i]-b[v];
@@ -84,8 +80,8 @@ void work(){
 bool med;
 int T;
 signed main(){
-	// freopen(".in","r",stdin);
-	// freopen(".out","w",stdout);
+	 // freopen(".in","r",stdin);
+	 // freopen(".out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	

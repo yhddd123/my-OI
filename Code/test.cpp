@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define int unsigned
+#define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -9,170 +9,119 @@
 #define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
 inline int read(){
-	int x=0;char ch=getchar();
-	while(ch<'0'||ch>'9'){ch=getchar();}
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
 	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
-	return x;
+	return x*fl;
 }
-const int maxn=100010;
+const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,q,a[maxn],b[maxn];
-const int B=450;
-const int maxm=maxn/B+5;
-int pl[maxm],pr[maxm],Bnum,bel[maxn];
-struct DS{
-	int s1[maxm],s2[maxn];
-	void upd(int p,int w){
-		for(int i=bel[p]+1;i<=Bnum;i++)s1[i]+=w;
-		for(int i=p;i<=pr[bel[p]];i++)s2[i]+=w;
-	}
-	inline int que(int p){return s1[bel[p]]+s2[p];}
-	inline int que(int l,int r){return que(r)-que(l-1);}
-}ka,ba,num[maxm],sum[maxm];
-void upda(int l,int r,int w){
-	ka.upd(l,w),ka.upd(r+1,-w);
-	ba.upd(l,-w*(l-1)),ba.upd(r+1,w*r);
+
+int bf(int n,int m,int b,int k_target){
+	static long long dp[25][25][45][2]; 
+	mems(dp,0);
+    auto is_invalid = [&](int x, int y) {
+        return y == x + b;
+    };
+
+    // 初始位置检查
+    if (is_invalid(0, 0)) {
+        return 0;
+    }
+
+    // 初始化起点
+    // dp[x][y][k][dir] -> dir 0: 向右移动到达, 1: 向上移动到达
+    if (n >= 1 && !is_invalid(1, 0)) dp[1][0][0][0] = 1;
+    if (m >= 1 && !is_invalid(0, 1)) dp[0][1][0][1] = 1;
+
+    for (int i = 0; i <= n; ++i) {
+        for (int j = 0; j <= m; ++j) {
+            if (is_invalid(i, j)) continue;
+            for (int k = 0; k <= k_target; ++k) {
+                
+                // 1. 尝试向右走 (更新 dir = 0)
+                if (i > 0) {
+                    // 同向：从 (i-1, j) 向右走过来
+                    dp[i][j][k][0] = (dp[i][j][k][0] + dp[i-1][j][k][0]) % mod;
+                    // 换向：从 (i-1, j) 原本向上的状态拐弯
+                    if (k > 0) {
+                        dp[i][j][k][0] = (dp[i][j][k][0] + dp[i-1][j][k-1][1]) % mod;
+                    }
+                }
+
+                // 2. 尝试向上走 (更新 dir = 1)
+                if (j > 0) {
+                    // 同向：从 (i, j-1) 向上走过来
+                    dp[i][j][k][1] = (dp[i][j][k][1] + dp[i][j-1][k][1]) % mod;
+                    // 换向：从 (i, j-1) 原本向右的状态拐弯
+                    if (k > 0) {
+                        dp[i][j][k][1] = (dp[i][j][k][1] + dp[i][j-1][k-1][0]) % mod;
+                    }
+                }
+            }
+        }
+    }
+
+    long long ans = (dp[n][m][k_target][0] + dp[n][m][k_target][1]) % mod;
+    return ans;
 }
-inline int quea(int p){return ka.que(p)*p+ba.que(p);}
-struct node{
-	int l,r,c;
-	bool operator<(const node&tmp)const{return r<tmp.l;}
-};
-struct odt{
-	set<node> s;
-	void split(int p){
-		auto it=s.lower_bound({p,p,0});
-		if(it!=s.end()&&(*it).r>p){
-			auto[l,r,c]=*it;
-			s.erase(it);
-			s.insert({l,p,c}),s.insert({p+1,r,c});
-		}
-	}
-	vector<node> ins(int l,int r,int c){
-		vector<node> res;
-		if(l-1)split(l-1);split(r);
-		auto it=s.lower_bound({l,l,0});
-		while(it!=s.end()&&(*it).r<=r){
-			res.pb(*it);
-			it=s.erase(it);
-		}
-		s.insert({l,r,c});
-		return res;
-	}
-	void init(int *a){
-		for(int i=1;i<=n;i++)s.insert({i,i,a[i]});
-	}
-}ta,tb;
-int cov[maxm],ans[maxm];
-void down(int id){
-	int l=pl[id],r=pr[id];
-	if(cov[id]){
-		for(int i=l;i<=r;i++)b[i]=cov[id];
-		cov[id]=0;
-	}
+
+inline int ksm(int a,int b=mod-2){
+    int ans=1;
+    while(b){
+        if(b&1)ans=1ll*ans*a%mod;
+        a=1ll*a*a%mod;
+        b>>=1;
+    }
+    return ans;
 }
-void init(int id){
-	int l=pl[id],r=pr[id];
-	ans[id]=0;for(int i=l;i<=r;i++)ans[id]+=quea(b[i]);
+int fac[maxn],inv[maxn];
+int C(int m,int n){
+    if(n<0||m<0||m<n)return 0;
+    return 1ll*fac[m]*inv[n]%mod*inv[m-n]%mod;}
+void init(int n){
+    fac[0]=1;for(int i=1;i<=n;i++)fac[i]=1ll*fac[i-1]*i%mod;
+    inv[n]=ksm(fac[n]);for(int i=n-1;~i;i--)inv[i]=1ll*inv[i+1]*(i+1)%mod;
 }
-void mdfa(int p,int w){
-	for(int id=1;id<=Bnum;id++){
-		if(cov[id])ans[id]=(pr[id]-pl[id]+1)*quea(cov[id]);
-		else ans[id]+=(num[id].que(p+1,n)*p+sum[id].que(1,p))*w;
-	}
-}
-void mdfb(int l,int r,int w){
-	if(bel[l]==bel[r]){
-		down(bel[l]);
-		for(int i=l;i<=r;i++)b[i]=w;
-		init(bel[l]);
-		return;
+inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
+int calc(int n,int m,int k){
+	if((!n||!m))return !k;
+	if(k&1){
+		return 2*C(n-1,(k+1)/2-1)*C(m-1,(k+1)/2-1)%mod;
 	}
 	else{
-		down(bel[l]);
-		for(int i=l;i<=pr[bel[l]];i++)b[i]=w;
-		init(bel[l]);
-		for(int id=bel[l]+1;id<=bel[r]-1;id++){
-			cov[id]=w;
-			ans[id]=(pr[id]-pl[id]+1)*quea(w);
-		}
-		down(bel[r]);
-		for(int i=pl[bel[r]];i<=r;i++)b[i]=w;
-		init(bel[r]);
+		return (C(n-1,k/2)*C(m-1,k/2-1)+C(n-1,k/2-1)*C(m-1,k/2))%mod;
 	}
 }
-void updb(int id,int w,int o){num[id].upd(w,o),sum[id].upd(w,o*w);}
-void updb(int l,int r,int w1,int w2){
-	if(bel[l]==bel[r]){
-		updb(bel[l],w1,-(r-l+1)),updb(bel[l],w2,r-l+1);
-		return;
+int calc(int n,int m,int b,int k){
+	if(k&1){
+		k=(k+1)/2;
+		return (2*C(n-1,k-1)*C(m-1,k-1)%mod+2*mod-C(n+b-2,k-1)*C(m-b,k-1)%mod-C(n+b-2,k-2)*C(m-b,k)%mod)%mod;
 	}
 	else{
-		updb(bel[l],w1,-(pr[bel[l]]-l+1)),updb(bel[l],w2,pr[bel[l]]-l+1);
-		for(int id=bel[l]+1;id<=bel[r]-1;id++){
-			updb(id,w1,-(pr[id]-pl[id]+1)),updb(id,w2,pr[id]-pl[id]+1);
-		}
-		updb(bel[r],w1,-(r-pl[bel[r]]+1)),updb(bel[r],w2,r-pl[bel[r]]+1);
+		k=k/2;
+		return (C(n-1,k)*C(m-1,k-1)+C(n-1,k-1)*C(m-1,k)+mod-2*C(n+b-2,k-1)*C(m-b,k)%mod)%mod;
 	}
+	// int res=calc(n,m,k);
+	// for(int i=0;b+i<=m;i++)(res+=mod-calc(n+b-1,m-b-i,k-1))%=mod;
+	// return res;
 }
-int queb(int l,int r){
-	int res=0;
-	if(bel[l]==bel[r]){
-		down(bel[l]);
-		init(bel[l]);
-		for(int i=l;i<=r;i++)res+=quea(b[i]);
-	}
-	else{
-		down(bel[l]);
-		init(bel[l]);
-		for(int i=l;i<=pr[bel[l]];i++)res+=quea(b[i]);
-		for(int id=bel[l]+1;id<=bel[r]-1;id++)res+=ans[id];
-		down(bel[r]);
-		init(bel[r]);
-		for(int i=pl[bel[r]];i<=r;i++)res+=quea(b[i]);
-	}
-	return res;
-}
+int n;
 void work(){
-	n=read();q=read();
-	for(int i=1;i<=n;i++)a[i]=read();
-	for(int i=1;i<=n;i++)b[i]=read();
-	for(int l=1,r;l<=n+1;l=r+1){
-		r=min(l+B-1,n+1);pl[++Bnum]=l,pr[Bnum]=r;
-		for(int i=l;i<=r;i++)bel[i]=Bnum;
-	}
-	ta.init(a),tb.init(b);
-	for(int i=1;i<=n;i++)ba.upd(i,a[i]);
-	for(int id=1;id<=Bnum;id++){
-		int l=pl[id],r=pr[id];
-		init(id);
-		for(int i=l;i<=r;i++)updb(id,b[i],1);
-	}
-	while(q--){
-		int op=read();
-		if(op==1){
-			int l=read(),r=read(),c=read();
-			vector<node> va=ta.ins(l,r,c);
-			for(auto [ll,rr,cc]:va){
-				cc=c-cc;
-				upda(ll,rr,cc);
-				if(ll>1)mdfa(ll-1,-cc);
-				mdfa(rr,cc);
+	n=20;init(maxn-10);
+	for(int i=1;i<=n;i++){
+		for(int j=1;j<=n;j++){
+			for(int b=max(1ll,j-i+1);b<=j;b++){
+				for(int k=1;k<=2*min(i,j);k++){
+					int v1=bf(i,j,b,k),v2=calc(i,j,b,k);
+					if(v1!=v2){
+						cout<<i<<" "<<j<<" "<<b<<" "<<k<<" "<<v1<<" "<<v2<<"\n";
+					}
+				}
 			}
 		}
-		if(op==2){
-			int l=read(),r=read(),c=read();
-			vector<node> vb=tb.ins(l,r,c);
-			for(auto [ll,rr,cc]:vb)updb(ll,rr,cc,c);
-			mdfb(l,r,c);
-		}
-		if(op==3){
-			int l=read(),r=read();
-			printf("%u\n",queb(l,r));
-		}
-		// for(int i=1;i<=n;i++)cout<<ans[i]<<" "<<sum[i].que(n)<<"\n";
 	}
 }
 
@@ -182,7 +131,7 @@ signed main(){
 	// freopen(".in","r",stdin);
 	// freopen(".out","w",stdout);
 	
-	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+	cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
 	T=1;
 	while(T--)work();

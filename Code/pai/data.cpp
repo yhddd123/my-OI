@@ -18,20 +18,26 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n;
+int n,m,l,k,q,id[maxn];
 mt19937 rnd(time(0));
-char a[maxn];
+void get(){
+	int l=rnd()%(n+1),r=rnd()%(n-l+1);
+	if(rnd()&1)swap(l,r);
+	cout<<l<<" "<<r<<"\n";
+}
 void work(){
-	n=rnd()%10+1;
-	vector<tuple<int,int,int>> que;
-	for(int i=1;i<=n;i++){
-		for(int j=i;j<=n;j++){
-			for(int k=i;k<=j;k++)que.pb({i,j,k});
-		}
-	}
-	cout<<n<<" "<<que.size()<<"\n";
-	for(int i=1;i<=n;i++)cout<<char(rnd()%2+'a');cout<<"\n";
-	for(auto[l,r,k]:que)cout<<l<<" "<<r<<" "<<k<<"\n";
+	n=rnd()%20+1;m=n-1+rnd()%100;
+	cout<<n<<" "<<m<<"\n";
+	for(int i=2;i<=n;i++)cout<<rnd()%(i-1)<<" "<<i-1<<" "<<rnd()%10+1<<"\n";
+	for(int i=n;i<=m;i++)cout<<rnd()%n<<" "<<rnd()%n<<" "<<rnd()%10+1<<"\n";
+	l=rnd()%20+1;
+	cout<<l<<"\n";
+	for(int i=0;i<l;i++)cout<<"0 "<<rnd()%10+1<<"\n";
+	k=rnd()%n+1;
+	for(int i=1;i<=n;i++)id[i]=i;
+	shuffle(id+1,id+n+1,rnd);
+	cout<<k<<"\n";
+	for(int i=1;i<=k;i++)cout<<id[i]-1<<" ";
 }
 
 bool med;
@@ -42,7 +48,6 @@ signed main(){
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=100;
-	cout<<T<<"\n";
+	T=1;
 	while(T--)work();
 }
