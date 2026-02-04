@@ -144,7 +144,7 @@ vector<int> sovle(int l,int r,int p,vector<int> &dw){
 	return ans;
 }
 void work(){
-	n=read();init(maxn-10);
+	n=read();init(2*maxn-10);
 	for(int i=1;i<=n;i++)b[i]=read()-1;
 	for(int i=0;i<=b[n];i++)a[i]=n+1;
 	for(int i=n;i;i--)a[b[n]-b[i]]=n-i+1;

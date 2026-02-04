@@ -18,7 +18,7 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,m,l,k,q,id[maxn];
+int n,m,l,k,q,a[maxn],id[maxn];
 mt19937 rnd(time(0));
 void get(){
 	int l=rnd()%(n+1),r=rnd()%(n-l+1);
@@ -26,18 +26,11 @@ void get(){
 	cout<<l<<" "<<r<<"\n";
 }
 void work(){
-	n=rnd()%20+1;m=n-1+rnd()%100;
-	cout<<n<<" "<<m<<"\n";
-	for(int i=2;i<=n;i++)cout<<rnd()%(i-1)<<" "<<i-1<<" "<<rnd()%10+1<<"\n";
-	for(int i=n;i<=m;i++)cout<<rnd()%n<<" "<<rnd()%n<<" "<<rnd()%10+1<<"\n";
-	l=rnd()%20+1;
-	cout<<l<<"\n";
-	for(int i=0;i<l;i++)cout<<"0 "<<rnd()%10+1<<"\n";
-	k=rnd()%n+1;
-	for(int i=1;i<=n;i++)id[i]=i;
-	shuffle(id+1,id+n+1,rnd);
-	cout<<k<<"\n";
-	for(int i=1;i<=k;i++)cout<<id[i]-1<<" ";
+	n=rnd()%10+1;
+	for(int i=1;i<=n;i++)a[i]=rnd()%n+1;
+	sort(a+1,a+n+1);
+	cout<<n<<"\n";
+	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
 }
 
 bool med;

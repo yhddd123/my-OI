@@ -19,11 +19,11 @@ const int inf=1e9;
 bool mbe;
 
 
-int bf(int n,int m,int b,int k_target){
+int bf(int n,int m,int l,int r,int k_target){
 	static long long dp[25][25][45][2]; 
 	mems(dp,0);
     auto is_invalid = [&](int x, int y) {
-        return y == x + b;
+        return y == x + l||y==x+r;
     };
 
     // 初始位置检查
@@ -87,6 +87,7 @@ void init(int n){
 }
 inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
 int calc(int n,int m,int k){
+	if(n<0||m<0)return 0;
 	if((!n||!m))return !k;
 	if(k&1){
 		return 2*C(n-1,(k+1)/2-1)*C(m-1,(k+1)/2-1)%mod;
@@ -96,28 +97,112 @@ int calc(int n,int m,int k){
 	}
 }
 int calc(int n,int m,int b,int k){
+	if(b<=0||m>=n+b)return 0;
 	if(k&1){
-		k=(k+1)/2;
-		return (2*C(n-1,k-1)*C(m-1,k-1)%mod+2*mod-C(n+b-2,k-1)*C(m-b,k-1)%mod-C(n+b-2,k-2)*C(m-b,k)%mod)%mod;
+		return (2*C(n-1,(k+1)/2-1)*C(m-1,(k+1)/2-1)%mod+2*mod-C(n+b-2,((k-1)/2))*C(m-b,((k-1)/2))%mod-C(n+b-2,((k-1)/2)-1)*C(m-b,((k-1)/2)+1)%mod)%mod;
 	}
 	else{
-		k=k/2;
-		return (C(n-1,k)*C(m-1,k-1)+C(n-1,k-1)*C(m-1,k)+mod-2*C(n+b-2,k-1)*C(m-b,k)%mod)%mod;
+		return (C(n-1,(k/2))*C(m-1,(k/2)-1)+C(n-1,(k/2)-1)*C(m-1,(k/2))+mod-2*C(n+b-2,(k/2)-1)*C(m-b,(k/2))%mod)%mod;
 	}
 	// int res=calc(n,m,k);
 	// for(int i=0;b+i<=m;i++)(res+=mod-calc(n+b-1,m-b-i,k-1))%=mod;
 	// return res;
 }
+int calcn(int n,int m,int k){
+	if(n<0||m<0)return 0;
+	if(k&1)return 2*C(n,(k+1)/2-1)*C(m,(k+1)/2)%mod;
+	else return (C(n,k/2)*C(m,k/2)+C(n,(k/2)-1)*C(m,(k/2)+1))%mod;
+}
+int calc(int n,int m,int l,int r,int k){
+	if(l>=0||r<=0||m<=n+l||m>=n+r)return 0;
+	if(!n||!m)return !k;
+	int res=calc(n,m,k);
+	if(k&1){
+		int x=0,y=0,o=0;
+		while(x<=max(n,m)+5&&y<=max(n,m)+5&&o<=k){
+			if(x||y){
+				if(o&1){
+					(res+=mod-calcn(n-x-o*2,m-y,k-o))%=mod;
+				}
+				else{
+					(res+=calc(m-y-o*2,n-x,k-o))%=mod;
+				}
+			}
+			cout<<x<<" "<<y<<" "<<res<<" a\n";
+			swap(x,y);
+			if(!(o&1))x-=r,y+=r;
+			else x-=l,y+=l;
+			o++;
+		}
+		x=0,y=0,o=0;
+		while(x<=max(n,m)+5&&y<=max(n,m)+5&&o<=k){
+			if(x||y){
+				if(o&1){
+					(res+=mod-calcn(m-y-o*2,n-x,k-o))%=mod;
+				}
+				else{
+					(res+=calc(n-x-o*2,m-y,k-o))%=mod;
+				}
+			}
+			cout<<x<<" "<<y<<" "<<res<<" b\n";
+			swap(x,y);
+			if(!(o&1))x-=l,y+=l;
+			else x-=r,y+=r;
+			o++;
+		}
+		return res;
+	}
+	else{
+		return bf(n,m,l,r,k);
+		// k=k/2;
+		// int x=0,y=0,o=1;
+		// while(x<=max(n,m)+5&&y<=max(n,m)+5){
+			// if(x||y){
+				// if(o==mod-1){
+					// (res+=2*mod-2*C(n-x-2,k-1)*C(m-y,k)%mod)%=mod;
+				// }
+				// else{
+					// (res+=2*C(n-x,k)*C(m-y-2,k-1))%=mod;
+				// }
+			// }
+			// swap(x,y);
+			// if(o==1)x-=r,y+=r;
+			// else x-=l,y+=l;
+			// o=mod-o;
+		// }
+		// x=0,y=0,o=1;
+		// while(x<=max(n,m)+5&&y<=max(n,m)+5){
+			// if(x||y){
+				// if(o==mod-1){
+					// (res+=2*mod-2*C(n-x,k)*C(m-y-2,k-1)%mod)%=mod;
+				// }
+				// else{
+					// (res+=2*C(n-x-2,k-1)*C(m-y,k))%=mod;
+				// }
+			// }
+			// swap(x,y);
+			// if(o==1)x-=l,y+=l;
+			// else x-=r,y+=r;
+			// o=mod-o;
+		// }
+		return res;
+	}
+	return 0;
+}
 int n;
 void work(){
-	n=20;init(maxn-10);
+	n=10;init(maxn-10);
+	cout<<calc(4,4,-1,1,3)<<"\n";
+	// cout<<calc(4,5,-1,2,3)<<"\n";
 	for(int i=1;i<=n;i++){
 		for(int j=1;j<=n;j++){
-			for(int b=max(1ll,j-i+1);b<=j;b++){
-				for(int k=1;k<=2*min(i,j);k++){
-					int v1=bf(i,j,b,k),v2=calc(i,j,b,k);
-					if(v1!=v2){
-						cout<<i<<" "<<j<<" "<<b<<" "<<k<<" "<<v1<<" "<<v2<<"\n";
+			for(int l=-i-1;l<0&&l<j-i;l++){
+				for(int r=max(1ll,j-i+1);r<=j+1;r++){
+					for(int k=1;k<=2*min(i,j);k++){
+						int v1=bf(i,j,l,r,k),v2=calc(i,j,l,r,k);
+						if(v1!=v2){
+							cerr<<i<<" "<<j<<" "<<l<<" "<<r<<" "<<k<<" "<<v1<<" "<<v2<<"\n";
+						}
 					}
 				}
 			}
