@@ -24,13 +24,12 @@ void work(){
 }
 
 bool med;
-int T;
 signed main(){
 	// freopen(".in","r",stdin);
 	// freopen(".out","w",stdout);
 	
 	cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	T=1;
+	int T=1;
 	while(T--)work();
 }

@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define int unsigned long long
+#define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -18,19 +18,26 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,m,l,k,q,a[maxn],id[maxn];
+int n;
 mt19937 rnd(time(0));
-void get(){
-	int l=rnd()%(n+1),r=rnd()%(n-l+1);
-	if(rnd()&1)swap(l,r);
-	cout<<l<<" "<<r<<"\n";
-}
+int st[maxn],tp;
+vector<int> e[maxn];
 void work(){
-	n=rnd()%10+1;
-	for(int i=1;i<=n;i++)a[i]=rnd()%n+1;
-	sort(a+1,a+n+1);
+	n=200000;
+	st[tp=1]=1;
+	vector<int> id;
+	for(int i=2;i<=n;i++){
+		while(tp>1&&(rnd()%3))tp--;
+		id.pb(st[tp]),e[st[tp]].pb(i);
+		st[++tp]=i;
+	}
+	shuffle(id.begin(),id.end(),rnd);
+	for(int i=1;i<=n;i++)reverse(e[i].begin(),e[i].end());
 	cout<<n<<"\n";
-	for(int i=1;i<=n;i++)cout<<a[i]<<" ";cout<<"\n";
+	for(int u:id){
+		cout<<u<<" "<<e[u].back()<<"\n";
+		e[u].pop_back();
+	}
 }
 
 bool med;
@@ -39,7 +46,7 @@ signed main(){
 	// freopen(".in","r",stdin);
 	// freopen(".out","w",stdout);
 	
-	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
+	cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
 	T=1;
 	while(T--)work();

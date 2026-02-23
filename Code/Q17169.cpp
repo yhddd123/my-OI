@@ -24,24 +24,25 @@ int fd(int x){
 	if(f[x]==x)return x;
 	return f[x]=fd(f[x]);
 }
-list<int> pl[maxn],pr[maxn];
+int pre1[maxn],ed1[maxn];
+int pre2[maxn],ed2[maxn];
 int l[maxn],r[maxn];
 void work(){
 	n=read();
-	for(int i=1;i<=n;i++)f[i]=i,pl[i]=pr[i]={i},l[i]=r[i]=i;
+	for(int i=1;i<=n;i++)f[i]=i,ed1[i]=ed2[i]=i,l[i]=r[i]=i;
 	for(int i=1;i<n;i++){
 		int u=read(),v=read();
 		if(f[v]!=v){puts("Bad oriented forest");fflush(stdout);return ;}
 		int rt=fd(u);f[v]=rt;
 		if(r[rt]+1==l[v]){
-			while(pr[rt].size()&&pr[rt].back()!=u)pr[rt].pop_back();
-			if(!pr[rt].size()){printf("Bad segment at %d\n",rt);fflush(stdout);return ;}
-			pr[rt].splice(pr[rt].end(),pr[v]);
+			while(ed1[rt]&&ed1[rt]!=u)ed1[rt]=pre1[ed1[rt]];
+			if(!ed1[rt]){printf("Bad segment at %d\n",u);fflush(stdout);return ;}
+			pre1[v]=ed1[rt],ed1[rt]=ed1[v];
 			r[rt]=r[v];
 		}else if(r[v]+1==l[rt]){
-			while(pl[rt].size()&&pl[rt].back()!=u)pl[rt].pop_back();
-			if(!pl[rt].size()){printf("Bad segment at %d\n",rt);fflush(stdout);return ;}
-			pl[rt].splice(pl[rt].end(),pl[v]);
+			while(ed2[rt]&&ed2[rt]!=u)ed2[rt]=pre2[ed2[rt]];
+			if(!ed2[rt]){printf("Bad segment at %d\n",u);fflush(stdout);return ;}
+			pre2[v]=ed2[rt],ed2[rt]=ed2[v];
 			l[rt]=l[v];
 		}
 		else{printf("Bad segment at %d\n",rt);fflush(stdout);return ;}
