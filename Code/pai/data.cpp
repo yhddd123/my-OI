@@ -18,25 +18,18 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n;
+int n,q;
 mt19937 rnd(time(0));
 int st[maxn],tp;
 vector<int> e[maxn];
 void work(){
-	n=200000;
-	st[tp=1]=1;
-	vector<int> id;
-	for(int i=2;i<=n;i++){
-		while(tp>1&&(rnd()%3))tp--;
-		id.pb(st[tp]),e[st[tp]].pb(i);
-		st[++tp]=i;
-	}
-	shuffle(id.begin(),id.end(),rnd);
-	for(int i=1;i<=n;i++)reverse(e[i].begin(),e[i].end());
-	cout<<n<<"\n";
-	for(int u:id){
-		cout<<u<<" "<<e[u].back()<<"\n";
-		e[u].pop_back();
+	n=10,q=10;
+	cout<<"0 "<<n<<" "<<q<<"\n";
+	for(int i=1;i<=n;i++)cout<<rnd()%n+1<<" ";cout<<"\n";
+	for(int i=1;i<=q;i++){
+		int o=rnd()%2+1;
+		if(o==1)cout<<o<<" "<<rnd()%n+1<<" "<<rnd()%n+1<<"\n";
+		else cout<<o<<" "<<rnd()%n+1<<"\n";
 	}
 }
 
