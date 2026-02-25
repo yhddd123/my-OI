@@ -18,19 +18,42 @@ const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,q;
+int n,m;
 mt19937 rnd(time(0));
-int st[maxn],tp;
+char s[maxn];
 vector<int> e[maxn];
+int col[maxn];
+vector<int> id[2];
+void dfs(int u,int fa){
+	col[u]=col[fa]^1;
+	if(e[u].size()>1)id[col[u]].pb(u);
+	for(int v:e[u])if(v!=fa)dfs(v,u);
+}
 void work(){
-	n=10,q=10;
-	cout<<"0 "<<n<<" "<<q<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%n+1<<" ";cout<<"\n";
-	for(int i=1;i<=q;i++){
-		int o=rnd()%2+1;
-		if(o==1)cout<<o<<" "<<rnd()%n+1<<" "<<rnd()%n+1<<"\n";
-		else cout<<o<<" "<<rnd()%n+1<<"\n";
+	n=rnd()%15+1,m=n-1;
+	cout<<n<<" "<<m<<"\n";
+	vector<pii> edge;
+	for(int i=2;i<=n;i++)edge.pb({rnd()%(i-1)+1,i});
+	shuffle(edge.begin(),edge.end(),rnd);
+	for(int i=0;i<m;i++){
+		auto[u,v]=edge[i];
+		e[u].pb(v),e[v].pb(u);
 	}
+	dfs(1,0);
+	int k1=rnd()%(id[0].size()+1),k2=rnd()%(id[1].size()+1);
+	shuffle(id[0].begin(),id[0].end(),rnd);
+	shuffle(id[1].begin(),id[1].end(),rnd);
+	for(int i=1;i<=n;i++)s[i]='0';
+	for(int i=0;i<k1;i++)s[id[0][i]]='1';
+	for(int i=0;i<k2;i++)s[id[1][i]]='1';
+	for(int i=1;i<=n;i++)cout<<s[i];cout<<"\n";
+	shuffle(id[0].begin(),id[0].end(),rnd);
+	shuffle(id[1].begin(),id[1].end(),rnd);
+	for(int i=1;i<=n;i++)s[i]='0';
+	for(int i=0;i<k1;i++)s[id[0][i]]='1';
+	for(int i=0;i<k2;i++)s[id[1][i]]='1';
+	for(int i=1;i<=n;i++)cout<<s[i];cout<<"\n";
+	for(auto[u,v]:edge)cout<<u<<" "<<v<<"\n";
 }
 
 bool med;
@@ -42,5 +65,6 @@ signed main(){
 	cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
 	T=1;
+	cout<<T<<"\n";
 	while(T--)work();
 }

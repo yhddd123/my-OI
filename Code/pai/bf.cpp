@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-// #define int long long
+#define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -8,93 +8,131 @@
 #define db long double
 #define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
-static char buf[1000000],*p1=buf,*p2=buf;
-#define getchar() p1==p2&&(p2=(p1=buf)+fread(buf,1,1000000,stdin),p1==p2)?EOF:*p1++
-inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-1;c=getchar();}while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x*f;}
-inline void write(int x){static char buf[20];static int len=-1;if(x<0)putchar('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)putchar(buf[len--]+48);}
-const int maxn=2000010;
-const int B=5;
+inline int read(){
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x*fl;
+}
+const int maxn=200010;
 const int inf=1e9;
 bool mbe;
 
-int n,q,a[maxn],ans;
-#define mid ((l+r)>>1)
-#define ls nd<<1
-#define rs nd<<1|1
-int mx[maxn<<2],to[maxn<<2];
-int query(int nd,int l,int r,int w){
-	// cout<<l<<" "<<r<<" "<<w<<"\n";
-	if(w<l)return l-1;
-	if(w>r)return r+1;
-	if(l==r)return a[l]==l?l:l+1;
-	if(w<=mx[ls]){
-		int res=query(ls,l,mid,w);
-		if(res==mid+1)return to[ls];
-		else return res;
-	}
-	else{
-		return query(rs,mid+1,r,w);
-	}
-}
-void up(int nd,int l,int r){
-	mx[nd]=max(mx[ls],mx[rs]);
-	to[ls]=query(rs,mid+1,r,mx[ls]);
-}
-void build(int nd,int l,int r){
-	if(l==r){mx[nd]=a[l];return ;}
-	build(ls,l,mid),build(rs,mid+1,r);
-	up(nd,l,r);
-}
-void modif(int nd,int l,int r,int p){
-	if(l==r){mx[nd]=a[l];return ;}
-	if(p<=mid)modif(ls,l,mid,p);
-	else modif(rs,mid+1,r,p);
-	up(nd,l,r);
-}
-int query(int nd,int l,int r,int p,int &w){
-	if(l>=p){
-		// cout<<l<<" "<<r<<" q\n";
-		if(w<=mx[nd]){
-			int res=query(nd,l,r,w);w=max(w,mx[nd]);
-			return res;
+int n,m,k;
+char s[maxn],t[maxn];
+vector<vector<int>> ans;
+vector<int> e[maxn];
+
+namespace sub1{
+	int S,T;
+	int dis[1<<20],pre[1<<20];
+	int st[maxn],tp;
+	vector<int> to,ee[1<<20];
+	void sovle(){
+		to.resize(n);
+		S=T=0;
+		for(int i=1;i<=n;i++)if(s[i]=='1')S|=1<<i-1;
+		for(int i=1;i<=n;i++)if(t[i]=='1')T|=1<<i-1;
+		for(int s=0;s<(1<<n);s++)dis[s]=pre[s]=0;
+		queue<int> q;
+		dis[S]=1,q.push(S);
+		while(!q.empty()){
+			int u=q.front();q.pop();
+			auto ddfs=[&](auto &&self,int d,int v)->void{
+				if(d==n){
+					if(!dis[v])dis[v]=dis[u]+1,pre[v]=u,ee[v]=to,q.push(v);
+					return ;
+				}
+				if(!(u&(1<<d)))self(self,d+1,v);
+				else{
+					for(int c:e[d+1])if(!(v&(1<<c-1))){
+						to[d]=c;
+						self(self,d+1,v|(1<<c-1));
+					}
+				}
+			};
+			ddfs(ddfs,0,0);
 		}
-		else{
-			return r+1;
-		}
+		if(!dis[T]){puts("NO");return ;}
+		puts("YES");
+		// tp=0;for(int u=T;u!=S;u=pre[u])st[++tp]=u;
+		// vector<int> a(k);
+		// for(int i=1,j=0;i<=n;i++)if(S&(1<<i-1))a[j++]=i;
+		// ans.pb(a);
+		// for(int i=tp;i;i--){
+		// 	int ss=st[i];
+		// 	vector<int> a;
+		// 	for(int p:ans.back())a.pb(ee[ss][p-1]);
+		// 	ans.pb(a);
+		// }
+		// printf("%d\n",ans.size()-1);
+		// for(auto a:ans){
+		// 	for(int p:a)printf("%d ",p);puts("");
+		// }
 	}
-	if(p<=mid){
-		int res=query(ls,l,mid,p,w);
-		if(res<=mid)return res;
-		return query(rs,mid+1,r,p,w);
+}
+
+bool vis[maxn];
+vector<int> id;
+int col[maxn];
+bool fl;
+void dfs(int u,int fa){
+	vis[u]=1,id.pb(u);
+	col[u]=col[fa]^1;
+	for(int v:e[u]){
+		if(!vis[v])dfs(v,u);
+		else if(col[u]==col[v])fl=1;
 	}
-	else return query(rs,mid+1,r,p,w);
+}
+bool sovle(int rt,int o){
+	fl=0;id.clear();dfs(rt,0);
+	int num=0;for(int u:id)num+=(s[u]=='1')-(t[u]=='1');
+	if(num)return 0;
+	if(!fl){
+		int v1[2],v2[2];v1[0]=v1[1]=v2[0]=v2[1]=0;
+		for(int u:id)v1[col[u]]+=s[u]=='1',v2[col[u]]+=t[u]=='1';
+		if(!(v1[0]==v2[o]))return 0;
+	}
+	return 1;
+}
+bool sol(int o){
+	for(int i=1;i<=n;i++)vis[i]=0;
+	for(int i=1;i<=n;i++)if(!vis[i]){
+		if(!sovle(i,o))return 0;
+	}
+	return 1;
 }
 void work(){
-	read();n=read();q=read();
-	for(int i=1;i<=n;i++)a[i]=max(read(),i);
-	build(1,1,n);
-	while(q--){
-		int o=read();
-		if(o==1){
-			int u=read()^ans,v=max(read()^ans,u);
-			a[u]=v;
-			modif(1,1,n,u);
-		}
-		else{
-			int p=read()^ans,w=a[p];
-			write(ans=query(1,1,n,p,w)),puts("");
-            ans=0;
-		}
+	n=read();m=read();scanf("%s%s",s+1,t+1);ans.clear();
+	k=0;for(int i=1;i<=n;i++)k+=s[i]=='1';
+	for(int i=1;i<=n;i++)e[i].clear();
+	for(int i=1;i<=m;i++){
+		int u=read(),v=read();
+		e[u].pb(v),e[v].pb(u);
 	}
+	bool fl=1;for(int i=1;i<=n;i++)fl&=s[i]==t[i];
+	if(fl){
+		puts("YES");
+		puts("0");
+		for(int i=1;i<=n;i++)if(s[i]=='1')printf("%d ",i);puts("");
+		return ;
+	}
+	if(n<=20&&m<=20)return sub1::sovle();
+	if(sol(0)){}
+	else if(sol(1)){}
+	else{puts("NO");return ;}
+	puts("YES");
+	// puts("0");
+	// for(int i=1;i<=n;i++)if(s[i]=='1')printf("%d ",i);puts("");
 }
 
 bool med;
 signed main(){
-	// freopen("ds.in","r",stdin);
-	// freopen("ds.out","w",stdout);
+	// freopen(".in","r",stdin);
+	// freopen(".out","w",stdout);
 	
 	cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
-	int T=1;
+	int T=read();
 	while(T--)work();
 }
