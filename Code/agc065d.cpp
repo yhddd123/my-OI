@@ -50,8 +50,8 @@ inline void inc(int &u,int v){((u+=v)>=mod)&&(u-=mod);}
 int n,m,ans;
 void work(){
 	n=read();m=read();
-	if(m>2*n-3){puts("0");return ;}
 	if(n<=2){puts(m?"0":"1");return ;}
+	if(m>2*n-3){puts("0");return ;}
 	init(maxn-10);
 	for(int i=0;i<=m&&i<=n;i++)if(m-i+1<=n-2)(ans+=C(n,i)*C(n-3,m-i)%mod*C(n+m-i,m-i+1)%mod*ni[n-1+m-i+1])%=mod;
 	printf("%lld\n",ans);
