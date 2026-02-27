@@ -40,17 +40,15 @@ void work(){
 	for(int i=1;i<=n+1;i++){
 		for(int j=i-1;~j;j--){
 			for(int k=i-1-j;~k;k--)if(f[i][j][k]){
-				if(i==n+1){
-					if(j)f[i][j-1][k]=1;
-					if(k)f[i][j][k-1]=1;
-				}
-				if(i==n&&(j||k))f[i+1][j][k]=1;
+				if(j)f[i][j-1][k]=1;
+				if(k)f[i][j][k-1]=1;
+				if(j||k)f[i+1][j][k]=1;
 				if(i<n){
 					if(s[i]=='0'||s[i+1]=='0')f[i+2][j+1][k]=1;
 					if(s[i]=='1'||s[i+1]=='1')f[i+2][j][k+1]=1;
 				}
-				if(s[i]=='0'&&s[i+1]!='1'&&k)f[i+1][j+1][k-1]=1;
-				if(s[i]=='1'&&s[i+1]!='0'&&j)f[i+1][j-1][k+1]=1;
+				if(s[i]=='0'&&k)f[i+1][j+1][k-1]=1;
+				if(s[i]=='1'&&j)f[i+1][j-1][k+1]=1;
 			}
 		}
 	}
@@ -59,14 +57,14 @@ void work(){
 		for(int j=0;j<i;j++){
 			for(int k=0;j+k<i;k++)if(g[i][j][k]){
 				inc(g[i-1][j][k],g[i][j][k]);
-				if(s[i]!='0')inc(g[i][j+1][k],g[i][j][k]);
-				if(s[i]!='1')inc(g[i][j][k+1],g[i][j][k]);
+				if(s[i-1]!='0')inc(g[i][j+1][k],g[i][j][k]);
+				if(s[i-1]!='1')inc(g[i][j][k+1],g[i][j][k]);
 				// if(f[i][j][k])cout<<i<<" "<<j<<" "<<k<<" "<<g[i][j][k]<<"\n";
 				if(f[i][j][k])inc(ans,g[i][j][k]);
 			}
 		}
 	}
-	printf("%lld\n",ans-1);
+	printf("%lld\n",ans);
 }
 
 bool med;

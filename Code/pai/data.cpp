@@ -21,18 +21,8 @@ bool mbe;
 int n,q,k;
 mt19937 rnd(time(0));
 void work(){
-	n=rnd()%100+1,q=100,k=rnd()%100+1;
-	cout<<n<<" "<<q<<" "<<k<<"\n";
-	for(int i=1;i<=n;i++)cout<<rnd()%(2*n*k)+1<<" ";cout<<"\n";
-	while(q--){
-		int o=rnd()&1;
-		if(o){
-			cout<<"A "<<rnd()%n+1<<"\n";
-		}
-		else{
-			cout<<"C "<<rnd()%n+1<<"\n";
-		}
-	}
+	n=rnd()%5+1;
+	for(int i=1;i<=n;i++)cout<<(rnd()&1);
 }
 
 bool med;

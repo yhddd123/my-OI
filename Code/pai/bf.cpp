@@ -1,54 +1,28 @@
 #include<bits/stdc++.h>
-#define int long long
-#define mod 998244353ll
-#define pii pair<int,int>
-#define fi first
-#define se second
-#define pb push_back
-#define db long double
-#define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
-inline int read(){
-	int x=0,fl=1;char ch=getchar();
-	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
-	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
-	return x*fl;
-}
-const int maxn=200010;
-const int inf=1e9;
-bool mbe;
-
-int n,qq,k,a[maxn];
-void work(){
-	n=read();qq=read();k=read();
-	priority_queue<int> q;
-	for(int i=1;i<=n;i++)q.push(read());
-	while(qq--){
-		char ch=getchar();
-		while(ch!='A'&&ch!='C')ch=getchar();
-		if(ch=='A'){
-			int t=read();
-			for(int i=1;i<=n;i++)a[i]=q.top(),q.pop();
-			cout<<a[t]<<"\n";
-			for(int i=1;i<=n;i++)q.push(a[i]);
-		}
-		else{
-			int t=read();
-			while(t--){
-				int v=q.top();q.pop();q.push(v-k);
-			}
-		}
-		
+const int MOD=998244353;
+void add(int &x,int v){((x+=v)>=MOD)&&(x-=MOD);}
+int n,ok[305][305][305],dp[305][305][305],res;
+char s[305];
+int main(){
+	scanf("%s",s+1);n=strlen(s+1);ok[0][0][0]=1;
+	for(int i=1;i<=n;i++)for(int j=n;~j;j--)for(int k=n;~k;k--){
+		ok[i][j][k]|=ok[i-1][j][k];
+		ok[i][j][k]|=ok[i][j+1][k];
+		ok[i][j][k]|=ok[i][j][k+1];
+		if(j&&i>=2&&(s[i]=='0'||s[i-1]=='0'))ok[i][j][k]|=ok[i-2][j-1][k];
+		if(k&&i>=2&&(s[i]=='1'||s[i-1]=='1'))ok[i][j][k]|=ok[i-2][j][k-1];
+		if(j&&s[i]=='0')ok[i][j][k]|=ok[i-1][j-1][k+1];
+		if(k&&s[i]=='1')ok[i][j][k]|=ok[i-1][j+1][k-1];
 	}
-}
-
-bool med;
-signed main(){
-	// freopen(".in","r",stdin);
-	// freopen(".out","w",stdout);
-	
-	cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
-	
-	int T=1;
-	while(T--)work();
+	dp[n][0][0]=1;
+	for(int i=n;i;i--)for(int j=0;j<=n;j++)for(int k=0;k<=n;k++){
+		add(dp[i-1][j][k],dp[i][j][k]);
+		if(s[i]=='0')add(dp[i][j][k+1],dp[i][j][k]);
+		if(s[i]=='1')add(dp[i][j+1][k],dp[i][j][k]);
+	}
+	for(int i=0;i<=n;i++)for(int j=0;j<=n;j++)for(int k=0;k<=n;k++)
+		if(ok[i][j][k])add(res,dp[i][j][k]);
+	add(res,MOD-1);printf("%d\n",res);
+	return 0;
 }
