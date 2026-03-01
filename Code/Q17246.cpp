@@ -103,18 +103,20 @@ bool calc(){
 	}
 	// cout<<p<<" "<<res<<endl;
 	if(p<res)return 0;
-	suf[y]=b[y];for(int i=y-1;i;i--)suf[i]=min(suf[i+1],b[i]);
+	auto getmn=[&](int l,int r){
+		int mn=b[l];for(int i=l+1;i<=r;i++)mn=min(mn,b[i]);
+		return mn;
+	};
 	auto cmp=[&](int p,int q){
 		int l=lcp(p,q);
 		if(q+l-1==y)return false;
-		return a[1]<suf[p+l]&&b[p+l]<b[q+l];
+		return a[1]<getmn(p,q-1)&&b[p+l]<b[q+l];
 	};
 	int nw=p;p=nxt[p];
 	while(p&&p>=res){
 		if(cmp(p+1,nw+1))nw=p;
 		p=nxt[p];
 	}
-	// cout<<nw<<" "<<res<<" "<<cmp(1,2)<<"\n";
 	for(int i=1;i<=z;i++)t[i]=0;
 	for(int i=1;i<=z;i++)t[c[i]]++;
 	for(int i=1;i<=x;i++)t[a[i]]--;
@@ -222,6 +224,23 @@ bool chk2(){
 	// for(int i=1;i<=z;i++)cout<<ans[i]<<" ";cout<<"\n";
 	return 1;
 }
+bool flag;
+void upd(){
+	if(!flag){
+		for(int i=1;i<=z;i++)res[i]=ans[i];
+	}
+	else{
+		bool fl=0;
+		for(int i=1;i<=z;i++){
+			if(ans[i]<res[i]){fl=1;break;}
+			if(ans[i]>res[i])break;
+		}
+		if(fl){
+			for(int i=1;i<=z;i++)swap(ans[i],res[i]);
+		}
+	}
+	flag=1;
+}
 void work(){
 	x=read(),y=read(),z=read();
 	for(int i=1;i<=x;i++)a[i]=read();
@@ -231,73 +250,13 @@ void work(){
 	for(int i=1;i<=z;i++)t[c[i]]++;
 	for(int i=1;i<=y;i++)t[b[i]]--;
 	for(int i=1;i<=z;i++)if(t[i]<0){puts("-1");return ;}
-	bool flag=0;
-	if(chk1()){
-		if(!flag){
-			for(int i=1;i<=z;i++)res[i]=ans[i];
-		}
-		else{
-			bool fl=0;
-			for(int i=1;i<=z;i++){
-				if(ans[i]<res[i]){fl=1;break;}
-				if(ans[i]>res[i])break;
-			}
-			if(fl){
-				for(int i=1;i<=z;i++)swap(ans[i],res[i]);
-			}
-		}
-		flag=1;
-	}
-	if(chk2()){
-		if(!flag){
-			for(int i=1;i<=z;i++)res[i]=ans[i];
-		}
-		else{
-			bool fl=0;
-			for(int i=1;i<=z;i++){
-				if(ans[i]<res[i]){fl=1;break;}
-				if(ans[i]>res[i])break;
-			}
-			if(fl){
-				for(int i=1;i<=z;i++)swap(ans[i],res[i]);
-			}
-		}
-		flag=1;
-	}
-	if(calc()){
-		if(!flag){
-			for(int i=1;i<=z;i++)res[i]=ans[i];
-		}
-		else{
-			bool fl=0;
-			for(int i=1;i<=z;i++){
-				if(ans[i]<res[i]){fl=1;break;}
-				if(ans[i]>res[i])break;
-			}
-			if(fl){
-				for(int i=1;i<=z;i++)swap(ans[i],res[i]);
-			}
-		}
-		flag=1;
-	}
+	flag=0;
+	if(chk1())upd();
+	if(chk2())upd();
+	if(calc())upd();
 	for(int i=1;i<=max(x,y);i++)swap(a[i],b[i]);
 	swap(x,y);
-	if(calc()){
-		if(!flag){
-			for(int i=1;i<=z;i++)res[i]=ans[i];
-		}
-		else{
-			bool fl=0;
-			for(int i=1;i<=z;i++){
-				if(ans[i]<res[i]){fl=1;break;}
-				if(ans[i]>res[i])break;
-			}
-			if(fl){
-				for(int i=1;i<=z;i++)swap(ans[i],res[i]);
-			}
-		}
-		flag=1;
-	}
+	if(calc())upd();
 	if(!flag){puts("-1");return ;}
 	for(int i=1;i<=z;i++)printf("%d ",res[i]);puts("");
 }

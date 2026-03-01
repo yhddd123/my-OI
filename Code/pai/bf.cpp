@@ -1,28 +1,77 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+#define pb emplace_back
+#define fst first
+#define scd second
+#define mkp make_pair
+#define mems(a, x) memset((a), (x), sizeof(a))
+
 using namespace std;
-const int MOD=998244353;
-void add(int &x,int v){((x+=v)>=MOD)&&(x-=MOD);}
-int n,ok[305][305][305],dp[305][305][305],res;
-char s[305];
-int main(){
-	scanf("%s",s+1);n=strlen(s+1);ok[0][0][0]=1;
-	for(int i=1;i<=n;i++)for(int j=n;~j;j--)for(int k=n;~k;k--){
-		ok[i][j][k]|=ok[i-1][j][k];
-		ok[i][j][k]|=ok[i][j+1][k];
-		ok[i][j][k]|=ok[i][j][k+1];
-		if(j&&i>=2&&(s[i]=='0'||s[i-1]=='0'))ok[i][j][k]|=ok[i-2][j-1][k];
-		if(k&&i>=2&&(s[i]=='1'||s[i-1]=='1'))ok[i][j][k]|=ok[i-2][j][k-1];
-		if(j&&s[i]=='0')ok[i][j][k]|=ok[i-1][j-1][k+1];
-		if(k&&s[i]=='1')ok[i][j][k]|=ok[i-1][j+1][k-1];
-	}
-	dp[n][0][0]=1;
-	for(int i=n;i;i--)for(int j=0;j<=n;j++)for(int k=0;k<=n;k++){
-		add(dp[i-1][j][k],dp[i][j][k]);
-		if(s[i]=='0')add(dp[i][j][k+1],dp[i][j][k]);
-		if(s[i]=='1')add(dp[i][j+1][k],dp[i][j][k]);
-	}
-	for(int i=0;i<=n;i++)for(int j=0;j<=n;j++)for(int k=0;k<=n;k++)
-		if(ok[i][j][k])add(res,dp[i][j][k]);
-	add(res,MOD-1);printf("%d\n",res);
-	return 0;
+using ll = long long;
+using ull = unsigned long long;
+using db = double;
+using ldb = long double;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
+
+const int maxn = 200100;
+
+int A, B, C, a[maxn], b[maxn], c[maxn];
+
+void solve() {
+    scanf("%d%d%d", &A, &B, &C);
+    for (int i = 1; i <= A; ++i) {
+        scanf("%d", &a[i]);
+    }
+    for (int i = 1; i <= B; ++i) {
+        scanf("%d", &b[i]);
+    }
+    for (int i = 1; i <= C; ++i) {
+        scanf("%d", &c[i]);
+    }
+    sort(c + 1, c + C + 1);
+    do {
+        bool fl = 0;
+        for (int i = 1; i + A - 1 <= C; ++i) {
+            bool f = 1;
+            for (int j = 0; j < A && f; ++j) {
+                f &= (a[j + 1] == c[i + j]);
+            }
+            if (f) {
+                fl = 1;
+                break;
+            }
+        }
+        if (!fl) {
+            continue;
+        }
+        fl = 0;
+        for (int i = 1; i + B - 1 <= C; ++i) {
+            bool f = 1;
+            for (int j = 0; j < B && f; ++j) {
+                f &= (b[j + 1] == c[i + j]);
+            }
+            if (f) {
+                fl = 1;
+                break;
+            }
+        }
+        if (!fl) {
+            continue;
+        }
+        for (int i = 1; i <= C; ++i) {
+            printf("%d ", c[i]);
+        }
+        putchar('\n');
+        return;
+    } while (next_permutation(c + 1, c + C + 1));
+    puts("-1");
+}
+
+int main() {
+    int T = 1;
+    scanf("%d", &T);
+    while (T--) {
+        solve();
+    }
+    return 0;
 }
