@@ -102,20 +102,24 @@ namespace sgt2{
 pii mn[maxn<<2];
 multiset<int> s[maxn];
 void build(int nd,int l,int r){
-	if(l==r){mn[nd]={0,rnk[l]};return ;}
+	if(l==r){
+		int u=rnk[l];
+		s[u].insert(0);
+		mn[nd]={0,u};
+	return ;}
 	build(ls,l,mid),build(rs,mid+1,r);
 	mn[nd]=min(mn[ls],mn[rs]);
 }
-void modif(int nd,int l,int r,int p,int w){
+void modif(int nd,int l,int r,int p,int w,int o){
 	if(l==r){
 		int u=rnk[l];
-		if(w>0)s[u].insert(w);
-		else s[u].erase(s[u].find(-w));
-		mn[nd]={s[u].size()?(*s[u].begin()):0,u};
+		if(o==1)s[u].insert(w);
+		else s[u].erase(s[u].find(w));
+		mn[nd]={s[u].size()?(*s[u].begin()):inf,u};
 		return ;
 	}
-	if(p<=mid)modif(ls,l,mid,p,w);
-	else modif(rs,mid+1,r,p,w);
+	if(p<=mid)modif(ls,l,mid,p,w,o);
+	else modif(rs,mid+1,r,p,w,o);
 	mn[nd]=min(mn[ls],mn[rs]);
 }
 pii query(int nd,int l,int r,int ql,int qr){
@@ -141,11 +145,11 @@ void dfs(int nd,int l,int r){
 			tmp[id]={tp,res};
 			ans+=w-res.fi;
 			upd(u,tp,-1),upd(res.se,tp,1);
-			if(res.fi)sgt2::modif(1,1,n,dfn[res.se],-res.fi);
-			sgt2::modif(1,1,n,dfn[u],w);
+			sgt2::modif(1,1,n,dfn[res.se],res.fi,-1);
+			sgt2::modif(1,1,n,dfn[u],w,1);
 		}
 		else tmp[id]={0,{0,0}};
-		// cout<<u<<" "<<tp<<" "<<res.se<<" "<<ans<<"\n";
+		// cout<<u<<" "<<w<<" "<<tp<<" "<<res.fi<<" "<<res.se<<" "<<ans<<endl;
 	}
 	if(l==r){
 		res[l]=ans;
@@ -156,13 +160,13 @@ void dfs(int nd,int l,int r){
 		if(tmp[id].fi){
 			auto[tp,res]=tmp[id];ans-=w-res.fi;
 			upd(u,tp,1),upd(res.se,tp,-1);
-			sgt2::modif(1,1,n,dfn[u],-w);
-			if(res.fi)sgt2::modif(1,1,n,dfn[res.se],res.fi);
+			sgt2::modif(1,1,n,dfn[u],w,-1);
+			sgt2::modif(1,1,n,dfn[res.se],res.fi,1);
 		}
 	}
 }
 void work(){
-	n=read();k=read();q=read();q=0;
+	n=read();k=read();q=read();
 	for(int i=2;i<=n;i++)e[fa[i]=read()].pb(i);
 	dfs(1),dfs(1,1);
 	for(int u=1;u<=n;u++)if(tp[u]==u)sgt1::build(all(u));
