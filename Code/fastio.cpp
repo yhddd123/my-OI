@@ -4,4 +4,4 @@ inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-
 static int opos=0;
 inline void flush_out(){fwrite(obuf,1,opos,stdout);opos=0;}
 inline void pc(char c){if(opos == (1<<22))flush_out();obuf[opos++]=c;}
-inline void write(ll x){static char buf[20];static int len=-1;if(x<0)pc('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)pc(buf[len--]+48);}
+inline void write(int x){static char buf[20];static int len=-1;if(x<0)pc('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)pc(buf[len--]+48);}

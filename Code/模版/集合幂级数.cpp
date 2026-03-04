@@ -97,9 +97,10 @@ void xorln(int *a,int *b,int n){//ln(a)=b
 	b[0]=0;for(int s=1;s<(1<<n);s++)b[s]=ff[__builtin_popcount(s)][s];
 }
 
-void exp(int *a,int *b,int n){
-	b[0]=1;
-	for(int i=0;i<n;i++)xormul(a+(1<<i),b,b+(1<<i),i);
+int tmp[1<<maxn];
+void exp(int *a,int n){
+	for(int s=0;s<(1<<n);s++)tmp[s]=a[s],a[s]=0;
+	a[0]=1;for(int i=0;i<n;i++)xormul(tmp+(1<<i),a,a+(1<<i),i);
 }
 void mulself(int *a,int *b,int n){
 	for(int i=0;i<=n;i++){
@@ -120,12 +121,9 @@ void mulself(int *a,int *b,int n){
 	for(int i=0;i<=n;i++)fmt2(gg[i],1<<n);
 	for(int s=0;s<(1<<n);s++)b[s]=gg[__builtin_popcount(s)][s];
 }
-void ln(int *a,int *b,int n){
-	// for(int s=1;s<(1<<n);s++){
-		// int k=__lg(s);b[s]=a[s];
-		// for(int t=(s-1)&s;t;t=(t-1)&s)if(t&(1<<k))b[s]-=b[t]*a[s^t];
-	// }
-	for(int i=0;i<n;i++)mulself(a,b+(1<<i),i);
+void ln(int *a,int n){
+	for(int s=0;s<(1<<n);s++)tmp[s]=a[s],a[s]=0;
+	for(int i=0;i<n;i++)mulself(tmp,a+(1<<i),i);
 }
 
 void xormul1(int *a,int *c,int n){

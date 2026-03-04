@@ -105,24 +105,24 @@ void comb(int *dp,int c){
 		}
 	}
 }
-void split(int *dp,int c){
-	for(int i=1;i<n;i++){
-		for(int s=0;s<(1<<i);s++){
-			for(int t=0;t<(1<<n-i-1);t++){
-				tmpg[s|(t<<i)]=dp[s|(1<<i)|(t<<i+1)];
-				int num=__builtin_popcount(s&e[i]);
-				tmph[s|(t<<i)]=mod-c*dp[s|(t<<i+1)]%mod*num%mod;
-			}
-		}
-		xorexp(tmph,tmph,n-1);
-		xormul(tmpg,tmph,tmpg,n-1);
-		for(int s=0;s<(1<<i);s++){
-			for(int t=0;t<(1<<n-i-1);t++){
-				dp[s|(1<<i)|(t<<i+1)]=tmpg[s|(t<<i)];
-			}
-		}
-	}
-}
+// void split(int *dp,int c){
+	// for(int i=1;i<n;i++){
+		// for(int s=0;s<(1<<i);s++){
+			// for(int t=0;t<(1<<n-i-1);t++){
+				// tmpg[s|(t<<i)]=dp[s|(1<<i)|(t<<i+1)];
+				// int num=__builtin_popcount(s&e[i]);
+				// tmph[s|(t<<i)]=mod-c*dp[s|(t<<i+1)]%mod*num%mod;
+			// }
+		// }
+		// xorexp(tmph,tmph,n-1);
+		// xormul(tmpg,tmph,tmpg,n-1);
+		// for(int s=0;s<(1<<i);s++){
+			// for(int t=0;t<(1<<n-i-1);t++){
+				// dp[s|(1<<i)|(t<<i+1)]=tmpg[s|(t<<i)];
+			// }
+		// }
+	// }
+// }
 void work(){
 	n=read();m=read();k=read();
 	for(int i=1;i<=m;i++){
@@ -151,7 +151,7 @@ void work(){
 	pw[0]=1;for(int i=1;i<=m;i++)pw[i]=pw[i-1]*2%mod;
 	for(int s=0;s<(1<<n);s++)g[s]=pw[sum[s]];
 	xorln(g,g,n);
-	split(g,1);
+	comb(g,mod-1);
 	// for(int s=0;s<(1<<n);s++)cout<<g[s]<<" ";cout<<"\n";
 	for(int s=0;s<(1<<n);s++)if(__builtin_popcount(s)>=2)(f[s]+=g[s])%=mod;
 	comb(f,1);

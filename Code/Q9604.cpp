@@ -1,5 +1,4 @@
 #include<bits/stdc++.h>
-#define __int128 int
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -63,7 +62,7 @@ void sovle(int l,int r){
 				int j=f2.fd(st1[i]);
 				res+=(__int128)w*vl(i)*(j-1-mid);
 				res+=w*f1.calc(st1[i])*(mid-st1[i]);
-				f2.calc(st1[i])+=(__int128)w*vl(i);
+				f2.sum[j]+=(__int128)w*vl(i);
 			};
 			while(tp1&&st1[tp1]<p1){
 				upd(tp1,-1);
@@ -73,6 +72,8 @@ void sovle(int l,int r){
 			for(int j=tp2;j;j--){
 				if(f1.fd(st2[j])==l-1){
 					res-=(__int128)vr(j)*(mid-l+1);
+					f1.f[st2[j]]=st2[j];
+					f1.sum[st2[j]]=vr(j);
 					f1.merge(p1,st2[j]);
 				}
 				else break;
@@ -88,7 +89,7 @@ void sovle(int l,int r){
 				int j=f1.fd(st2[i]);
 				res+=(__int128)w*vr(i)*(mid-j);
 				res+=w*f2.calc(st2[i])*(st2[i]-1-mid);
-				f1.calc(st2[i])+=(__int128)w*vr(i);
+				f1.sum[j]+=(__int128)w*vr(i);
 			};
 			while(tp2&&st2[tp2]>p2){
 				upd(tp2,-1);
@@ -98,6 +99,8 @@ void sovle(int l,int r){
 			for(int j=tp1;j;j--){
 				if(f2.fd(st1[j])==r+1){
 					res-=(__int128)vl(j)*(r-mid);
+					f2.f[st1[j]]=st1[j];
+					f2.sum[st1[j]]=vl(j);
 					f2.merge(p2,st1[j]);
 				}
 				else break;
