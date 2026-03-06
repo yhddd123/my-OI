@@ -102,28 +102,10 @@ void xormul(mint *a,mint *b,mint *c,int n){
 	for(int i=0;i<=n;i++)fwt2(ff[i],1<<n);
 	for(int s=0;s<(1<<n);s++)c[s]=ff[__builtin_popcount(s)][s];
 }
-void xormul1(mint *a,mint *b,mint *c,int n){
-	for(int i=0;i<=n;i++){
-		for(int s=0;s<(1<<n);s++)ff[i][s]=gg[i][s]=0;
-	}
-	for(int s=0;s<(1<<n);s++)ff[__builtin_popcount(s)][s]=a[s];
-	for(int s=0;s<(1<<n);s++)gg[__builtin_popcount(s)][s]=b[s];
-	for(int i=0;i<=n;i++)fwt1(ff[i],1<<n);
-	for(int i=0;i<=n;i++)fwt1(gg[i],1<<n);
-	for(int s=0;s<(1<<n);s++){
-		for(int i=0;i<=n;i++)tf[i]=ff[i][s],tg[i]=gg[i][s],th[i]=0;
-		for(int i=0;i<=n;i++){
-			for(int j=0;j<=i;j++)th[i]+=tf[j]*tg[i-j];
-		}
-		for(int i=0;i<=n;i++)ff[i][s]=th[i];
-	}
-	for(int i=0;i<=n;i++)fwt2(ff[i],1<<n);
-	for(int s=0;s<(1<<n);s++)c[s]+=ff[__builtin_popcount(s)][s];
-}
 mint tmp[1<<maxn];
 void exp(mint *a,int n){
 	for(int s=0;s<(1<<n);s++)tmp[s]=a[s],a[s]=0;
-	a[0]=1;for(int i=0;i<n;i++)xormul1(tmp+(1<<i),a,a+(1<<i),i);
+	a[0]=1;for(int i=0;i<n;i++)xormul(tmp+(1<<i),a,a+(1<<i),i);
 }
 void mulself(mint *a,mint *b,int n){
 	for(int i=0;i<=n;i++){

@@ -36,7 +36,7 @@ void xormul(int *a,int *b,int *c,int n){
 		for(int i=0;i<=n;i++)ff[i][s]=th[i];
 	}
 	for(int i=0;i<=n;i++)fmt2(ff[i],1<<n);
-	for(int s=0;s<(1<<n);s++)inc(c[s],ff[__builtin_popcount(s)][s]);
+	for(int s=0;s<(1<<n);s++)c[s]=ff[__builtin_popcount(s)][s];
 }
 void xorni(int *a,int *b,int n){//b=1/a
 	for(int i=0;i<=n;i++){
@@ -163,7 +163,7 @@ void comp(int *a,int *b,int *c,int n){
 	for(int s=0;s<(1<<n);s++)c[s]=hh[0][s];
 }
 
-void xormul1(int *a,int *c,int n){
+void xormul2(int *a,int *c,int n){
 	for(int i=0;i<=n;i++){
 		for(int s=0;s<(1<<n);s++)ff[i][s]=0;
 	}
@@ -191,7 +191,7 @@ void comptrans(int *a,int *b,int *c,int n){
 		for(int s=0;s<(1<<i-1);s++)gg[__builtin_popcount(s)][s]=a[s+(1<<i-1)];
 		for(int j=0;j<i;j++)fmt1(gg[j],1<<i-1);
 		for(int j=n-i+1;j;j--){
-			xormul1(hh[j-1]+(1<<i-1),hh[j],i-1);
+			xormul2(hh[j-1]+(1<<i-1),hh[j],i-1);
 		}
 	}
 	for(int i=0;i<=n;i++)c[i]=hh[i][0];

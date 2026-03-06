@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#define __int128 int
+// #define int long long
 #define mod 998244353ll
 #define pii pair<int,int>
 #define fi first
@@ -8,133 +8,169 @@
 #define db long double
 #define mems(a,x) memset((a),(x),sizeof(a))
 using namespace std;
-static char buf[1000000],*p1=buf,*p2=buf,obuf[1<<22];
-#define getchar() p1==p2&&(p2=(p1=buf)+fread(buf,1,1000000,stdin),p1==p2)?EOF:*p1++
-inline int read(){int x=0,f=1;char c=getchar();while(c<'0'||c>'9'){if(c=='-')f=-1;c=getchar();}while(c>='0'&&c<='9'){x=(x<<3)+(x<<1)+c-48;c=getchar();}return x*f;}
-static int opos=0;
-inline void flush_out(){fwrite(obuf,1,opos,stdout);opos=0;}
-inline void pc(char c){if(opos == (1<<22))flush_out();obuf[opos++]=c;}
-inline void write(__int128 x){static char buf[40];static int len=-1;if(x<0)pc('-'),x=-x;do buf[++len]=x%10,x/=10;while(x);while(len>=0)pc(buf[len--]+48);}
-const int maxn=1000010;
+inline int read(){
+	int x=0,fl=1;char ch=getchar();
+	while(ch<'0'||ch>'9'){if(ch=='-')fl=-1;ch=getchar();}
+	while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch=getchar();}
+	return x*fl;
+}
+const int maxn=100010;
 const int inf=1e9;
 bool mbe;
 
-int n,m,a[maxn],b[maxn];
-__int128 ans;
-int st1[maxn],tp1,st2[maxn],tp2;
-int id[maxn],tmp[maxn];
-struct dsu{
-	int f[maxn];
-	__int128 sum[maxn];
-	void init(int l,int r){
-		for(int i=l;i<=r;i++)f[i]=i,sum[i]=0;
+int n,q,ed[maxn];
+int a[maxn],op[maxn];
+vector<int> e[maxn];
+int fa[maxn],siz[maxn],son[maxn],dep[maxn];
+void dfs(int u){
+	siz[u]=1,son[u]=0;dep[u]=dep[fa[u]]+1;
+    for(int v:e[u])if(v!=fa[u]){
+    	fa[v]=u,dfs(v);siz[u]+=siz[v];
+        if(siz[v]>siz[son[u]])son[u]=v;
+    }
+}
+int dfn[maxn],rnk[maxn],tim,tp[maxn],st[17][maxn];
+void dfs(int u,int lst){
+	rnk[dfn[u]=++tim]=u,st[0][tim]=fa[u];tp[u]=lst;
+	if(!son[u])return ;dfs(son[u],lst);
+	for(int v:e[u])if(v!=fa[u]&&v!=son[u])dfs(v,v);
+}
+int mmax(int u,int v){return dfn[u]<dfn[v]?u:v;}
+int lca(int u,int v){
+	if(u==v)return u;
+	u=dfn[u],v=dfn[v];
+	if(u>v)swap(u,v);u++;
+	int k=__lg(v-u+1);
+	return mmax(st[k][u],st[k][v-(1<<k)+1]);
+}
+#define mid ((l+r)>>1)
+#define ls lc[nd]
+#define rs rc[nd]
+bool tree[maxn<<6];
+int rt[maxn],lc[maxn<<6],rc[maxn<<6],idx;
+void updata(int &nd,int l,int r,int ql,int qr){
+	if(!nd)nd=++idx;
+	if(tree[nd])return ;
+	if(l>=ql&&r<=qr){tree[nd]=1;return ;}
+	if(ql<=mid)updata(ls,l,mid,ql,qr);
+	if(qr>mid)updata(rs,mid+1,r,ql,qr);
+	tree[nd]=tree[ls]&tree[rs];
+}
+bool query(int nd,int l,int r,int p){
+	if(!nd)return 0;
+	if(tree[nd])return 1;
+	if(l==r)return tree[nd];
+	if(p<=mid)return query(ls,l,mid,p);
+	else return query(rs,mid+1,r,p);
+}
+int merge(int u,int v,int l,int r){
+    if(!u||!v)return u|v;
+    if(l==r){tree[u]|=tree[v];return u;}
+    if(tree[u])return u;
+    if(tree[v])return v;
+    lc[u]=merge(lc[u],lc[v],l,mid),rc[u]=merge(rc[u],rc[v],mid+1,r);
+    tree[u]=tree[lc[u]]&tree[rc[u]];
+    return u;
+}
+void upd(int &rt,int u,int v){
+	while(tp[u]!=tp[v]){
+		if(dep[tp[u]]<dep[tp[v]])swap(u,v);
+		updata(rt,1,n,dfn[tp[u]],dfn[u]);
+		u=fa[tp[u]];
 	}
-	int fd(int x){
-		if(f[x]==x)return x;
-		return f[x]=fd(f[x]);
+	if(dep[u]<dep[v])swap(u,v);
+	updata(rt,1,n,dfn[v],dfn[u]);
+}
+int pos[maxn];
+void merge(int u,int v){
+	rt[u]=merge(rt[u],rt[v],1,n);
+	// cout<<u<<" "<<v<<" "<<pos[u]<<" "<<pos[v]<<" "<<lca(pos[u],pos[v])<<"\n";
+	upd(rt[u],pos[u],pos[v]);
+	pos[u]=lca(pos[u],pos[v]);
+}
+bool chk(int rt,int p){return query(rt,1,n,dfn[p]);}
+int f[maxn];
+int fd(int x){
+	if(f[x]==x)return x;
+	return f[x]=fd(f[x]);
+}
+bool in(int u,int v){return dfn[u]<=dfn[v]&&dfn[v]<dfn[u]+siz[u];}
+bool chk1(int u,int v,int x){
+	while(tp[u]!=tp[v]){
+		if(dep[tp[u]]<dep[tp[v]])swap(u,v);
+		if(dfn[tp[u]]<=dfn[x]&&dfn[x]<=dfn[u])return 1;
+		u=fa[tp[u]];
 	}
-	void merge(int u,int v){
-		f[v]=u,sum[u]+=sum[v];
-	}
-	__int128 &calc(int x){return sum[fd(x)];}
-}f1,f2;
-#define vl(p) (m+1-a[st1[p]])*(st1[p]-st1[p+1])
-#define vr(p) (m+1-a[st2[p]])*(st2[p+1]-st2[p])
-void sovle(int l,int r){
-	if(l==r){ans+=(__int128)(m+1-a[l])*a[l];return ;}
-	int mid=l+r>>1;
-	sovle(l,mid),sovle(mid+1,r);
-	merge(id+l,id+mid+1,id+mid+1,id+r+1,tmp,[&](int u,int v){return a[u]<a[v]||(a[u]==a[v]&&u<v);});
-	for(int i=l;i<=r;i++)id[i]=tmp[i-l];
-	f1.init(l-1,r+1),f2.init(l-1,r+1);
-	tp1=0,tp2=0;
-	__int128 res=0;
-	for(int rr=r,ll;rr>=l;rr=ll-1){
-		ll=rr;while(ll>l&&a[id[ll-1]]==a[id[rr]])ll--;
-		int p1=-1,p2=-1;
-		for(int ii=ll;ii<=rr;ii++){
-			int p=id[ii];
-			if(p<=mid)p1=p;
-			else if(p2==-1)p2=p;
-		}
-		// cout<<ll<<" "<<rr<<" "<<res<<"\n";
-		if(p1!=-1){
-			auto upd=[&](int i,int w){
-				int j=f2.fd(st1[i]);
-				res+=(__int128)w*vl(i)*(j-1-mid);
-				res+=w*f1.calc(st1[i])*(mid-st1[i]);
-				f2.calc(st1[i])+=(__int128)w*vl(i);
-			};
-			while(tp1&&st1[tp1]<p1){
-				upd(tp1,-1);
-				f1.merge(p1,st1[tp1]);
-				tp1--;
-			}
-			for(int j=tp2;j;j--){
-				if(f1.fd(st2[j])==l-1){
-					res-=(__int128)vr(j)*(mid-l+1);
-					f1.merge(p1,st2[j]);
-				}
-				else break;
-			}
-			if(tp1)upd(tp1,-1);
-			st1[++tp1]=p1;st1[tp1+1]=l-1;
-			if(tp1>1)upd(tp1-1,1);
-			f2.merge(r+1,p1);
-			upd(tp1,1);
-		}
-		if(p2!=-1){
-			auto upd=[&](int i,int w){
-				int j=f1.fd(st2[i]);
-				res+=(__int128)w*vr(i)*(mid-j);
-				res+=w*f2.calc(st2[i])*(st2[i]-1-mid);
-				f1.calc(st2[i])+=(__int128)w*vr(i);
-			};
-			while(tp2&&st2[tp2]>p2){
-				upd(tp2,-1);
-				f2.merge(p2,st2[tp2]);
-				tp2--;
-			}
-			for(int j=tp1;j;j--){
-				if(f2.fd(st1[j])==r+1){
-					res-=(__int128)vl(j)*(r-mid);
-					f2.merge(p2,st1[j]);
-				}
-				else break;
-			}
-			if(tp2)upd(tp2,-1);
-			st2[++tp2]=p2;st2[tp2+1]=r+1;
-			if(tp2>1)upd(tp2-1,1);
-			f1.merge(l-1,p2);
-			upd(tp2,1);
-		}
-		// for(int i=1;i<=tp1;i++)cout<<st1[i]<<" ";cout<<"\n";
-		// for(int i=1;i<=tp2;i++)cout<<st2[i]<<" ";cout<<"\n";
-		// st1[tp1+1]=l-1,st2[tp2+1]=r+1;
-		// for(int i=1,j=1;i<=tp1;i++){
-			// while(j<=tp2&&a[st1[i]]<=a[st2[j]])j++;
-			// res+=__int128(m+1-a[st1[i]])*(st1[i]-st1[i+1])*(st2[j]-1-mid);
-		// }
-		// for(int i=1,j=1;i<=tp2;i++){
-			// while(j<=tp1&&a[st2[i]]<a[st1[j]])j++;
-			// res+=__int128(m+1-a[st2[i]])*(st2[i+1]-st2[i])*(mid-st1[j]);
-		// }
-		// cout<<ans<<" "<<res<<"\n";
-		ans+=res*(a[id[rr]]-(ll==l?0:a[id[ll-1]]));
-	}
-	// cout<<l<<" "<<r<<" "<<ans<<" s\n";
+	if(dep[u]<dep[v])swap(u,v);
+	if(dfn[u]<=dfn[x]&&dfn[x]<=dfn[v])return 1;
+	return 0;
+}
+bool chk(int u,int v,int x){
+	// if(chk1(pos[u],pos[v],x))return 1;
+	if((in(x,pos[u])||in(x,pos[v]))&&in(lca(pos[u],pos[v]),x))return 1;
+	if(chk(rt[u],x)||chk(rt[v],x))return 1;
+	return 0;
 }
 void work(){
-	n=read();m=read();
-	for(int i=1;i<=n;i++)a[i]=read(),id[i]=i;
-	sovle(1,n);
-	write(ans);flush_out();
+	n=read();
+    for(int i=1;i<n;i++){
+        int u=read(),v=read();
+        e[u].pb(v),e[v].pb(u);
+    }
+    dfs(1),dfs(1,1);
+    for(int j=1;j<=16;j++){
+    	for(int i=1;i+(1<<j)-1<=n;i++)st[j][i]=mmax(st[j-1][i],st[j-1][i+(1<<j-1)]);
+    }
+    q=read();
+    for(int i=1;i<=q;i++){
+        char ch=getchar();
+        while(ch!='b'&&ch!='s')ch=getchar();
+        if(ch=='s')op[i]=1;
+        else op[i]=0;
+        a[i]=read();
+    }
+    for(int i=1;i<=q+1;i++)f[i]=i;
+    for(int i=q;i;i--){
+        if(op[i]){
+            upd(rt[i],a[i],a[i]);pos[i]=a[i];
+            int &p=ed[i]=i;
+            while(p<q){
+                if(ed[p+1]!=p){
+                	merge(i,p+1);
+                    rt[i]=merge(rt[i],rt[p+1],1,n);
+                    p=ed[p+1];
+                }
+                else{
+                    if(chk(rt[i],a[p+1]))p++;
+                    else{
+                    	int pp=fd(p+1);
+                    	if(pp==q+1)break;
+                    	bool fl=1;for(int j=p+1;j<pp;j++){
+                    		if(!chk(i,pp,a[j])){
+                    			fl=0;break;
+                    		}
+                    	}
+                    	if(!fl)break;
+                    	else p=pp-1;
+                    }
+                }
+            }
+        }
+        else{
+            if(chk(rt[i+1],a[i])){
+                ed[i]=ed[i+1];
+                rt[i]=rt[i+1],pos[i]=pos[i+1];
+            }
+            else ed[i]=i-1,f[i]=fd(i+1);
+        }
+    }
+    for(int i=1;i<=q;i++)printf("%d\n",ed[i]-i+1);
 }
 
 bool med;
 signed main(){
-	// freopen("basi.in","r",stdin);
-	// freopen("basi.out","w",stdout);
+	// freopen("excite.in","r",stdin);
+	// freopen("excite.out","w",stdout);
 	
 	cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	

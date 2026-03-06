@@ -20,12 +20,12 @@ bool mbe;
 
 mt19937 rnd(time(0));
 struct weightdsu{
-	int fa[maxn],rd[maxn];pii val[maxn];
-	int siz[maxn];
+	int fa[maxn],rd[maxn],val[maxn];
+//	int siz[maxn];
 	weightdsu(int n){
-		for(int i=1;i<=n;i++)fa[i]=i,rd[i]=rnd(),val[i]={inf,inf};
+		for(int i=1;i<=n;i++)fa[i]=i,rd[i]=rnd(),val[i]=inf;
 	}
-	int fd(int u,pii w={inf-1,inf}){
+	int fd(int u,int w=inf-1){
 		while(val[u]<=w){
 			while(val[fa[u]]<=val[u]){
 				// siz[fa[u]]-=siz[u];
@@ -39,14 +39,14 @@ struct weightdsu{
 		// if(fa[u]==u)return ;
 		// del(fa[u]);siz[fa[u]]-=siz[u];
 	}
-	int ins(int u,pii w={inf-1,inf}){
+	int ins(int u,int w=inf-1){
 		while(val[u]<=w){
 			// siz[fa[u]]+=siz[u];
 			u=fa[u];
 		}
 		return u;
 	}
-	void merge(int u,int v,pii w){
+	void merge(int u,int v,int w){
 		del(u),del(v);
 		while(u!=v){
 			u=ins(u,w),v=ins(v,w);
@@ -55,9 +55,9 @@ struct weightdsu{
 		}
 		ins(u);
 	}
-	pii max_path(int u,int v){
+	int max_path(int u,int v){
 		int uu=fd(u),vv=fd(v);
-		if(uu!=vv)return {inf,-1};
+		if(uu!=vv)return inf;
 		if(val[u]>val[v])swap(u,v);
 		while(fa[u]!=v){
 			u=fa[u];
@@ -65,9 +65,9 @@ struct weightdsu{
 		}
 		return val[u];
 	}
-	pii del_path(int u,int v){
+	int del_path(int u,int v){
 		int uu=fd(u),vv=fd(v);
-		if(uu!=vv)return {inf,-1};
+		if(uu!=vv)return inf;
 		if(val[u]>val[v])swap(u,v);
 		while(fa[u]!=v){
 			u=fa[u];
@@ -79,11 +79,11 @@ struct weightdsu{
 			v=fa[v];
 		}
 		fa[u]=u;
-		pii res={inf,inf};swap(res,val[u]);
+		int res=inf;swap(res,val[u]);
 		return res;
 	}
-	pii add_edge(int u,int v,pii w){
-		pii res=del_path(u,v);
+	int add_edge(int u,int v,int w){
+		int res=del_path(u,v);
 		if(res<=w)swap(res,w);
 		merge(u,v,w);
 		return res;
@@ -96,9 +96,9 @@ void work(){
 	for(int i=1;i<=m;i++){
 		int u=read(),v=read(),w=read();
 		if(u==v)continue;
-		pii res=f.add_edge(u,v,{w,i-1});
+		int res=f.add_edge(u,v,w);
 		ans+=w;
-		if(res.fi!=inf)ans-=res.fi;
+		if(res!=inf)ans-=res;
 	}
 	printf("%lld\n",ans);
 }
@@ -106,8 +106,8 @@ void work(){
 bool med;
 int T;
 signed main(){
-	// freopen(".in","r",stdin);
-	// freopen(".out","w",stdout);
+//	 freopen("A.in","r",stdin);
+//	 freopen(".out","w",stdout);
 	
 	// cerr<<(&mbe-&med)/1024.0/1024.0<<"\n";
 	
